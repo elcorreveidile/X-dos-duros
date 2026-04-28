@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    @apply bg-neon text-background;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neon;
+  }
+}
+
+@layer components {
+  .neon-text {
+    @apply text-neon;
+    text-shadow: 0 0 8px #39FF14, 0 0 20px #39FF14;
+  }
+
+  .neon-border {
+    @apply border border-neon;
+    box-shadow: 0 0 5px #39FF14, inset 0 0 5px rgba(57, 255, 20, 0.1);
+  }
+
+  .neon-border-hover {
+    @apply transition-all duration-300;
+  }
+  .neon-border-hover:hover {
+    @apply border-neon;
+    box-shadow: 0 0 10px #39FF14, inset 0 0 10px rgba(57, 255, 20, 0.05);
+  }
+
+  .btn-primary {
+    @apply bg-neon text-background font-bold px-6 py-3 rounded-none
+           hover:bg-neon-dim transition-all duration-200
+           border border-neon uppercase tracking-wider text-sm;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.7);
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-neon font-bold px-6 py-3 rounded-none
+           border border-neon hover:bg-neon hover:text-background
+           transition-all duration-200 uppercase tracking-wider text-sm;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-muted font-medium px-4 py-2
+           border border-border hover:border-neon hover:text-neon
+           transition-all duration-200 uppercase tracking-wider text-sm;
+  }
+
+  .card {
+    @apply bg-card border border-border p-6;
+  }
+
+  .card-hover {
+    @apply card hover:bg-card-hover hover:border-neon transition-all duration-300;
+  }
+
+  .input {
+    @apply bg-background border border-border text-foreground px-4 py-3
+           w-full focus:outline-none focus:border-neon transition-colors duration-200
+           placeholder:text-muted/50 rounded-none;
+  }
+
+  .label {
+    @apply text-muted text-xs uppercase tracking-widest mb-2 block;
+  }
+
+  .badge {
+    @apply text-xs uppercase tracking-widest px-2 py-1 font-mono font-bold;
+  }
+
+  .badge-neon {
+    @apply badge text-background bg-neon;
+  }
+
+  .badge-outline {
+    @apply badge text-muted border border-border;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold uppercase tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply text-muted text-lg mt-4 max-w-2xl;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .scanline {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+  }
+}
