@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { sendTimerStarted } from '@/lib/email'
 
 export async function POST(
   _req: Request,
@@ -21,7 +22,10 @@ export async function POST(
       timerDeadline: deadline,
       status: 'DEVELOPMENT',
     },
+    include: { client: true },
   })
+
+  await sendTimerStarted({ project, client: project.client, deadline })
 
   return NextResponse.json(project)
 }
