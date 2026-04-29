@@ -1,15 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
 import { Suspense } from 'react'
+import { loginAction } from './actions'
 
 function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/dashboard'
 
@@ -23,19 +22,13 @@ function LoginForm() {
     setLoading(true)
     setError('')
 
-    const result = await signIn('credentials', {
-      email: form.email,
-      password: form.password,
-      redirect: false,
-    })
+    const result = await loginAction(form.email, form.password, callbackUrl)
 
-    setLoading(false)
-
-    if (result?.ok) {
-      window.location.href = callbackUrl
-    } else {
-      setError('Email o contraseña incorrectos.')
+    if (result?.error) {
+      setError(result.error)
+      setLoading(false)
     }
+    // If no error, loginAction throws a redirect internally — page navigates automatically
   }
 
   return (
