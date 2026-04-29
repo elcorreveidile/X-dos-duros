@@ -31,11 +31,10 @@ function LoginForm() {
 
     setLoading(false)
 
-    if (result?.error) {
-      setError('Email o contraseña incorrectos.')
+    if (result?.ok) {
+      window.location.href = callbackUrl
     } else {
-      router.push(callbackUrl)
-      router.refresh()
+      setError('Email o contraseña incorrectos.')
     }
   }
 
