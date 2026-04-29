@@ -1,11 +1,18 @@
 'use client'
 
 import { useState } from 'react'
+import { signIn } from 'next-auth/react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { Suspense } from 'react'
 
-export default function LoginPage() {
+function LoginForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') ?? '/dashboard'
+
   const [form, setForm] = useState({ email: '', password: '' })
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -15,12 +22,73 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    // Simulate login
-    await new Promise((r) => setTimeout(r, 1000))
+
+    const result = await signIn('credentials', {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    })
+
     setLoading(false)
-    setError('Credenciales incorrectas. (Demo: conecta la base de datos)')
+
+    if (result?.error) {
+      setError('Email o contraseña incorrectos.')
+    } else {
+      router.push(callbackUrl)
+      router.refresh()
+    }
   }
 
+  return (
+    <form onSubmit={handleSubmit} className="border border-border bg-card p-8 space-y-5">
+      {error && (
+        <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-xs">
+          {error}
+        </div>
+      )}
+
+      <div>
+        <label className="label">Email</label>
+        <input
+          type="email"
+          className="input"
+          placeholder="tu@email.com"
+          required
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+        />
+      </div>
+
+      <div>
+        <label className="label">Contraseña</label>
+        <div className="relative">
+          <input
+            type={showPass ? 'text' : 'password'}
+            className="input pr-10"
+            placeholder="••••••••"
+            required
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPass(!showPass)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+          >
+            {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+      </div>
+
+      <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
+        <LogIn size={16} className="mr-2" />
+        Entrar
+      </Button>
+    </form>
+  )
+}
+
+export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background grid-bg flex flex-col items-center justify-center px-4">
       <div className="scanline absolute inset-0 pointer-events-none" />
@@ -38,51 +106,9 @@ export default function LoginPage() {
           <p className="text-muted text-sm mt-1">Gestiona tu proyecto desde aquí</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="border border-border bg-card p-8 space-y-5">
-          {error && (
-            <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-xs">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label className="label">Email</label>
-            <input
-              type="email"
-              className="input"
-              placeholder="tu@email.com"
-              required
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <label className="label">Contraseña</label>
-            <div className="relative">
-              <input
-                type={showPass ? 'text' : 'password'}
-                className="input pr-10"
-                placeholder="••••••••"
-                required
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
-              >
-                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
-            <LogIn size={16} className="mr-2" />
-            Entrar
-          </Button>
-        </form>
+        <Suspense fallback={null}>
+          <LoginForm />
+        </Suspense>
 
         <p className="text-center text-muted text-xs">
           ¿No tienes cuenta?{' '}
