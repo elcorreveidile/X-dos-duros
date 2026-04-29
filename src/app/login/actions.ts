@@ -1,7 +1,7 @@
 'use server'
 
 import { signIn } from '@/lib/auth'
-import { AuthError } from 'next-auth'
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 export async function loginAction(email: string, password: string, callbackUrl: string) {
   try {
@@ -11,10 +11,9 @@ export async function loginAction(email: string, password: string, callbackUrl: 
       redirectTo: callbackUrl,
     })
   } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: 'Email o contraseña incorrectos.' }
-    }
-    // signIn throws a redirect, which is normal — re-throw it
-    throw error
+    // Next.js redirect throws internally — must re-throw so navigation works
+    if (isRedirectError(error)) throw error
+    // Everything else = bad credentials
+    return { error: 'Email o contraseña incorrectos.' }
   }
 }
