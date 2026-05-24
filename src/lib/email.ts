@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import type { User, Project } from '@/types'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY ?? 're_placeholder')
 const FROM = process.env.EMAIL_FROM ?? 'Por 2 Duros <hola@por2duros.com>'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@por2duros.com'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
