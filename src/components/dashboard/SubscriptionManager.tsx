@@ -40,17 +40,25 @@ export function SubscriptionManager() {
 
   const subscribe = async (planId: string) => {
     setLoading(planId)
-    await new Promise((r) => setTimeout(r, 1000))
-    setCurrentPlan(planId)
+    const res = await fetch('/api/subscriptions/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: planId }),
+    })
+    const data = await res.json()
     setLoading('')
+    if (data.url) window.location.href = data.url
   }
 
-  const cancel = async () => {
-    setLoading('cancel')
-    await new Promise((r) => setTimeout(r, 800))
-    setCurrentPlan(null)
+  const openPortal = async () => {
+    setLoading('portal')
+    const res = await fetch('/api/subscriptions/portal', { method: 'POST' })
+    const data = await res.json()
     setLoading('')
+    if (data.url) window.location.href = data.url
   }
+
+  const cancel = openPortal
 
   return (
     <div className="space-y-8">

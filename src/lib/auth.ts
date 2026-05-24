@@ -1,28 +1,23 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import Google from 'next-auth/providers/google'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from './db'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
 const credentialsSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8),
+  password: z.string().min(1),
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/login',
     error: '/login',
   },
   providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    }),
     Credentials({
       name: 'credentials',
       credentials: {
@@ -30,27 +25,58 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Contraseña', type: 'password' },
       },
       async authorize(credentials) {
-        const parsed = credentialsSchema.safeParse(credentials)
-        if (!parsed.success) return null
+        try {
+          const parsed = credentialsSchema.safeParse(credentials)
+          if (!parsed.success) {
+            console.error('[auth] Invalid credentials schema:', parsed.error)
+            return null
+          }
 
-        const user = await prisma.user.findUnique({
-          where: { email: parsed.data.email },
-        })
-        if (!user || !user.password) return null
+          const user = await prisma.user.findUnique({
+            where: { email: parsed.data.email },
+          })
+          if (!user || !user.password) {
+            console.error('[auth] User not found or no password:', parsed.data.email)
+            return null
+          }
 
-        const valid = await bcrypt.compare(parsed.data.password, user.password)
-        if (!valid) return null
+          const valid = await bcrypt.compare(parsed.data.password, user.password)
+          if (!valid) {
+            console.error('[auth] Invalid password for:', parsed.data.email)
+            return null
+          }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
+          console.log('[auth] Login success for:', user.email, 'role:', user.role)
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          }
+        } catch (err) {
+          console.error('[auth] authorize error:', err)
+          return null
         }
       },
     }),
   ],
   callbacks: {
+    authorized({ auth: session, request: { nextUrl } }) {
+      const PUBLIC_PATHS = ['/', '/login', '/api/contact', '/api/auth', '/api/setup-admin']
+      const isPublic = PUBLIC_PATHS.some(
+        (p) => nextUrl.pathname === p || nextUrl.pathname.startsWith(p + '/')
+      )
+      if (isPublic) return true
+
+      const isLoggedIn = !!session?.user
+      if (!isLoggedIn) return false
+
+      if (nextUrl.pathname.startsWith('/admin') && session.user.role !== 'ADMIN') {
+        return Response.redirect(new URL('/dashboard', nextUrl))
+      }
+
+      return true
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id

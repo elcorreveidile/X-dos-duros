@@ -38,3 +38,7 @@ next-env.d.ts
 
 # prisma
 /prisma/migrations/dev.db
+
+# local scripts
+reset-admin.js
+check-user.js

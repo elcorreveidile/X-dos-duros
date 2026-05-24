@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { sendContactNotification, sendContactConfirmation } from '@/lib/email'
 
 const contactSchema = z.object({
   name: z.string().min(2).max(100),
@@ -17,9 +18,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  // In production: send email via Resend/SendGrid
-  // For now, just acknowledge
-  console.log('[Contact Form]', parsed.data)
+  await Promise.all([
+    sendContactNotification(parsed.data),
+    sendContactConfirmation({ name: parsed.data.name, email: parsed.data.email }),
+  ])
 
   return NextResponse.json({ success: true }, { status: 201 })
 }

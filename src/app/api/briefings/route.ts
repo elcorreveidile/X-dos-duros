@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
+import { sendBriefingReceived } from '@/lib/email'
 
 const briefingSchema = z.object({
   projectId: z.string(),
@@ -25,7 +26,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
-  const project = await prisma.project.findUnique({ where: { id: parsed.data.projectId } })
+  const project = await prisma.project.findUnique({
+    where: { id: parsed.data.projectId },
+    include: { client: true },
+  })
   if (!project) return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
 
   if (session.user.role !== 'ADMIN' && project.clientId !== session.user.id) {
@@ -44,12 +48,12 @@ export async function POST(req: Request) {
     },
   })
 
-  // Update project status to BRIEFING if still LEAD
   if (project.status === 'LEAD') {
     await prisma.project.update({
       where: { id: parsed.data.projectId },
       data: { status: 'BRIEFING' },
     })
+    await sendBriefingReceived({ project, client: project.client })
   }
 
   return NextResponse.json(briefing, { status: 201 })

@@ -13,13 +13,15 @@ const updateSchema = z.object({
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
   if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
+  const { id } = await params
+
   const project = await prisma.project.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       client: { select: { id: true, name: true, email: true } },
       briefing: true,
@@ -40,13 +42,14 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth()
   if (!session?.user || session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
+  const { id } = await params
   const body = await req.json()
   const parsed = updateSchema.safeParse(body)
   if (!parsed.success) {
@@ -54,7 +57,7 @@ export async function PATCH(
   }
 
   const project = await prisma.project.update({
-    where: { id: params.id },
+    where: { id },
     data: parsed.data,
   })
 
