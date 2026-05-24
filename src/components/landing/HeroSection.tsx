@@ -15,7 +15,7 @@ export function HeroSection() {
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8 animate-slide-up">
+        <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8 mt-16 animate-slide-up">
           <Zap size={14} className="text-neon" />
           <span className="text-neon text-xs uppercase tracking-widest font-mono">
             Entrega garantizada en 48 horas
