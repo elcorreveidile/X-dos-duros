@@ -32,7 +32,10 @@ export async function POST(req: Request) {
             projectId,
             amount: (session.amount_total ?? 0) / 100,
             status: 'PAID',
-            stripePaymentId: session.payment_intent as string,
+            stripePaymentId:
+              typeof session.payment_intent === 'string'
+                ? session.payment_intent
+                : session.payment_intent?.id ?? null,
             paidAt: new Date(),
           },
         })
@@ -46,8 +49,13 @@ export async function POST(req: Request) {
         }
       }
 
-      if (type === 'subscription' && clientId && session.subscription) {
-        const stripeSub = await stripe.subscriptions.retrieve(session.subscription as string)
+      const sessionSubId =
+        typeof session.subscription === 'string'
+          ? session.subscription
+          : session.subscription?.id ?? null
+
+      if (type === 'subscription' && clientId && sessionSubId) {
+        const stripeSub = await stripe.subscriptions.retrieve(sessionSubId)
         const plan = session.metadata?.plan ?? 'basic'
 
         const price = plan === 'pro' ? 49 : 29
