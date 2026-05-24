@@ -64,7 +64,7 @@ export async function POST(req: Request) {
           where: { clientId },
         })
 
-        const subPeriodEnd = stripeSub.items.data[0]?.current_period_end ?? null
+        const subPeriodEnd = stripeSub.current_period_end ?? null
 
         if (existingSub) {
           await prisma.subscription.update({
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
           : invoice.subscription?.id ?? null
       if (invoiceSubId) {
         const stripeSub = await stripe.subscriptions.retrieve(invoiceSubId)
-        const periodEnd = stripeSub.items.data[0]?.current_period_end
+        const periodEnd = stripeSub.current_period_end
         await prisma.subscription.updateMany({
           where: { stripeSubscriptionId: stripeSub.id },
           data: {
