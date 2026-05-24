@@ -52,22 +52,32 @@ export async function POST(req: Request) {
 
         const price = plan === 'pro' ? 49 : 29
 
-        await prisma.subscription.upsert({
-          where: { clientId_projectId: { clientId, projectId: session.metadata?.projectId || '' } },
-          create: {
-            clientId,
-            projectId: session.metadata?.projectId || null,
-            status: 'ACTIVE',
-            stripeSubscriptionId: stripeSub.id,
-            currentPeriodEnd: new Date(stripeSub.current_period_end * 1000),
-            price,
-          },
-          update: {
-            status: 'ACTIVE',
-            stripeSubscriptionId: stripeSub.id,
-            currentPeriodEnd: new Date(stripeSub.current_period_end * 1000),
-          },
+        const existingSub = await prisma.subscription.findFirst({
+          where: { clientId },
         })
+
+        if (existingSub) {
+          await prisma.subscription.update({
+            where: { id: existingSub.id },
+            data: {
+              status: 'ACTIVE',
+              stripeSubscriptionId: stripeSub.id,
+              currentPeriodEnd: new Date(stripeSub.current_period_end * 1000),
+              price,
+            },
+          })
+        } else {
+          await prisma.subscription.create({
+            data: {
+              clientId,
+              projectId: session.metadata?.projectId || null,
+              status: 'ACTIVE',
+              stripeSubscriptionId: stripeSub.id,
+              currentPeriodEnd: new Date(stripeSub.current_period_end * 1000),
+              price,
+            },
+          })
+        }
 
         const client = await prisma.user.findUnique({ where: { id: clientId } })
         if (client) {
