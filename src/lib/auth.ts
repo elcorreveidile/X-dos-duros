@@ -61,6 +61,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    authorized({ auth: session, request: { nextUrl } }) {
+      const PUBLIC_PATHS = ['/', '/login', '/api/contact', '/api/auth']
+      const isPublic = PUBLIC_PATHS.some(
+        (p) => nextUrl.pathname === p || nextUrl.pathname.startsWith(p + '/')
+      )
+      if (isPublic) return true
+
+      const isLoggedIn = !!session?.user
+      if (!isLoggedIn) return false
+
+      if (nextUrl.pathname.startsWith('/admin') && session.user.role !== 'ADMIN') {
+        return Response.redirect(new URL('/dashboard', nextUrl))
+      }
+
+      return true
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
