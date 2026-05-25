@@ -5,6 +5,7 @@ import { PricingCalculator } from '@/components/landing/PricingCalculator'
 import { ProcessSection } from '@/components/landing/ProcessSection'
 import { ContactSection } from '@/components/landing/ContactSection'
 import { Footer } from '@/components/landing/Footer'
+import { Suspense } from 'react'
 
 export default function HomePage() {
   return (
@@ -15,7 +16,9 @@ export default function HomePage() {
         <ServicesSection />
         <PricingCalculator />
         <ProcessSection />
-        <ContactSection />
+        <Suspense fallback={null}>
+          <ContactSection />
+        </Suspense>
       </main>
       <Footer />
     </>

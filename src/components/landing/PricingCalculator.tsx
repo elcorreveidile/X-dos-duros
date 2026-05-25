@@ -193,7 +193,7 @@ export function PricingCalculator() {
                 ))}
               </div>
 
-              <Link href={`/#contacto?type=${projectType}&addons=${selectedAddons.join(',')}`}>
+              <Link href={`/?projectType=${projectType}&addons=${selectedAddons.join(',')}&price=${total}#contacto`}>
                 <Button variant="primary" className="w-full">
                   Solicitar este proyecto
                 </Button>
