@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Send, CheckCircle } from 'lucide-react'
 
 export function ContactSection() {
+  const searchParams = useSearchParams()
+
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -14,14 +17,44 @@ export function ContactSection() {
   })
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    const type = searchParams.get('projectType')
+    const price = searchParams.get('price')
+    const addons = searchParams.get('addons')
+
+    if (type || price || addons) {
+      const addonsText = addons ? ` Extras: ${addons.replace(/,/g, ', ')}.` : ''
+      const priceText = price ? ` Presupuesto calculado: €${price}.` : ''
+      setForm((f) => ({
+        ...f,
+        projectType: type ?? f.projectType,
+        description: `Proyecto configurado desde la calculadora.${addonsText}${priceText}`,
+      }))
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // Simulate submission
-    await new Promise((r) => setTimeout(r, 1200))
-    setLoading(false)
-    setSent(true)
+    setError('')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        setSent(true)
+      } else {
+        setError('Hubo un error al enviar. Inténtalo de nuevo.')
+      }
+    } catch {
+      setError('Hubo un error al enviar. Inténtalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -51,6 +84,10 @@ export function ContactSection() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-sm">{error}</div>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="label">Nombre</label>
