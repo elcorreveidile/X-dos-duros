@@ -61,7 +61,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     authorized({ auth: session, request: { nextUrl } }) {
-      const PUBLIC_PATHS = ['/', '/login', '/api/contact', '/api/auth', '/api/setup-admin']
+      const PUBLIC_PATHS = ['/', '/login', '/api/contact', '/api/auth', '/api/setup-admin', '/javier', '/legal']
       const isPublic = PUBLIC_PATHS.some(
         (p) => nextUrl.pathname === p || nextUrl.pathname.startsWith(p + '/')
       )
