@@ -4,39 +4,116 @@ import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
-import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { Eye, EyeOff, LogIn, Mail, ArrowLeft } from 'lucide-react'
 import { Suspense } from 'react'
 import { loginAction } from './actions'
 
 function LoginForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') ?? '/dashboard'
+  const urlError = searchParams.get('error')
 
+  const [mode, setMode] = useState<'password' | 'magic'>('password')
   const [form, setForm] = useState({ email: '', password: '' })
+  const [magicEmail, setMagicEmail] = useState('')
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(
+    urlError === 'expired' ? 'El enlace ha caducado. Solicita uno nuevo.' : ''
+  )
+  const [magicSent, setMagicSent] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-
     const result = await loginAction(form.email, form.password, callbackUrl)
-
     if (result?.error) {
       setError(result.error)
       setLoading(false)
     }
-    // If no error, loginAction throws a redirect internally — page navigates automatically
+  }
+
+  const handleMagicSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/auth/magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: magicEmail }),
+      })
+      if (res.ok) {
+        setMagicSent(true)
+      } else {
+        setError('Error al enviar el enlace. Inténtalo de nuevo.')
+      }
+    } catch {
+      setError('Error al enviar el enlace. Inténtalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (mode === 'magic') {
+    return (
+      <div className="border border-border bg-card p-8 space-y-5">
+        <button
+          onClick={() => { setMode('password'); setMagicSent(false); setError('') }}
+          className="flex items-center gap-1 text-muted text-xs hover:text-foreground transition-colors"
+        >
+          <ArrowLeft size={12} /> Volver
+        </button>
+
+        {magicSent ? (
+          <div className="text-center space-y-3 py-4">
+            <div className="w-12 h-12 border border-neon bg-neon/10 flex items-center justify-center mx-auto">
+              <Mail size={20} className="text-neon" />
+            </div>
+            <h2 className="font-bold uppercase tracking-tight">Revisa tu email</h2>
+            <p className="text-muted text-sm">
+              Hemos enviado un enlace de acceso a <strong className="text-foreground">{magicEmail}</strong>.
+              Caduca en 15 minutos.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleMagicSubmit} className="space-y-5">
+            <div>
+              <h2 className="font-bold uppercase tracking-tight mb-1">Acceso sin contraseña</h2>
+              <p className="text-muted text-xs">Te enviamos un enlace directo a tu email.</p>
+            </div>
+
+            {error && (
+              <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-xs">{error}</div>
+            )}
+
+            <div>
+              <label className="label">Email</label>
+              <input
+                type="email"
+                className="input"
+                placeholder="tu@email.com"
+                required
+                value={magicEmail}
+                onChange={(e) => setMagicEmail(e.target.value)}
+              />
+            </div>
+
+            <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
+              <Mail size={16} className="mr-2" />
+              Enviar enlace
+            </Button>
+          </form>
+        )}
+      </div>
+    )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border border-border bg-card p-8 space-y-5">
+    <form onSubmit={handlePasswordSubmit} className="border border-border bg-card p-8 space-y-5">
       {error && (
-        <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-xs">
-          {error}
-        </div>
+        <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-xs">{error}</div>
       )}
 
       <div>
@@ -76,6 +153,14 @@ function LoginForm() {
         <LogIn size={16} className="mr-2" />
         Entrar
       </Button>
+
+      <button
+        type="button"
+        onClick={() => { setMode('magic'); setError('') }}
+        className="w-full text-center text-muted text-xs hover:text-neon transition-colors pt-1"
+      >
+        ¿Olvidaste la contraseña? Accede sin ella →
+      </button>
     </form>
   )
 }
