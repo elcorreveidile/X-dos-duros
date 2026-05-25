@@ -36,7 +36,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const user = await prisma.user.findUnique({ where: { email } })
           if (!user) return null
 
-          // Magic link flow
           if (magicToken) {
             const record = await prisma.verificationToken.findFirst({
               where: { identifier: email, token: magicToken },
@@ -46,7 +45,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return { id: user.id, email: user.email, name: user.name, role: user.role }
           }
 
-          // Password flow
           if (!password || !user.password) return null
           const valid = await bcrypt.compare(password, user.password)
           if (!valid) return null
@@ -61,7 +59,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     authorized({ auth: session, request: { nextUrl } }) {
-      const PUBLIC_PATHS = ['/', '/login', '/api/contact', '/api/auth', '/api/setup-admin']
+      const PUBLIC_PATHS = ['/', '/login', '/api/contact', '/api/auth', '/api/setup-admin', '/javier', '/legal']
       const isPublic = PUBLIC_PATHS.some(
         (p) => nextUrl.pathname === p || nextUrl.pathname.startsWith(p + '/')
       )
