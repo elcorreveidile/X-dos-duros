@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Kanban, Users, CreditCard, Settings, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { signOut } from 'next-auth/react'
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -51,32 +52,14 @@ export function AdminNav() {
             })}
           </nav>
 
-          <button className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors">
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
+          >
             <LogOut size={14} />
             <span className="hidden md:inline">Salir</span>
           </button>
         </div>
-
-        {/* Mobile nav */}
-        <nav className="md:hidden flex items-center gap-1 pb-2 overflow-x-auto">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon
-            const active = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 text-xs uppercase tracking-wider whitespace-nowrap transition-all',
-                  active ? 'text-neon border border-neon' : 'text-muted border border-transparent'
-                )}
-              >
-                <Icon size={12} />
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
       </div>
     </header>
   )

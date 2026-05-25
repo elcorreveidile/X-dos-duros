@@ -4,11 +4,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FileText, MessageSquare, CreditCard, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { signOut } from 'next-auth/react'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Mi Proyecto', icon: LayoutDashboard },
   { href: '/dashboard/briefing', label: 'Briefing', icon: FileText },
-  { href: '/dashboard/tickets', label: 'Mensajes', icon: MessageSquare },
+  { href: '/dashboard/tickets', label: 'Soporte', icon: MessageSquare },
   { href: '/dashboard/suscripcion', label: 'Suscripción', icon: CreditCard },
 ]
 
@@ -17,7 +18,7 @@ export function DashboardNav() {
 
   return (
     <header className="border-b border-border bg-background sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-lg font-black tracking-tighter uppercase">
             <span className="text-foreground">Por</span>
@@ -34,7 +35,7 @@ export function DashboardNav() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider transition-all duration-200',
+                    'flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider transition-all',
                     active
                       ? 'text-neon border-b-2 border-neon'
                       : 'text-muted hover:text-foreground'
@@ -47,7 +48,10 @@ export function DashboardNav() {
             })}
           </nav>
 
-          <button className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors">
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
+          >
             <LogOut size={14} />
             <span className="hidden md:inline">Salir</span>
           </button>
@@ -64,7 +68,7 @@ export function DashboardNav() {
                 href={item.href}
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-1.5 text-xs uppercase tracking-wider whitespace-nowrap transition-all',
-                  active ? 'text-neon border border-neon' : 'text-muted border border-transparent'
+                  active ? 'text-neon' : 'text-muted'
                 )}
               >
                 <Icon size={12} />
