@@ -5,7 +5,7 @@ import crypto from 'crypto'
 
 const resend = new Resend(process.env.RESEND_API_KEY ?? 're_placeholder')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.por2duros.com'
-const FROM = process.env.EMAIL_FROM ?? 'Por 2 Duros <hola@por2duros.com>'
+const FROM = process.env.EMAIL_FROM ?? 'Por 2 Duros <onboarding@resend.dev>'
 
 export async function POST(req: Request) {
   try {
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     const link = `${APP_URL}/login/verify?token=${token}&email=${encodeURIComponent(email)}`
 
-    const result = await resend.emails.send({
+    const { error: resendError } = await resend.emails.send({
       from: FROM,
       to: email,
       subject: 'Tu enlace de acceso — Por 2 Duros',
@@ -49,12 +49,14 @@ export async function POST(req: Request) {
 </html>`,
     })
 
-    if (result.error) {
-      return NextResponse.json({ error: 'Resend error', detail: result.error }, { status: 500 })
+    if (resendError) {
+      console.error('[magic-link] resend error:', resendError)
+      return NextResponse.json({ error: 'Email no enviado', detail: resendError }, { status: 500 })
     }
 
     return NextResponse.json({ ok: true })
   } catch (err) {
+    console.error('[magic-link] error:', err)
     return NextResponse.json({ error: String(err) }, { status: 500 })
   }
 }
