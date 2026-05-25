@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, FileText, MessageSquare, CreditCard, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { signOut } from 'next-auth/react'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Mi Proyecto', icon: LayoutDashboard },
@@ -47,7 +48,10 @@ export function DashboardNav() {
             })}
           </nav>
 
-          <button className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors">
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
+          >
             <LogOut size={14} />
             <span className="hidden md:inline">Salir</span>
           </button>
