@@ -6,7 +6,8 @@ import { z } from 'zod'
 
 const credentialsSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().optional(),
+  magicToken: z.string().optional(),
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -23,36 +24,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Contraseña', type: 'password' },
+        magicToken: { label: 'Magic Token', type: 'text' },
       },
       async authorize(credentials) {
         try {
           const parsed = credentialsSchema.safeParse(credentials)
-          if (!parsed.success) {
-            console.error('[auth] Invalid credentials schema:', parsed.error)
-            return null
+          if (!parsed.success) return null
+
+          const { email, password, magicToken } = parsed.data
+
+          const user = await prisma.user.findUnique({ where: { email } })
+          if (!user) return null
+
+          // Magic link flow
+          if (magicToken) {
+            const record = await prisma.verificationToken.findFirst({
+              where: { identifier: email, token: magicToken },
+            })
+            if (!record || record.expires < new Date()) return null
+            await prisma.verificationToken.delete({ where: { identifier_token: { identifier: email, token: magicToken } } })
+            return { id: user.id, email: user.email, name: user.name, role: user.role }
           }
 
-          const user = await prisma.user.findUnique({
-            where: { email: parsed.data.email },
-          })
-          if (!user || !user.password) {
-            console.error('[auth] User not found or no password:', parsed.data.email)
-            return null
-          }
+          // Password flow
+          if (!password || !user.password) return null
+          const valid = await bcrypt.compare(password, user.password)
+          if (!valid) return null
 
-          const valid = await bcrypt.compare(parsed.data.password, user.password)
-          if (!valid) {
-            console.error('[auth] Invalid password for:', parsed.data.email)
-            return null
-          }
-
-          console.log('[auth] Login success for:', user.email, 'role:', user.role)
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-          }
+          return { id: user.id, email: user.email, name: user.name, role: user.role }
         } catch (err) {
           console.error('[auth] authorize error:', err)
           return null
