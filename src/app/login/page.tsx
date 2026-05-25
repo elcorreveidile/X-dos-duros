@@ -10,7 +10,8 @@ import { loginAction } from './actions'
 
 function LoginForm() {
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/dashboard'
+  const rawCallbackUrl = searchParams.get('callbackUrl')
+  const callbackUrl = rawCallbackUrl ?? '__role__'
   const urlError = searchParams.get('error')
 
   const [mode, setMode] = useState<'password' | 'magic'>('password')
