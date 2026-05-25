@@ -1,7 +1,6 @@
-'use server'
-
 import { redirect } from 'next/navigation'
 import { signIn } from '@/lib/auth'
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 interface Props {
   searchParams: Promise<{ token?: string; email?: string }>
@@ -16,7 +15,8 @@ export default async function VerifyPage({ searchParams }: Props) {
 
   try {
     await signIn('credentials', { email, magicToken: token, redirectTo: '/dashboard' })
-  } catch {
+  } catch (error) {
+    if (isRedirectError(error)) throw error
     redirect('/login?error=expired')
   }
 }
