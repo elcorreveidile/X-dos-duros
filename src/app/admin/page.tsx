@@ -12,26 +12,32 @@ async function getStats() {
   startOfMonth.setDate(1)
   startOfMonth.setHours(0, 0, 0, 0)
 
-  const [activeProjects, inDev, deliveredThisMonth, activeClients, revenue] = await Promise.all([
-    prisma.project.count({ where: { status: { notIn: ['DELIVERED', 'CANCELLED'] } } }),
-    prisma.project.count({ where: { status: 'DEVELOPMENT' } }),
-    prisma.project.count({ where: { status: 'DELIVERED', updatedAt: { gte: startOfMonth } } }),
-    prisma.user.count({ where: { role: 'CLIENT', projects: { some: {} } } }),
-    prisma.payment.aggregate({ where: { status: 'PAID', paidAt: { gte: startOfMonth } }, _sum: { amount: true } }),
-  ])
+  // Use a batch transaction so all 5 queries share one connection
+  const [activeProjects, inDev, deliveredThisMonth, activeClients, revenue] =
+    await prisma.$transaction([
+      prisma.project.count({ where: { status: { notIn: ['DELIVERED', 'CANCELLED'] } } }),
+      prisma.project.count({ where: { status: 'DEVELOPMENT' } }),
+      prisma.project.count({ where: { status: 'DELIVERED', updatedAt: { gte: startOfMonth } } }),
+      prisma.user.count({ where: { role: 'CLIENT', projects: { some: {} } } }),
+      prisma.payment.aggregate({ where: { status: 'PAID', paidAt: { gte: startOfMonth } }, _sum: { amount: true } }),
+    ])
 
-  return { activeProjects, inDev, deliveredThisMonth, activeClients, revenue: revenue._sum.amount ?? 0 }
+  return {
+    activeProjects: activeProjects as number,
+    inDev: inDev as number,
+    deliveredThisMonth: deliveredThisMonth as number,
+    activeClients: activeClients as number,
+    revenue: ((revenue as { _sum: { amount: number | null } })._sum.amount) ?? 0,
+  }
 }
 
 export default async function AdminPage() {
-  const [projects, stats] = await Promise.all([
-    prisma.project.findMany({
-      where: { status: { notIn: ['CANCELLED'] } },
-      include: { client: { select: { id: true, name: true, email: true, role: true, createdAt: true } } },
-      orderBy: { updatedAt: 'desc' },
-    }),
-    getStats(),
-  ])
+  const projects = await prisma.project.findMany({
+    where: { status: { notIn: ['CANCELLED'] } },
+    include: { client: { select: { id: true, name: true, email: true, role: true, createdAt: true } } },
+    orderBy: { updatedAt: 'desc' },
+  })
+  const stats = await getStats()
 
   const STATS = [
     { label: 'Proyectos activos', value: stats.activeProjects, icon: Package, unit: '' },
