@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { prisma } from '@/lib/db'
 import { KanbanBoard } from '@/components/admin/KanbanBoard'
 import { formatCurrency } from '@/lib/utils'
