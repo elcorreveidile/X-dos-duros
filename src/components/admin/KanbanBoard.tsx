@@ -186,13 +186,14 @@ export function KanbanBoard({ initialProjects }: { initialProjects: Project[] })
   }
 
   const moveStatus = async (id: string, status: ProjectStatus) => {
-    // optimistic update
+    const originalStatus = projects.find((p) => p.id === id)?.status
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)))
     try {
       await patchProject(id, { status })
     } catch {
-      // rollback on error
-      setProjects((prev) => prev.map((p) => (p.id === id ? { ...p } : p)))
+      if (originalStatus) {
+        setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, status: originalStatus } : p)))
+      }
     }
   }
 

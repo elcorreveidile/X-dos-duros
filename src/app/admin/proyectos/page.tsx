@@ -1,23 +1,33 @@
 export const dynamic = 'force-dynamic'
 
 import { prisma } from '@/lib/db'
-import { KanbanBoard } from '@/components/admin/KanbanBoard'
-import type { Project } from '@/types'
+import { ProjectsTable } from '@/components/admin/ProjectsTable'
+import type { ProjectStatus } from '@/types'
 
 export default async function AdminProyectosPage() {
-  const projects = await prisma.project.findMany({
-    where: { status: { notIn: ['CANCELLED'] } },
-    include: { client: { select: { id: true, name: true, email: true, role: true, createdAt: true } } },
-    orderBy: { updatedAt: 'desc' },
+  const rawProjects = await prisma.project.findMany({
+    include: { client: { select: { name: true, email: true } } },
+    orderBy: { createdAt: 'desc' },
   })
+
+  const projects = rawProjects.map((p) => ({
+    id: p.id,
+    name: p.name,
+    status: p.status as ProjectStatus,
+    price: p.price,
+    clientName: p.client?.name ?? '',
+    clientEmail: p.client?.email ?? '',
+    timerDeadline: p.timerDeadline?.toISOString() ?? null,
+    createdAt: p.createdAt.toISOString(),
+  }))
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-black uppercase tracking-tight">Proyectos</h1>
-        <p className="text-muted text-sm mt-1">Gestión completa de todos los proyectos</p>
+        <p className="text-muted text-sm mt-1">Todos los proyectos — {projects.length} en total</p>
       </div>
-      <KanbanBoard initialProjects={projects as unknown as Project[]} />
+      <ProjectsTable initialProjects={projects} />
     </div>
   )
 }
