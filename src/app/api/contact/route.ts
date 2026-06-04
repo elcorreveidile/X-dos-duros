@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/db'
-import { sendContactNotification, sendContactConfirmation, sendClientWelcome } from '@/lib/email'
-import bcrypt from 'bcryptjs'
+import { randomBytes } from 'crypto'
+import { sendContactNotification, sendContactConfirmation, sendClientMagicAccess } from '@/lib/email'
 
 const contactSchema = z.object({
   name: z.string().min(2).max(100),
@@ -20,9 +20,14 @@ const PROJECT_TYPE_LABELS: Record<string, string> = {
   custom: 'App a medida',
 }
 
-function generatePassword() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-  return 'P2D-' + Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+
+async function createMagicLink(email: string) {
+  const token = randomBytes(32).toString('hex')
+  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+  await prisma.verificationToken.deleteMany({ where: { identifier: email } })
+  await prisma.verificationToken.create({ data: { identifier: email, token, expires } })
+  return `${APP_URL}/login/verify?email=${encodeURIComponent(email)}&token=${token}`
 }
 
 export async function POST(req: Request) {
@@ -49,14 +54,11 @@ export async function POST(req: Request) {
   // Create or find client account
   let user = await prisma.user.findUnique({ where: { email: data.email } })
   let isNewClient = false
-  let tempPassword: string | null = null
 
   if (!user) {
     isNewClient = true
-    tempPassword = generatePassword()
-    const hash = await bcrypt.hash(tempPassword, 10)
     user = await prisma.user.create({
-      data: { name: data.name, email: data.email, password: hash, role: 'CLIENT' },
+      data: { name: data.name, email: data.email, role: 'CLIENT' },
     })
   }
 
@@ -65,13 +67,7 @@ export async function POST(req: Request) {
   const projectName = `${typeLabel} — ${data.name}`
 
   await prisma.project.create({
-    data: {
-      name: projectName,
-      description: data.description,
-      price: 0,
-      clientId: user.id,
-      status: 'LEAD',
-    },
+    data: { name: projectName, description: data.description, price: 0, clientId: user.id, status: 'LEAD' },
   })
 
   // Send emails
@@ -80,8 +76,9 @@ export async function POST(req: Request) {
     sendContactConfirmation({ name: data.name, email: data.email }),
   ]
 
-  if (isNewClient && tempPassword) {
-    emails.push(sendClientWelcome({ name: data.name, email: data.email, password: tempPassword }))
+  if (isNewClient) {
+    const magicLink = await createMagicLink(data.email)
+    emails.push(sendClientMagicAccess({ name: data.name, email: data.email, magicLink }))
   }
 
   await Promise.all(emails)

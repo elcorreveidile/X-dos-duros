@@ -110,6 +110,24 @@ export async function sendContactConfirmation(data: { name: string; email: strin
   })
 }
 
+/** 3b. Acceso al panel con magic link (sin contraseña) */
+export async function sendClientMagicAccess(data: { name: string; email: string; magicLink: string }) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.email,
+    subject: 'Tu panel de cliente está listo — Por 2 Duros',
+    html: baseTemplate(
+      'Accede a tu panel',
+      `${h1(`¡Hola, ${data.name}!`)}
+       ${p('Tu solicitud ha sido procesada. Hemos creado tu panel de cliente donde podrás seguir el progreso de tu proyecto en tiempo real.')}
+       ${p(`Pulsa el botón para acceder directamente. El enlace es válido durante ${highlight('7 días')}.`)}
+       ${btn('Acceder a mi panel', data.magicLink)}
+       ${p('Si el botón no funciona, copia este enlace en tu navegador:')}
+       <p style="margin:0;font-family:monospace;font-size:12px;color:#666;word-break:break-all;">${data.magicLink}</p>`
+    ),
+  })
+}
+
 /** 3. Acceso al panel de cliente (bienvenida) */
 export async function sendClientWelcome(data: { name: string; email: string; password: string }) {
   return resend.emails.send({

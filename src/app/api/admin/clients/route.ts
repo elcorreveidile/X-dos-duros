@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
-import bcrypt from 'bcryptjs'
-import { sendClientWelcome } from '@/lib/email'
+import { randomBytes } from 'crypto'
+import { sendClientMagicAccess } from '@/lib/email'
 
 const schema = z.object({
   clientName: z.string().min(2).max(100),
@@ -13,9 +13,14 @@ const schema = z.object({
   price: z.number().min(0),
 })
 
-function generatePassword() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-  return 'P2D-' + Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+
+async function createMagicLink(email: string) {
+  const token = randomBytes(32).toString('hex')
+  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+  await prisma.verificationToken.deleteMany({ where: { identifier: email } })
+  await prisma.verificationToken.create({ data: { identifier: email, token, expires } })
+  return `${APP_URL}/login/verify?email=${encodeURIComponent(email)}&token=${token}`
 }
 
 export async function POST(req: Request) {
@@ -32,30 +37,20 @@ export async function POST(req: Request) {
 
   let user = await prisma.user.findUnique({ where: { email: clientEmail } })
   let isNewClient = false
-  let tempPassword: string | null = null
 
   if (!user) {
     isNewClient = true
-    tempPassword = generatePassword()
-    const hash = await bcrypt.hash(tempPassword, 10)
     user = await prisma.user.create({
-      data: { name: clientName, email: clientEmail, password: hash, role: 'CLIENT' },
+      data: { name: clientName, email: clientEmail, role: 'CLIENT' },
     })
   }
 
   const project = await prisma.project.create({
-    data: {
-      name: projectName,
-      description: projectDescription,
-      price,
-      clientId: user.id,
-      status: 'LEAD',
-    },
+    data: { name: projectName, description: projectDescription, price, clientId: user.id, status: 'LEAD' },
   })
 
-  if (isNewClient && tempPassword) {
-    await sendClientWelcome({ name: clientName, email: clientEmail, password: tempPassword }).catch(console.error)
-  }
+  const magicLink = await createMagicLink(clientEmail)
+  await sendClientMagicAccess({ name: clientName, email: clientEmail, magicLink }).catch(console.error)
 
   return NextResponse.json({ project, client: user, isNewClient }, { status: 201 })
 }

@@ -14,7 +14,7 @@ function LoginForm() {
   const callbackUrl = rawCallbackUrl ?? '__role__'
   const urlError = searchParams.get('error')
 
-  const [mode, setMode] = useState<'password' | 'magic'>('password')
+  const [mode, setMode] = useState<'password' | 'magic'>('magic')
   const [form, setForm] = useState({ email: '', password: '' })
   const [magicEmail, setMagicEmail] = useState('')
   const [showPass, setShowPass] = useState(false)
@@ -64,7 +64,7 @@ function LoginForm() {
           onClick={() => { setMode('password'); setMagicSent(false); setError('') }}
           className="flex items-center gap-1 text-muted text-xs hover:text-foreground transition-colors"
         >
-          <ArrowLeft size={12} /> Volver
+          <ArrowLeft size={12} /> Acceder con contraseña
         </button>
 
         {magicSent ? (
