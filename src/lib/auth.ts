@@ -42,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               where: { identifier: email, token: magicToken },
             })
             if (!record || record.expires < new Date()) return null
-            await prisma.verificationToken.delete({ where: { identifier_token: { identifier: email, token: magicToken } } })
+            await prisma.verificationToken.deleteMany({ where: { identifier: email, token: magicToken } })
             return { id: user.id, email: user.email, name: user.name, role: user.role }
           }
 
