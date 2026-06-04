@@ -3,11 +3,14 @@ export const dynamic = 'force-dynamic'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { ProjectTimer } from '@/components/dashboard/ProjectTimer'
+import { PayButton } from '@/components/dashboard/PayButton'
+import { PaymentNotice } from '@/components/dashboard/PaymentNotice'
 import { Badge } from '@/components/ui/Badge'
-import { ExternalLink, FileText, MessageSquare, Package, Inbox } from 'lucide-react'
+import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard } from 'lucide-react'
 import Link from 'next/link'
-import { getProjectStatusLabel, getProjectStatusColor } from '@/lib/utils'
+import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/lib/utils'
 import type { ProjectStatus } from '@/types'
+import { Suspense } from 'react'
 
 const STATUS_STEPS: { status: ProjectStatus; label: string }[] = [
   { status: 'LEAD', label: 'Solicitud recibida' },
@@ -19,12 +22,17 @@ const STATUS_STEPS: { status: ProjectStatus; label: string }[] = [
 
 const STATUS_ORDER: ProjectStatus[] = ['LEAD', 'BRIEFING', 'DEVELOPMENT', 'REVIEW', 'DELIVERED']
 
+const PAYMENT_STATUSES: ProjectStatus[] = ['BRIEFING', 'DEVELOPMENT', 'REVIEW', 'DELIVERED']
+
 export default async function DashboardPage() {
   const session = await auth()
 
   const project = await prisma.project.findFirst({
     where: { clientId: session!.user!.id },
     orderBy: { createdAt: 'desc' },
+    include: {
+      payments: { where: { status: 'PAID' }, select: { id: true } },
+    },
   })
 
   if (!project) {
@@ -47,20 +55,32 @@ export default async function DashboardPage() {
     )
   }
 
+  const isPaid = project.payments.length > 0
+  const showPayButton = !isPaid && PAYMENT_STATUSES.includes(project.status as ProjectStatus)
   const currentIndex = STATUS_ORDER.indexOf(project.status as ProjectStatus)
 
   return (
     <div className="space-y-8">
+      <Suspense fallback={null}>
+        <PaymentNotice />
+      </Suspense>
+
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <span className={`badge border ${getProjectStatusColor(project.status)}`}>
               {getProjectStatusLabel(project.status)}
             </span>
+            {isPaid && (
+              <span className="badge border border-neon text-neon flex items-center gap-1">
+                <CreditCard size={10} />
+                Pagado
+              </span>
+            )}
           </div>
           <h1 className="text-2xl font-black uppercase tracking-tight">{project.name}</h1>
           <p className="text-muted text-sm mt-1">
-            Proyecto <span className="mono">#{project.id.slice(0, 8)}</span> · €{project.price}
+            Proyecto <span className="mono">#{project.id.slice(0, 8)}</span> · {formatCurrency(project.price)}
           </p>
         </div>
         {project.demoUrl && (
@@ -75,6 +95,19 @@ export default async function DashboardPage() {
           </a>
         )}
       </div>
+
+      {showPayButton && (
+        <div className="border border-neon/40 bg-neon/5 p-5 space-y-3">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-neon font-bold">Pago pendiente</p>
+            <p className="text-muted text-sm mt-1">
+              Confirma tu proyecto completando el pago de {formatCurrency(project.price)}.
+              El pago se procesa de forma segura mediante Stripe.
+            </p>
+          </div>
+          <PayButton projectId={project.id} amount={project.price} />
+        </div>
+      )}
 
       <ProjectTimer
         deadline={project.timerDeadline}

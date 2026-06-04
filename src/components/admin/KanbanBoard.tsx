@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Play, ExternalLink, Clock, User, ChevronRight, MoreVertical, Link as LinkIcon, Trash2 } from 'lucide-react'
+import { Play, ExternalLink, Clock, User, ChevronRight, MoreVertical, Link as LinkIcon, Trash2, CreditCard } from 'lucide-react'
 import type { Project, ProjectStatus, KanbanColumn } from '@/types'
 import { getProjectStatusLabel, getTimeRemaining } from '@/lib/utils'
 
@@ -27,13 +27,15 @@ interface ProjectCardProps {
   onSetDemoUrl: (id: string, url: string) => Promise<void>
   onMoveStatus: (id: string, status: ProjectStatus) => Promise<void>
   onDelete: (id: string) => Promise<void>
+  onSendPaymentLink: (id: string) => Promise<void>
 }
 
-function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onDelete }: ProjectCardProps) {
+function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onDelete, onSendPaymentLink }: ProjectCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const [demoInput, setDemoInput] = useState(project.demoUrl ?? '')
   const [showDemoInput, setShowDemoInput] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [paymentSent, setPaymentSent] = useState(false)
 
   const nextStatus: Partial<Record<ProjectStatus, ProjectStatus>> = {
     LEAD: 'BRIEFING',
@@ -46,6 +48,18 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onD
   const handle = async (fn: () => Promise<void>) => {
     setBusy(true)
     try { await fn() } finally { setBusy(false) }
+  }
+
+  const handleSendPayment = async () => {
+    setShowMenu(false)
+    if (!confirm(`¿Enviar enlace de pago a ${project.client?.email}?`)) return
+    setBusy(true)
+    try {
+      await onSendPaymentLink(project.id)
+      setPaymentSent(true)
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -63,7 +77,7 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onD
             <MoreVertical size={14} />
           </button>
           {showMenu && (
-            <div className="absolute right-0 top-6 z-20 bg-card border border-border min-w-[160px] shadow-xl">
+            <div className="absolute right-0 top-6 z-20 bg-card border border-border min-w-[170px] shadow-xl">
               {next && (
                 <button
                   className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-neon/10 hover:text-neon transition-colors text-left"
@@ -79,6 +93,13 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onD
               >
                 <LinkIcon size={12} />
                 {project.demoUrl ? 'Cambiar URL demo' : 'Añadir URL demo'}
+              </button>
+              <button
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-neon/10 hover:text-neon transition-colors text-left border-t border-border"
+                onClick={handleSendPayment}
+              >
+                <CreditCard size={12} />
+                Solicitar pago
               </button>
               <button
                 className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-red-500/10 hover:text-red-400 transition-colors text-left border-t border-border"
@@ -110,6 +131,10 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onD
           <ExternalLink size={10} />
           <span>Ver demo</span>
         </a>
+      )}
+
+      {paymentSent && (
+        <p className="text-xs text-neon mono">✓ Enlace de pago enviado</p>
       )}
 
       {showDemoInput && (
@@ -197,6 +222,11 @@ export function KanbanBoard({ initialProjects }: { initialProjects: Project[] })
     }
   }
 
+  const sendPaymentLink = async (id: string) => {
+    const res = await fetch(`/api/admin/projects/${id}/send-payment`, { method: 'POST' })
+    if (!res.ok) throw new Error('Error al enviar')
+  }
+
   const columns: KanbanColumn[] = COLUMNS.map((col) => ({
     id: col.id,
     label: col.label,
@@ -233,6 +263,7 @@ export function KanbanBoard({ initialProjects }: { initialProjects: Project[] })
                       onSetDemoUrl={setDemoUrl}
                       onMoveStatus={moveStatus}
                       onDelete={deleteProject}
+                      onSendPaymentLink={sendPaymentLink}
                     />
                   ))
                 )}

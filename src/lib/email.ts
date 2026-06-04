@@ -230,6 +230,31 @@ export async function sendProjectPaymentConfirmed(data: { project: Project; clie
   })
 }
 
+/** 8b. Solicitud de pago — al cliente */
+export async function sendPaymentRequest(data: {
+  project: Project
+  client: User
+  checkoutUrl: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.client.email,
+    subject: `Enlace de pago — ${data.project.name}`,
+    html: baseTemplate(
+      'Enlace de pago',
+      `${h1('Tu web, lista para confirmar')}
+       ${p(`Hola <strong>${data.client.name ?? data.client.email}</strong>, tu proyecto ${highlight(data.project.name)} está esperando confirmación de pago.`)}
+       <table style="background:#111;border:1px solid #222;padding:20px;margin:16px 0;width:100%;box-sizing:border-box;">
+         <tr><td style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding-bottom:4px;">Total a pagar</td></tr>
+         <tr><td style="font-family:monospace;font-size:28px;font-weight:900;color:#39FF14;">€${data.project.price}</td></tr>
+       </table>
+       ${p('Paga de forma segura con tarjeta a través de Stripe. El enlace es válido durante 24 horas.')}
+       ${btn('Pagar ahora', data.checkoutUrl)}
+       ${p('Si tienes alguna duda, responde a este email o escríbenos directamente.')}`
+    ),
+  })
+}
+
 /** 8. Suscripción activada — al cliente */
 export async function sendSubscriptionActivated(data: { client: User; plan: string }) {
   const planLabel = data.plan === 'pro' ? 'Pro (€49/mes)' : 'Básico (€29/mes)'

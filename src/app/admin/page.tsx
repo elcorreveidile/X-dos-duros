@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/db'
 import { KanbanBoard } from '@/components/admin/KanbanBoard'
 import { formatCurrency } from '@/lib/utils'
-import { TrendingUp, Clock, Package, Users, DollarSign, Plus } from 'lucide-react'
+import { TrendingUp, Clock, Package, Users, Euro, Plus } from 'lucide-react'
 import Link from 'next/link'
 import type { Project } from '@/types'
 
@@ -44,7 +44,7 @@ export default async function AdminPage() {
     { label: 'En desarrollo', value: stats.inDev, icon: Clock, unit: '' },
     { label: 'Entregados (mes)', value: stats.deliveredThisMonth, icon: TrendingUp, unit: '' },
     { label: 'Clientes activos', value: stats.activeClients, icon: Users, unit: '' },
-    { label: 'Revenue (mes)', value: stats.revenue, icon: DollarSign, unit: 'currency' },
+    { label: 'Revenue (mes)', value: stats.revenue, icon: Euro, unit: 'currency' },
   ]
 
   return (
