@@ -1,19 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import {
-  Play,
-  ExternalLink,
-  Clock,
-  User,
-  ChevronRight,
-  MoreVertical,
-  Link as LinkIcon,
-} from 'lucide-react'
+import { Play, ExternalLink, Clock, User, ChevronRight, MoreVertical, Link as LinkIcon } from 'lucide-react'
 import type { Project, ProjectStatus, KanbanColumn } from '@/types'
-import { getProjectStatusLabel, getTimeRemaining, formatDateTime } from '@/lib/utils'
+import { getProjectStatusLabel, getTimeRemaining } from '@/lib/utils'
 
 function pad(n: number) {
   return n.toString().padStart(2, '0')
@@ -21,7 +12,7 @@ function pad(n: number) {
 
 function MiniTimer({ deadline }: { deadline: Date }) {
   const r = getTimeRemaining(deadline)
-  if (r.expired) return <span className="text-neon text-xs mono">Entregado</span>
+  if (r.expired) return <span className="text-neon text-xs mono">Expirado</span>
   const urgent = r.total < 1000 * 60 * 60 * 6
   return (
     <span className={`text-xs mono font-bold ${urgent ? 'text-yellow-400' : 'text-neon'}`}>
@@ -32,15 +23,16 @@ function MiniTimer({ deadline }: { deadline: Date }) {
 
 interface ProjectCardProps {
   project: Project
-  onActivateTimer: (id: string) => void
-  onSetDemoUrl: (id: string, url: string) => void
-  onMoveStatus: (id: string, status: ProjectStatus) => void
+  onActivateTimer: (id: string) => Promise<void>
+  onSetDemoUrl: (id: string, url: string) => Promise<void>
+  onMoveStatus: (id: string, status: ProjectStatus) => Promise<void>
 }
 
 function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: ProjectCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const [demoInput, setDemoInput] = useState(project.demoUrl ?? '')
   const [showDemoInput, setShowDemoInput] = useState(false)
+  const [busy, setBusy] = useState(false)
 
   const nextStatus: Partial<Record<ProjectStatus, ProjectStatus>> = {
     LEAD: 'BRIEFING',
@@ -48,25 +40,25 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
     DEVELOPMENT: 'REVIEW',
     REVIEW: 'DELIVERED',
   }
-
   const next = nextStatus[project.status]
 
+  const handle = async (fn: () => Promise<void>) => {
+    setBusy(true)
+    try { await fn() } finally { setBusy(false) }
+  }
+
   return (
-    <div className="border border-border bg-background p-4 space-y-3 hover:border-neon/40 transition-colors group">
-      {/* Header */}
+    <div className="border border-border bg-background p-4 space-y-3 hover:border-neon/40 transition-colors">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-sm uppercase tracking-tight truncate">{project.name}</h3>
           <div className="flex items-center gap-1.5 mt-1 text-muted text-xs">
             <User size={10} />
-            <span className="truncate">{project.client?.email ?? '—'}</span>
+            <span className="truncate">{project.client?.name ?? project.client?.email ?? '—'}</span>
           </div>
         </div>
         <div className="relative">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="text-muted hover:text-foreground p-1 transition-colors"
-          >
+          <button onClick={() => setShowMenu(!showMenu)} className="text-muted hover:text-foreground p-1">
             <MoreVertical size={14} />
           </button>
           {showMenu && (
@@ -74,10 +66,7 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
               {next && (
                 <button
                   className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-neon/10 hover:text-neon transition-colors text-left"
-                  onClick={() => {
-                    onMoveStatus(project.id, next)
-                    setShowMenu(false)
-                  }}
+                  onClick={() => { handle(() => onMoveStatus(project.id, next)); setShowMenu(false) }}
                 >
                   <ChevronRight size={12} />
                   Mover a {getProjectStatusLabel(next)}
@@ -85,10 +74,7 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
               )}
               <button
                 className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-neon/10 hover:text-neon transition-colors text-left"
-                onClick={() => {
-                  setShowDemoInput(!showDemoInput)
-                  setShowMenu(false)
-                }}
+                onClick={() => { setShowDemoInput(!showDemoInput); setShowMenu(false) }}
               >
                 <LinkIcon size={12} />
                 {project.demoUrl ? 'Cambiar URL demo' : 'Añadir URL demo'}
@@ -98,7 +84,6 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
         </div>
       </div>
 
-      {/* Timer */}
       {project.timerDeadline && (
         <div className="flex items-center gap-2">
           <Clock size={12} className="text-muted" />
@@ -106,20 +91,14 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
         </div>
       )}
 
-      {/* Demo URL */}
       {project.demoUrl && (
-        <a
-          href={project.demoUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-neon text-xs hover:underline"
-        >
+        <a href={project.demoUrl} target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-neon text-xs hover:underline">
           <ExternalLink size={10} />
-          Ver demo
+          <span>Ver demo</span>
         </a>
       )}
 
-      {/* Demo URL input */}
       {showDemoInput && (
         <div className="flex gap-2">
           <input
@@ -128,39 +107,24 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
             value={demoInput}
             onChange={(e) => setDemoInput(e.target.value)}
           />
-          <Button
-            size="sm"
-            variant="primary"
-            onClick={() => {
-              onSetDemoUrl(project.id, demoInput)
-              setShowDemoInput(false)
-            }}
-          >
+          <Button size="sm" variant="primary"
+            onClick={() => { handle(() => onSetDemoUrl(project.id, demoInput)); setShowDemoInput(false) }}>
             OK
           </Button>
         </div>
       )}
 
-      {/* Actions */}
       <div className="flex items-center gap-2 pt-1 border-t border-border">
-        {project.status === 'BRIEFING' && !project.timerStartedAt && (
-          <Button
-            size="sm"
-            variant="primary"
-            className="flex-1 text-xs py-1.5"
-            onClick={() => onActivateTimer(project.id)}
-          >
+        {project.status === 'DEVELOPMENT' && !project.timerStartedAt && (
+          <Button size="sm" variant="primary" className="flex-1 text-xs py-1.5" loading={busy}
+            onClick={() => handle(() => onActivateTimer(project.id))}>
             <Play size={10} className="mr-1" />
             Iniciar 48h
           </Button>
         )}
-        {next && project.status !== 'BRIEFING' && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="flex-1 text-xs py-1.5"
-            onClick={() => onMoveStatus(project.id, next)}
-          >
+        {next && !(project.status === 'DEVELOPMENT' && !project.timerStartedAt) && (
+          <Button size="sm" variant="outline" className="flex-1 text-xs py-1.5" loading={busy}
+            onClick={() => handle(() => onMoveStatus(project.id, next))}>
             <ChevronRight size={10} className="mr-1" />
             {getProjectStatusLabel(next)}
           </Button>
@@ -171,84 +135,6 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
   )
 }
 
-const MOCK_PROJECTS: Project[] = [
-  {
-    id: 'p1',
-    name: 'Landing Panadería García',
-    description: null,
-    status: 'DEVELOPMENT',
-    clientId: 'u1',
-    client: { id: 'u1', name: 'Ana García', email: 'ana@panaderia.com', role: 'CLIENT', createdAt: new Date() },
-    timerStartedAt: new Date(Date.now() - 1000 * 60 * 60 * 20),
-    timerDeadline: new Date(Date.now() + 1000 * 60 * 60 * 28),
-    demoUrl: null,
-    finalFiles: [],
-    price: 299,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p2',
-    name: 'E-commerce Moda Sostenible',
-    description: null,
-    status: 'BRIEFING',
-    clientId: 'u2',
-    client: { id: 'u2', name: 'Carlos López', email: 'carlos@moda.es', role: 'CLIENT', createdAt: new Date() },
-    timerStartedAt: null,
-    timerDeadline: null,
-    demoUrl: null,
-    finalFiles: [],
-    price: 599,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p3',
-    name: 'MVP SaaS Gestión Reservas',
-    description: null,
-    status: 'LEAD',
-    clientId: 'u3',
-    client: { id: 'u3', name: 'María Ruiz', email: 'maria@reservas.io', role: 'CLIENT', createdAt: new Date() },
-    timerStartedAt: null,
-    timerDeadline: null,
-    demoUrl: null,
-    finalFiles: [],
-    price: 899,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p4',
-    name: 'Landing Consultoría HR',
-    description: null,
-    status: 'REVIEW',
-    clientId: 'u4',
-    client: { id: 'u4', name: 'Pedro Sanz', email: 'pedro@hr.com', role: 'CLIENT', createdAt: new Date() },
-    timerStartedAt: new Date(Date.now() - 1000 * 60 * 60 * 46),
-    timerDeadline: new Date(Date.now() + 1000 * 60 * 60 * 2),
-    demoUrl: 'https://demo.hr-consulting.com',
-    finalFiles: [],
-    price: 349,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: 'p5',
-    name: 'App Delivery Restaurante',
-    description: null,
-    status: 'DELIVERED',
-    clientId: 'u5',
-    client: { id: 'u5', name: 'Laura Vega', email: 'laura@restaurante.com', role: 'CLIENT', createdAt: new Date() },
-    timerStartedAt: new Date(Date.now() - 1000 * 60 * 60 * 50),
-    timerDeadline: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    demoUrl: 'https://demo.delivery-app.com',
-    finalFiles: [],
-    price: 799,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-]
-
 const COLUMNS: { id: ProjectStatus; label: string; color: string }[] = [
   { id: 'LEAD', label: 'Lead', color: 'text-muted' },
   { id: 'BRIEFING', label: 'Briefing', color: 'text-yellow-400' },
@@ -257,30 +143,38 @@ const COLUMNS: { id: ProjectStatus; label: string; color: string }[] = [
   { id: 'DELIVERED', label: 'Entregado', color: 'text-neon' },
 ]
 
-export function KanbanBoard() {
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS)
+async function patchProject(id: string, data: Record<string, unknown>) {
+  const res = await fetch(`/api/projects/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error('Error al actualizar')
+  return res.json() as Promise<Project>
+}
 
-  const activateTimer = (id: string) => {
-    setProjects((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? {
-              ...p,
-              status: 'DEVELOPMENT',
-              timerStartedAt: new Date(),
-              timerDeadline: new Date(Date.now() + 48 * 60 * 60 * 1000),
-            }
-          : p
-      )
-    )
+export function KanbanBoard({ initialProjects }: { initialProjects: Project[] }) {
+  const [projects, setProjects] = useState<Project[]>(initialProjects)
+
+  const activateTimer = async (id: string) => {
+    const updated = await patchProject(id, { startTimer: true })
+    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, ...updated } : p)))
   }
 
-  const setDemoUrl = (id: string, url: string) => {
-    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, demoUrl: url } : p)))
+  const setDemoUrl = async (id: string, url: string) => {
+    const updated = await patchProject(id, { demoUrl: url })
+    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, ...updated } : p)))
   }
 
-  const moveStatus = (id: string, status: ProjectStatus) => {
+  const moveStatus = async (id: string, status: ProjectStatus) => {
+    // optimistic update
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, status } : p)))
+    try {
+      await patchProject(id, { status })
+    } catch {
+      // rollback on error
+      setProjects((prev) => prev.map((p) => (p.id === id ? { ...p } : p)))
+    }
   }
 
   const columns: KanbanColumn[] = COLUMNS.map((col) => ({
@@ -296,7 +190,6 @@ export function KanbanBoard() {
           const colDef = COLUMNS[i]
           return (
             <div key={col.id} className="w-72 flex flex-col gap-3">
-              {/* Column header */}
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
                   <span className={`text-xs font-bold uppercase tracking-wider ${colDef.color}`}>
@@ -304,12 +197,8 @@ export function KanbanBoard() {
                   </span>
                   <span className="text-muted text-xs mono">({col.projects.length})</span>
                 </div>
-                {col.id !== 'CANCELLED' && (
-                  <div className={`w-2 h-2 rounded-full ${col.projects.length > 0 ? 'bg-current opacity-50' : 'bg-border'} ${colDef.color}`} />
-                )}
+                <div className={`w-2 h-2 rounded-full ${col.projects.length > 0 ? 'bg-current opacity-50' : 'bg-border'} ${colDef.color}`} />
               </div>
-
-              {/* Cards */}
               <div className="flex flex-col gap-3 min-h-[100px]">
                 {col.projects.length === 0 ? (
                   <div className="border border-dashed border-border p-4 text-center text-muted text-xs">

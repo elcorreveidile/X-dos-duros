@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
+import { sendTimerStarted } from '@/lib/email'
 
 const updateSchema = z.object({
   name: z.string().min(2).optional(),
@@ -9,6 +10,7 @@ const updateSchema = z.object({
   status: z.enum(['LEAD', 'BRIEFING', 'DEVELOPMENT', 'REVIEW', 'DELIVERED', 'CANCELLED']).optional(),
   demoUrl: z.string().url().optional().nullable(),
   price: z.number().min(0).optional(),
+  startTimer: z.boolean().optional(),
 })
 
 export async function GET(
@@ -56,10 +58,29 @@ export async function PATCH(
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
   }
 
+  const { startTimer, ...rest } = parsed.data
+  const updateData: Record<string, unknown> = { ...rest }
+
+  if (startTimer) {
+    const now = new Date()
+    updateData.timerStartedAt = now
+    updateData.timerDeadline = new Date(now.getTime() + 48 * 60 * 60 * 1000)
+    if (!updateData.status) updateData.status = 'DEVELOPMENT'
+  }
+
   const project = await prisma.project.update({
     where: { id },
-    data: parsed.data,
+    data: updateData,
+    include: { client: { select: { id: true, name: true, email: true, role: true, createdAt: true } } },
   })
+
+  if (startTimer && project.client && project.timerDeadline) {
+    sendTimerStarted({
+      project: project as Parameters<typeof sendTimerStarted>[0]['project'],
+      client: project.client as Parameters<typeof sendTimerStarted>[0]['client'],
+      deadline: project.timerDeadline,
+    }).catch(console.error)
+  }
 
   return NextResponse.json(project)
 }
