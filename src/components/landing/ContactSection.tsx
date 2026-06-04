@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
-import { Send, CheckCircle } from 'lucide-react'
+import { Send, CheckCircle, Mail, ArrowLeft } from 'lucide-react'
+
+type Step = 'form' | 'verify' | 'done'
 
 export function ContactSection() {
   const searchParams = useSearchParams()
@@ -15,9 +17,12 @@ export function ContactSection() {
     description: '',
     budget: '',
   })
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
+  const [step, setStep] = useState<Step>('form')
+  const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const codeRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const type = searchParams.get('projectType')
@@ -35,6 +40,32 @@ export function ContactSection() {
     }
   }, [searchParams])
 
+  useEffect(() => {
+    if (step === 'verify') codeRef.current?.focus()
+  }, [step])
+
+  const handleSendCode = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/contact/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email }),
+      })
+      if (res.ok) {
+        setStep('verify')
+      } else {
+        setError('No pudimos enviar el código. Comprueba el email e inténtalo de nuevo.')
+      }
+    } catch {
+      setError('Hubo un error. Inténtalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -43,12 +74,13 @@ export function ContactSection() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, verificationCode: code }),
       })
       if (res.ok) {
-        setSent(true)
+        setStep('done')
       } else {
-        setError('Hubo un error al enviar. Inténtalo de nuevo.')
+        const data = await res.json()
+        setError(data.error ?? 'Código incorrecto. Inténtalo de nuevo.')
       }
     } catch {
       setError('Hubo un error al enviar. Inténtalo de nuevo.')
@@ -74,7 +106,7 @@ export function ContactSection() {
           </p>
         </div>
 
-        {sent ? (
+        {step === 'done' && (
           <div className="border border-neon bg-neon/5 p-12 flex flex-col items-center gap-4 text-center animate-fade-in">
             <CheckCircle size={40} className="text-neon" />
             <h3 className="text-2xl font-bold uppercase">¡Recibido!</h3>
@@ -82,8 +114,58 @@ export function ContactSection() {
               Te contactamos en menos de 2 horas para confirmar los detalles y darte acceso a tu panel de cliente.
             </p>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
+        )}
+
+        {step === 'verify' && (
+          <div className="space-y-6">
+            <div className="border border-[#39FF14]/30 bg-[#39FF14]/5 p-6 flex items-start gap-4">
+              <Mail size={20} className="text-neon shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-bold text-white">Código enviado a {form.email}</p>
+                <p className="text-xs text-muted mt-1">
+                  Revisa tu bandeja de entrada (y el spam). Válido 10 minutos.
+                </p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {error && (
+                <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-sm">{error}</div>
+              )}
+
+              <div>
+                <label className="label">Código de verificación</label>
+                <input
+                  ref={codeRef}
+                  className="input text-center text-2xl font-mono tracking-[0.5em]"
+                  placeholder="000000"
+                  maxLength={6}
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
+                  required
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                />
+              </div>
+
+              <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
+                <Send size={16} className="mr-2" />
+                Enviar solicitud
+              </Button>
+            </form>
+
+            <button
+              onClick={() => { setStep('form'); setCode(''); setError('') }}
+              className="flex items-center gap-2 text-muted text-xs hover:text-white transition-colors mx-auto"
+            >
+              <ArrowLeft size={12} />
+              Volver y editar el formulario
+            </button>
+          </div>
+        )}
+
+        {step === 'form' && (
+          <form onSubmit={handleSendCode} className="space-y-6">
             {error && (
               <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-sm">{error}</div>
             )}
@@ -155,9 +237,37 @@ export function ContactSection() {
               />
             </div>
 
+            {/* Privacy checkbox */}
+            <label className="flex items-start gap-3 cursor-pointer group">
+              <div className="relative mt-0.5 shrink-0">
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  required
+                  checked={privacyAccepted}
+                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                />
+                <div className={`w-5 h-5 border transition-colors flex items-center justify-center
+                  ${privacyAccepted ? 'border-neon bg-neon/10' : 'border-[#444] group-hover:border-[#666]'}`}>
+                  {privacyAccepted && (
+                    <svg viewBox="0 0 12 10" className="w-3 h-3 text-neon fill-none stroke-current stroke-2">
+                      <polyline points="1,5 4,8 11,1" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <span className="text-xs text-muted leading-relaxed">
+                He leído y acepto la{' '}
+                <a href="/legal/privacidad" target="_blank" rel="noopener noreferrer" className="text-neon hover:underline">
+                  Política de Privacidad
+                </a>
+                {' '}y consiento el tratamiento de mis datos para recibir información sobre el proyecto solicitado.
+              </span>
+            </label>
+
             <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
-              <Send size={16} className="mr-2" />
-              Enviar solicitud
+              <Mail size={16} className="mr-2" />
+              Verificar email y continuar
             </Button>
 
             <p className="text-muted text-xs text-center">
