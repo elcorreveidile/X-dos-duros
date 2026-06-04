@@ -18,7 +18,6 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 async function createMagicLink(email: string) {
   const token = randomBytes(32).toString('hex')
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-  await prisma.verificationToken.deleteMany({ where: { identifier: email } })
   await prisma.verificationToken.create({ data: { identifier: email, token, expires } })
   return `${APP_URL}/login/verify?email=${encodeURIComponent(email)}&token=${token}`
 }
