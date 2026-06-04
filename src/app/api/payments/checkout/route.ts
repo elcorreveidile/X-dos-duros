@@ -29,6 +29,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
   }
 
+  if (project.price <= 0) {
+    return NextResponse.json({ error: 'Este proyecto no tiene coste' }, { status: 400 })
+  }
+
   if (session.user.role !== 'ADMIN' && project.clientId !== session.user.id) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }

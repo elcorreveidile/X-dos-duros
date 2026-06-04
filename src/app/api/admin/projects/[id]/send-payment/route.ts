@@ -20,6 +20,7 @@ export async function POST(
     include: { client: true },
   })
   if (!project) return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+  if (project.price <= 0) return NextResponse.json({ error: 'Este proyecto no tiene coste' }, { status: 400 })
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 

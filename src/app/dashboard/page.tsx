@@ -56,7 +56,7 @@ export default async function DashboardPage() {
   }
 
   const isPaid = project.payments.length > 0
-  const showPayButton = !isPaid && PAYMENT_STATUSES.includes(project.status as ProjectStatus)
+  const showPayButton = project.price > 0 && !isPaid && PAYMENT_STATUSES.includes(project.status as ProjectStatus)
   const currentIndex = STATUS_ORDER.indexOf(project.status as ProjectStatus)
 
   return (
