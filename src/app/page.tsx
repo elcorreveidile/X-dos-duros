@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic'
+
+import { NavbarWrapper } from '@/components/landing/NavbarWrapper'
 import { Navbar } from '@/components/landing/Navbar'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { ServicesSection } from '@/components/landing/ServicesSection'
@@ -10,7 +13,9 @@ import { Suspense } from 'react'
 export default function HomePage() {
   return (
     <>
-      <Navbar />
+      <Suspense fallback={<Navbar />}>
+        <NavbarWrapper />
+      </Suspense>
       <main>
         <HeroSection />
         <ServicesSection />
