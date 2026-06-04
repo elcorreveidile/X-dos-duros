@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Play, ExternalLink, Clock, User, ChevronRight, MoreVertical, Link as LinkIcon } from 'lucide-react'
+import { Play, ExternalLink, Clock, User, ChevronRight, MoreVertical, Link as LinkIcon, Trash2 } from 'lucide-react'
 import type { Project, ProjectStatus, KanbanColumn } from '@/types'
 import { getProjectStatusLabel, getTimeRemaining } from '@/lib/utils'
 
@@ -26,9 +26,10 @@ interface ProjectCardProps {
   onActivateTimer: (id: string) => Promise<void>
   onSetDemoUrl: (id: string, url: string) => Promise<void>
   onMoveStatus: (id: string, status: ProjectStatus) => Promise<void>
+  onDelete: (id: string) => Promise<void>
 }
 
-function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: ProjectCardProps) {
+function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus, onDelete }: ProjectCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const [demoInput, setDemoInput] = useState(project.demoUrl ?? '')
   const [showDemoInput, setShowDemoInput] = useState(false)
@@ -78,6 +79,18 @@ function ProjectCard({ project, onActivateTimer, onSetDemoUrl, onMoveStatus }: P
               >
                 <LinkIcon size={12} />
                 {project.demoUrl ? 'Cambiar URL demo' : 'Añadir URL demo'}
+              </button>
+              <button
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-red-500/10 hover:text-red-400 transition-colors text-left border-t border-border"
+                onClick={() => {
+                  setShowMenu(false)
+                  if (confirm(`¿Eliminar "${project.name}"? Esta acción no se puede deshacer.`)) {
+                    handle(() => onDelete(project.id))
+                  }
+                }}
+              >
+                <Trash2 size={12} />
+                Eliminar proyecto
               </button>
             </div>
           )}
@@ -156,6 +169,12 @@ async function patchProject(id: string, data: Record<string, unknown>) {
 export function KanbanBoard({ initialProjects }: { initialProjects: Project[] }) {
   const [projects, setProjects] = useState<Project[]>(initialProjects)
 
+  const deleteProject = async (id: string) => {
+    const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' })
+    if (!res.ok) throw new Error('Error al eliminar')
+    setProjects((prev) => prev.filter((p) => p.id !== id))
+  }
+
   const activateTimer = async (id: string) => {
     const updated = await patchProject(id, { startTimer: true })
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, ...updated } : p)))
@@ -212,6 +231,7 @@ export function KanbanBoard({ initialProjects }: { initialProjects: Project[] })
                       onActivateTimer={activateTimer}
                       onSetDemoUrl={setDemoUrl}
                       onMoveStatus={moveStatus}
+                      onDelete={deleteProject}
                     />
                   ))
                 )}

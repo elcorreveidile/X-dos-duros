@@ -42,6 +42,19 @@ export async function GET(
   return NextResponse.json(project)
 }
 
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth()
+  if (!session?.user || session.user.role !== 'ADMIN') {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  }
+  const { id } = await params
+  await prisma.project.delete({ where: { id } })
+  return NextResponse.json({ ok: true })
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
