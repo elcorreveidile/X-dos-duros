@@ -19,7 +19,6 @@ export async function POST(req: Request) {
     const token = crypto.randomBytes(32).toString('hex')
     const expires = new Date(Date.now() + 15 * 60 * 1000) // 15 min
 
-    await prisma.verificationToken.deleteMany({ where: { identifier: email } })
     await prisma.verificationToken.create({ data: { identifier: email, token, expires } })
 
     const link = `${APP_URL}/login/verify?token=${token}&email=${encodeURIComponent(email)}`
