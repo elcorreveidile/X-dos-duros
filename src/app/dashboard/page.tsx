@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { ProjectTimer } from '@/components/dashboard/ProjectTimer'
 import { PayButton } from '@/components/dashboard/PayButton'
+import { FreeConfirmBlock } from '@/components/dashboard/FreeConfirmBlock'
 import { PaymentNotice } from '@/components/dashboard/PaymentNotice'
 import { Badge } from '@/components/ui/Badge'
 import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard } from 'lucide-react'
@@ -56,7 +57,9 @@ export default async function DashboardPage() {
   }
 
   const isPaid = project.payments.length > 0
-  const showPayButton = project.price > 0 && !isPaid && PAYMENT_STATUSES.includes(project.status as ProjectStatus)
+  const needsConfirmation = !isPaid && PAYMENT_STATUSES.includes(project.status as ProjectStatus)
+  const showPayButton = project.price > 0 && needsConfirmation
+  const showFreeConfirm = project.price === 0 && needsConfirmation
   const currentIndex = STATUS_ORDER.indexOf(project.status as ProjectStatus)
 
   return (
@@ -107,6 +110,10 @@ export default async function DashboardPage() {
           </div>
           <PayButton projectId={project.id} amount={project.price} />
         </div>
+      )}
+
+      {showFreeConfirm && (
+        <FreeConfirmBlock projectId={project.id} />
       )}
 
       <ProjectTimer
