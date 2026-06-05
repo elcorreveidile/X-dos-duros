@@ -1,4 +1,4 @@
-import { Globe, ShoppingBag, Smartphone, Rocket } from 'lucide-react'
+import { Globe, ShoppingBag, Smartphone, Rocket, ShieldCheck } from 'lucide-react'
 
 const SERVICES = [
   {
@@ -82,6 +82,18 @@ export function ServicesSection() {
             </div>
           )
         })}
+      </div>
+
+      <div className="mt-8 border border-neon/30 bg-neon/5 px-6 py-5 flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left">
+        <ShieldCheck size={28} className="text-neon flex-shrink-0" />
+        <div>
+          <p className="font-bold text-sm uppercase tracking-wider">
+            Garantía de devolución de 15 días
+          </p>
+          <p className="text-muted text-sm mt-0.5">
+            Si no quedas satisfecho con la aplicación entregada, te devolvemos el 100% del importe. Sin letra pequeña.
+          </p>
+        </div>
       </div>
     </section>
   )

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Check } from 'lucide-react'
+import { Check, ShieldCheck } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -191,6 +191,14 @@ export function PricingCalculator() {
                     <span className="mono">{line.value}</span>
                   </div>
                 ))}
+              </div>
+
+              <div className="flex items-start gap-3 border border-neon/30 bg-neon/5 px-4 py-3">
+                <ShieldCheck size={16} className="text-neon flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-bold text-neon">Garantía 15 días.</span>{' '}
+                  Si no quedas satisfecho con el resultado, te devolvemos el dinero. Sin preguntas.
+                </p>
               </div>
 
               <Link href={`/?projectType=${projectType}&addons=${selectedAddons.join(',')}&price=${total}#contacto`}>
