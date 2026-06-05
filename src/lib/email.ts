@@ -110,7 +110,25 @@ export async function sendContactConfirmation(data: { name: string; email: strin
   })
 }
 
-/** 3. Acceso al panel de cliente (bienvenida) */
+/** 3. Acceso al panel con magic link — nuevo cliente desde contacto */
+export async function sendClientMagicAccess(data: { name: string; email: string; magicLink: string }) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.email,
+    subject: 'Tu panel de cliente está listo — Por 2 Duros',
+    html: baseTemplate(
+      'Accede a tu panel',
+      `${h1(`¡Hola, ${data.name}!`)}
+       ${p('Tu solicitud ha sido procesada. Hemos creado tu panel de cliente donde podrás seguir el progreso de tu proyecto en tiempo real.')}
+       ${p(`Pulsa el botón para acceder directamente. El enlace es válido durante ${highlight('7 días')}.`)}
+       ${btn('Acceder a mi panel', data.magicLink)}
+       ${p('Si el botón no funciona, copia este enlace en tu navegador:')}
+       <p style="margin:0;font-family:monospace;font-size:12px;color:#666;word-break:break-all;">${data.magicLink}</p>`
+    ),
+  })
+}
+
+/** 4. Acceso al panel de cliente (bienvenida con contraseña) */
 export async function sendClientWelcome(data: { name: string; email: string; password: string }) {
   return resend.emails.send({
     from: FROM,
@@ -132,7 +150,7 @@ export async function sendClientWelcome(data: { name: string; email: string; pas
   })
 }
 
-/** 4. Briefing recibido — al admin */
+/** 5. Briefing recibido — al admin */
 export async function sendBriefingReceived(data: { project: Project; client: User }) {
   return resend.emails.send({
     from: FROM,
@@ -148,7 +166,7 @@ export async function sendBriefingReceived(data: { project: Project; client: Use
   })
 }
 
-/** 5. Timer de 48h activado — al cliente */
+/** 6. Timer de 48h activado — al cliente */
 export async function sendTimerStarted(data: { project: Project; client: User; deadline: Date }) {
   const deadlineStr = data.deadline.toLocaleString('es-ES', {
     weekday: 'long',
@@ -176,7 +194,7 @@ export async function sendTimerStarted(data: { project: Project; client: User; d
   })
 }
 
-/** 6. Proyecto entregado — al cliente */
+/** 7. Proyecto entregado — al cliente */
 export async function sendProjectDelivered(data: {
   project: Project & { demoUrl: string }
   client: User
@@ -196,7 +214,7 @@ export async function sendProjectDelivered(data: {
   })
 }
 
-/** 7. Pago confirmado — al cliente */
+/** 8. Pago confirmado — al cliente */
 export async function sendProjectPaymentConfirmed(data: { project: Project; client: User }) {
   return resend.emails.send({
     from: FROM,
@@ -212,7 +230,32 @@ export async function sendProjectPaymentConfirmed(data: { project: Project; clie
   })
 }
 
-/** 8. Suscripción activada — al cliente */
+/** 9. Solicitud de pago — al cliente */
+export async function sendPaymentRequest(data: {
+  project: Project
+  client: User
+  checkoutUrl: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.client.email,
+    subject: `Enlace de pago — ${data.project.name}`,
+    html: baseTemplate(
+      'Enlace de pago',
+      `${h1('Tu web, lista para confirmar')}
+       ${p(`Hola <strong>${data.client.name ?? data.client.email}</strong>, tu proyecto ${highlight(data.project.name)} está esperando confirmación de pago.`)}
+       <table style="background:#111;border:1px solid #222;padding:20px;margin:16px 0;width:100%;box-sizing:border-box;">
+         <tr><td style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding-bottom:4px;">Total a pagar</td></tr>
+         <tr><td style="font-family:monospace;font-size:28px;font-weight:900;color:#39FF14;">€${data.project.price}</td></tr>
+       </table>
+       ${p('Paga de forma segura con tarjeta a través de Stripe. El enlace es válido durante 24 horas.')}
+       ${btn('Pagar ahora', data.checkoutUrl)}
+       ${p('Si tienes alguna duda, responde a este email o escríbenos directamente.')}`
+    ),
+  })
+}
+
+/** 10. Suscripción activada — al cliente */
 export async function sendSubscriptionActivated(data: { client: User; plan: string }) {
   const planLabel = data.plan === 'pro' ? 'Pro (€49/mes)' : 'Básico (€29/mes)'
   return resend.emails.send({

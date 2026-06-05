@@ -8,7 +8,7 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 const PLANS = [
   {
-    id: 'basic',
+    id: 'basic' as const,
     name: 'Mantenimiento Básico',
     price: 29,
     features: [
@@ -19,7 +19,7 @@ const PLANS = [
     ],
   },
   {
-    id: 'pro',
+    id: 'pro' as const,
     name: 'Pro (Hosting incluido)',
     price: 49,
     features: [
@@ -34,31 +34,55 @@ const PLANS = [
   },
 ]
 
-export function SubscriptionManager() {
-  const [currentPlan, setCurrentPlan] = useState<string | null>(null)
+interface InitialSubscription {
+  plan: 'basic' | 'pro'
+  price: number
+  currentPeriodEnd: string | null
+}
+
+interface Props {
+  initialSubscription: InitialSubscription | null
+}
+
+export function SubscriptionManager({ initialSubscription }: Props) {
+  const [currentPlan] = useState<string | null>(initialSubscription?.plan ?? null)
   const [loading, setLoading] = useState('')
+  const [error, setError] = useState('')
 
   const subscribe = async (planId: string) => {
     setLoading(planId)
-    const res = await fetch('/api/subscriptions/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan: planId }),
-    })
-    const data = await res.json()
-    setLoading('')
-    if (data.url) window.location.href = data.url
+    setError('')
+    try {
+      const res = await fetch('/api/subscriptions/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planId }),
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else setError(data.error ?? 'Error al procesar')
+    } finally {
+      setLoading('')
+    }
   }
 
   const openPortal = async () => {
     setLoading('portal')
-    const res = await fetch('/api/subscriptions/portal', { method: 'POST' })
-    const data = await res.json()
-    setLoading('')
-    if (data.url) window.location.href = data.url
+    setError('')
+    try {
+      const res = await fetch('/api/subscriptions/portal', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else setError(data.error ?? 'Error al abrir el portal')
+    } finally {
+      setLoading('')
+    }
   }
 
-  const cancel = openPortal
+  const activePlan = PLANS.find((p) => p.id === currentPlan)
+  const nextBilling = initialSubscription?.currentPeriodEnd
+    ? formatDate(initialSubscription.currentPeriodEnd)
+    : null
 
   return (
     <div className="space-y-8">
@@ -67,29 +91,31 @@ export function SubscriptionManager() {
         <p className="text-muted text-sm mt-1">Gestiona tu plan de mantenimiento mensual</p>
       </div>
 
-      {currentPlan && (
-        <div className="border border-neon bg-neon/5 p-5 flex items-center justify-between gap-4">
+      {error && (
+        <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-sm">{error}</div>
+      )}
+
+      {activePlan && (
+        <div className="border border-neon bg-neon/5 p-5 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <CreditCard size={18} className="text-neon" />
             <div>
-              <div className="font-bold text-sm uppercase">
-                {PLANS.find((p) => p.id === currentPlan)?.name}
-              </div>
+              <div className="font-bold text-sm uppercase">{activePlan.name}</div>
               <div className="text-muted text-xs mt-0.5">
-                Próxima factura: {formatDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))} ·{' '}
-                {formatCurrency(PLANS.find((p) => p.id === currentPlan)?.price ?? 0)}
+                {nextBilling ? `Próxima factura: ${nextBilling} · ` : ''}
+                {formatCurrency(activePlan.price)}/mes
               </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Badge variant="neon">Activo</Badge>
             <Button
-              variant="danger"
+              variant="outline"
               size="sm"
-              loading={loading === 'cancel'}
-              onClick={cancel}
+              loading={loading === 'portal'}
+              onClick={openPortal}
             >
-              Cancelar
+              Gestionar / Cancelar
             </Button>
           </div>
         </div>
@@ -153,7 +179,7 @@ export function SubscriptionManager() {
                   loading={loading === plan.id}
                   onClick={() => subscribe(plan.id)}
                 >
-                  Activar plan
+                  {currentPlan ? 'Cambiar a este plan' : 'Activar plan'}
                 </Button>
               )}
             </div>
@@ -162,7 +188,7 @@ export function SubscriptionManager() {
       </div>
 
       <p className="text-muted text-xs">
-        Los pagos se procesan de forma segura mediante Stripe. Puedes cancelar en cualquier momento desde este panel.
+        Los pagos se procesan de forma segura mediante Stripe. Puedes cancelar en cualquier momento desde el portal de facturación.
       </p>
     </div>
   )

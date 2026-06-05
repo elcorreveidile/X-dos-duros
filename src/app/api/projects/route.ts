@@ -7,6 +7,7 @@ const createProjectSchema = z.object({
   name: z.string().min(2).max(200),
   description: z.string().optional(),
   price: z.number().min(0).optional(),
+  clientId: z.string().min(1),
 })
 
 export async function GET() {
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
       name: parsed.data.name,
       description: parsed.data.description,
       price: parsed.data.price ?? 0,
-      clientId: body.clientId,
+      clientId: parsed.data.clientId,
     },
   })
 

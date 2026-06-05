@@ -14,7 +14,7 @@ export default async function VerifyPage({ searchParams }: Props) {
   }
 
   try {
-    await signIn('credentials', { email, magicToken: token, redirectTo: '/dashboard' })
+    await signIn('credentials', { email, magicToken: token, redirectTo: '__role__' })
   } catch (error) {
     if (isRedirectError(error)) throw error
     redirect('/login?error=expired')

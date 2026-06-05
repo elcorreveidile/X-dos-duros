@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { Calculator, ChevronDown } from 'lucide-react'
+import { ShieldCheck } from 'lucide-react'
+import Link from 'next/link'
 
 const PROJECT_TYPES = [
   { id: 'landing', label: 'Landing Page', base: 297 },
@@ -53,11 +53,11 @@ export function PricingCalculator() {
   ]
 
   return (
-    <section className="py-24 border-t border-border" id="precios">
+    <section className="py-24 border-t border-border" id="precio">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span className="text-neon text-xs uppercase tracking-widest font-mono mb-4 block">
-            — Calcula tu proyecto —
+            — Calculadora de precio —
           </span>
           <h2 className="section-title">
             Precio transparente.
@@ -158,12 +158,20 @@ export function PricingCalculator() {
             </div>
 
             <div className="mt-8 space-y-3">
+              <div className="flex items-start gap-3 border border-neon/30 bg-neon/5 px-4 py-3">
+                <ShieldCheck size={16} className="text-neon flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-bold text-neon">Garantía 15 días.</span>{' '}
+                  Si no quedas satisfecho con el resultado, te devolvemos el dinero. Sin preguntas.
+                </p>
+              </div>
+
               <Link href={`/?projectType=${projectType}&addons=${selectedAddons.join(',')}&price=${total}#contacto`}>
                 <Button variant="primary" className="w-full">
                   Solicitar este proyecto
                 </Button>
               </Link>
-              <p className="text-muted text-xs text-center">Entrega garantizada en 48h o te devolvemos el dinero</p>
+              <p className="text-muted text-xs text-center">Entrega garantizada en 48h</p>
             </div>
           </div>
         </div>

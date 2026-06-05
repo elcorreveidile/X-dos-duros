@@ -2,40 +2,25 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { stripe } from '@/lib/stripe'
-import { z } from 'zod'
+import { sendPaymentRequest } from '@/lib/email'
 
-const schema = z.object({
-  projectId: z.string(),
-})
-
-export async function POST(req: Request) {
+export async function POST(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await auth()
-  if (!session?.user) {
+  if (!session?.user || session.user.role !== 'ADMIN') {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 
-  const body = await req.json()
-  const parsed = schema.safeParse(body)
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
-  }
+  const { id } = await params
 
   const project = await prisma.project.findUnique({
-    where: { id: parsed.data.projectId },
+    where: { id },
     include: { client: true },
   })
-
-  if (!project) {
-    return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
-  }
-
-  if (project.price <= 0) {
-    return NextResponse.json({ error: 'Este proyecto no tiene coste' }, { status: 400 })
-  }
-
-  if (session.user.role !== 'ADMIN' && project.clientId !== session.user.id) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
-  }
+  if (!project) return NextResponse.json({ error: 'Proyecto no encontrado' }, { status: 404 })
+  if (project.price <= 0) return NextResponse.json({ error: 'Este proyecto no tiene coste' }, { status: 400 })
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
@@ -43,6 +28,7 @@ export async function POST(req: Request) {
     mode: 'payment',
     payment_method_types: ['card'],
     customer_email: project.client.email,
+    expires_at: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24h
     line_items: [
       {
         quantity: 1,
@@ -51,7 +37,7 @@ export async function POST(req: Request) {
           unit_amount: Math.round(project.price * 100),
           product_data: {
             name: project.name,
-            description: `Desarrollo web — Por 2 Duros`,
+            description: 'Desarrollo web — Por 2 Duros',
           },
         },
       },
@@ -65,5 +51,15 @@ export async function POST(req: Request) {
     cancel_url: `${appUrl}/dashboard?payment=cancelled`,
   })
 
-  return NextResponse.json({ url: checkoutSession.url })
+  if (!checkoutSession.url) {
+    return NextResponse.json({ error: 'No se pudo crear la sesión de pago' }, { status: 500 })
+  }
+
+  await sendPaymentRequest({
+    project: project as Parameters<typeof sendPaymentRequest>[0]['project'],
+    client: project.client as Parameters<typeof sendPaymentRequest>[0]['client'],
+    checkoutUrl: checkoutSession.url,
+  }).catch(console.error)
+
+  return NextResponse.json({ ok: true, url: checkoutSession.url })
 }

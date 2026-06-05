@@ -61,7 +61,7 @@ export function HeroSection() {
           {[
             { value: '+50', label: 'Proyectos entregados' },
             { value: '48h', label: 'Tiempo de entrega' },
-            { value: '100%', label: 'Satisfacción garantizada' },
+            { value: '15 días', label: 'Garantía de devolución' },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-3xl font-black neon-text mono">{stat.value}</div>

@@ -56,7 +56,8 @@ export function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-muted text-xs">
-            © {year} Por 2 Duros. Hecho con <span className="neon-text">mucho café</span> en España.
+            © {year} Por 2 Duros. Hecho con <span className="neon-text">mucho café</span> en{' '}
+            <a href="https://www.espanias.com" target="_blank" rel="noopener noreferrer" className="hover:text-neon transition-colors">Espanias</a>.
           </p>
           <div className="flex items-center gap-6">
             <Link href="/legal/privacidad" className="text-muted text-xs hover:text-neon transition-colors">

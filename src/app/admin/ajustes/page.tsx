@@ -1,3 +1,5 @@
+import { Info } from 'lucide-react'
+
 export default function AdminAjustesPage() {
   return (
     <div className="space-y-6 max-w-2xl">
@@ -6,42 +8,30 @@ export default function AdminAjustesPage() {
         <p className="text-muted text-sm mt-1">Configuración del sistema</p>
       </div>
 
-      <div className="border border-border p-6 space-y-4">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-muted">Notificaciones</h2>
-        {[
-          { label: 'Email al recibir nueva solicitud', defaultChecked: true },
-          { label: 'Email al completar briefing', defaultChecked: true },
-          { label: 'Alerta cuando queden menos de 6h', defaultChecked: true },
-          { label: 'Resumen diario de proyectos activos', defaultChecked: false },
-        ].map((item) => (
-          <label key={item.label} className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                defaultChecked={item.defaultChecked}
-              />
-              <div className="w-10 h-5 bg-border peer-checked:bg-neon rounded-full transition-colors" />
-              <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-background rounded-full transition-transform peer-checked:translate-x-5" />
-            </div>
-            <span className="text-sm text-muted group-hover:text-foreground transition-colors">
-              {item.label}
-            </span>
-          </label>
-        ))}
+      <div className="border border-border p-6 flex gap-4">
+        <Info size={18} className="text-muted shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <p className="text-sm font-medium">Configuración vía variables de entorno</p>
+          <p className="text-muted text-sm">
+            La configuración del sistema (credenciales de Stripe, correo, URL de la app) se gestiona
+            directamente en las variables de entorno del servidor. No hay ajustes editables desde el panel.
+          </p>
+        </div>
       </div>
 
-      <div className="border border-border p-6 space-y-4">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-muted">General</h2>
-        <div>
-          <label className="label">Email de contacto público</label>
-          <input className="input" defaultValue="hola@por2duros.com" />
-        </div>
-        <div>
-          <label className="label">Tiempo de entrega (horas)</label>
-          <input type="number" className="input" defaultValue={48} min={1} max={168} />
-        </div>
-        <button className="btn-primary text-sm">Guardar cambios</button>
+      <div className="border border-border p-6 space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-muted">Variables activas</h2>
+        {[
+          { key: 'NEXT_PUBLIC_APP_URL', value: process.env.NEXT_PUBLIC_APP_URL ?? '—' },
+          { key: 'DATABASE_URL', value: process.env.DATABASE_URL ? '✓ Configurada' : '✗ No configurada' },
+          { key: 'STRIPE_SECRET_KEY', value: process.env.STRIPE_SECRET_KEY ? '✓ Configurada' : '✗ No configurada' },
+          { key: 'RESEND_API_KEY', value: process.env.RESEND_API_KEY ? '✓ Configurada' : '✗ No configurada' },
+        ].map(({ key, value }) => (
+          <div key={key} className="flex items-center justify-between gap-4 text-sm border-b border-border pb-3 last:border-0 last:pb-0">
+            <span className="mono text-xs text-muted">{key}</span>
+            <span className="mono text-xs">{value}</span>
+          </div>
+        ))}
       </div>
     </div>
   )
