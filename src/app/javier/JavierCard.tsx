@@ -1,7 +1,6 @@
 'use client'
 
 import { Phone, Mail, Globe, Share2, Download, Linkedin, Instagram } from 'lucide-react'
-import Image from 'next/image'
 
 const QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=39FF14&bgcolor=0A0A0A&data=${encodeURIComponent('https://www.por2duros.com/javier')}`
 
@@ -27,7 +26,6 @@ export function JavierCard() {
 
         {/* Header */}
         <div className="border-b border-[#39FF14]/20 p-8 text-center">
-          {/* Avatar */}
           <div className="w-20 h-20 rounded-full border-2 border-[#39FF14] bg-[#39FF14]/10 flex items-center justify-center mx-auto mb-5 text-2xl font-black text-[#39FF14]">
             JB
           </div>

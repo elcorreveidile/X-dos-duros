@@ -2,32 +2,29 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Check, ShieldCheck } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
+import { ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 
 const PROJECT_TYPES = [
-  { id: 'landing', label: 'Landing Page', basePrice: 299 },
-  { id: 'ecommerce', label: 'E-commerce', basePrice: 599 },
-  { id: 'mvp', label: 'MVP Web App', basePrice: 799 },
-  { id: 'custom', label: 'App a medida', basePrice: 999 },
+  { id: 'landing', label: 'Landing Page', base: 297 },
+  { id: 'ecommerce', label: 'E-commerce', base: 497 },
+  { id: 'mvp', label: 'MVP Web App', base: 797 },
+  { id: 'custom', label: 'App a medida', base: 1297 },
 ]
 
 const ADDONS = [
-  { id: 'auth', label: 'Autenticación de usuarios', price: 150 },
-  { id: 'cms', label: 'Panel CMS personalizado', price: 200 },
-  { id: 'api', label: 'Integración API externa', price: 120 },
-  { id: 'seo', label: 'SEO avanzado', price: 80 },
-  { id: 'analytics', label: 'Analítica avanzada', price: 60 },
-  { id: 'multilang', label: 'Multi-idioma', price: 150 },
-  { id: 'payments', label: 'Pasarela de pago', price: 100 },
-  { id: 'chat', label: 'Chat en tiempo real', price: 200 },
+  { id: 'seo', label: 'SEO básico', price: 97 },
+  { id: 'analytics', label: 'Analytics', price: 47 },
+  { id: 'multilang', label: 'Multidioma', price: 147 },
+  { id: 'cms', label: 'Panel de contenido', price: 197 },
+  { id: 'auth', label: 'Login / Registro', price: 147 },
+  { id: 'payments', label: 'Pagos online', price: 197 },
 ]
 
 const HOSTING = [
-  { id: 'none', label: 'No, ya tengo hosting', price: 0 },
-  { id: 'basic', label: 'Mantenimiento básico', price: 29, period: '/mes' },
-  { id: 'pro', label: 'Mantenimiento + hosting', price: 49, period: '/mes' },
+  { id: 'none', label: 'Sin mantenimiento', price: 0 },
+  { id: 'basic', label: 'Básico — €29/mes', price: 29 },
+  { id: 'pro', label: 'Pro — €49/mes', price: 49 },
 ]
 
 export function PricingCalculator() {
@@ -35,13 +32,11 @@ export function PricingCalculator() {
   const [selectedAddons, setSelectedAddons] = useState<string[]>([])
   const [hosting, setHosting] = useState('none')
 
-  const base = PROJECT_TYPES.find((p) => p.id === projectType)?.basePrice ?? 0
-  const addonsTotal = ADDONS.filter((a) => selectedAddons.includes(a.id)).reduce(
-    (sum, a) => sum + a.price,
-    0
-  )
-  const total = base + addonsTotal
-  const monthlyFee = HOSTING.find((h) => h.id === hosting)?.price ?? 0
+  const basePrice = PROJECT_TYPES.find((p) => p.id === projectType)?.base ?? 0
+  const addonsPrice = selectedAddons.reduce((acc, id) => {
+    return acc + (ADDONS.find((a) => a.id === id)?.price ?? 0)
+  }, 0)
+  const total = basePrice + addonsPrice
 
   const toggleAddon = (id: string) => {
     setSelectedAddons((prev) =>
@@ -49,150 +44,120 @@ export function PricingCalculator() {
     )
   }
 
+  const breakdown = [
+    { label: PROJECT_TYPES.find((p) => p.id === projectType)?.label ?? '', value: `€${basePrice}` },
+    ...selectedAddons.map((id) => {
+      const addon = ADDONS.find((a) => a.id === id)!
+      return { label: addon.label, value: `€${addon.price}` }
+    }),
+  ]
+
   return (
-    <section id="precio" className="py-24 bg-card border-y border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section className="py-24 border-t border-border" id="precio">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
           <span className="text-neon text-xs uppercase tracking-widest font-mono mb-4 block">
             — Calculadora de precio —
           </span>
           <h2 className="section-title">
-            Sin sorpresas.
+            Precio transparente.
             <br />
-            <span className="neon-text">Precio claro desde el día 1.</span>
+            <span className="neon-text">Sin sorpresas.</span>
           </h2>
-          <p className="section-subtitle mx-auto mt-4 text-center">
-            Configura tu proyecto y obtén un presupuesto al instante.
-          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Configurator */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Step 1: Project type */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left: config */}
+          <div className="space-y-8">
             <div>
-              <label className="label text-sm">1. ¿Qué necesitas?</label>
-              <div className="grid grid-cols-2 gap-3">
+              <h3 className="text-xs uppercase tracking-widest text-muted mb-3">Tipo de proyecto</h3>
+              <div className="grid grid-cols-2 gap-2">
                 {PROJECT_TYPES.map((type) => (
                   <button
                     key={type.id}
                     onClick={() => setProjectType(type.id)}
-                    className={`p-4 border text-left transition-all duration-200 ${
+                    className={`p-3 text-left text-sm border transition-all ${
                       projectType === type.id
-                        ? 'border-neon bg-neon/5 text-foreground'
-                        : 'border-border text-muted hover:border-neon/50'
+                        ? 'border-neon text-neon bg-neon/5'
+                        : 'border-border text-muted hover:border-foreground hover:text-foreground'
                     }`}
                   >
-                    <div className="font-bold text-sm uppercase">{type.label}</div>
-                    <div className="text-xs mt-1 text-muted">desde €{type.basePrice}</div>
+                    {type.label}
+                    <span className="block text-xs mt-1 font-mono">€{type.base}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Step 2: Addons */}
             <div>
-              <label className="label text-sm">2. Extras opcionales</label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {ADDONS.map((addon) => {
-                  const selected = selectedAddons.includes(addon.id)
-                  return (
-                    <button
-                      key={addon.id}
-                      onClick={() => toggleAddon(addon.id)}
-                      className={`flex items-center justify-between px-4 py-3 border text-sm transition-all duration-200 ${
-                        selected
-                          ? 'border-neon bg-neon/5 text-foreground'
-                          : 'border-border text-muted hover:border-neon/50'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span
-                          className={`w-4 h-4 border flex items-center justify-center flex-shrink-0 ${
-                            selected ? 'border-neon bg-neon' : 'border-border'
-                          }`}
-                        >
-                          {selected && <Check size={10} className="text-background" />}
-                        </span>
-                        {addon.label}
-                      </span>
-                      <span className="font-mono text-xs">+€{addon.price}</span>
-                    </button>
-                  )
-                })}
+              <h3 className="text-xs uppercase tracking-widest text-muted mb-3">Extras</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {ADDONS.map((addon) => (
+                  <button
+                    key={addon.id}
+                    onClick={() => toggleAddon(addon.id)}
+                    className={`p-3 text-left text-sm border transition-all ${
+                      selectedAddons.includes(addon.id)
+                        ? 'border-neon text-neon bg-neon/5'
+                        : 'border-border text-muted hover:border-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {addon.label}
+                    <span className="block text-xs mt-1 font-mono">+€{addon.price}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Step 3: Hosting */}
             <div>
-              <label className="label text-sm">3. Mantenimiento mensual</label>
-              <div className="flex flex-col gap-2">
+              <h3 className="text-xs uppercase tracking-widest text-muted mb-3">Mantenimiento mensual</h3>
+              <div className="grid grid-cols-3 gap-2">
                 {HOSTING.map((h) => (
                   <button
                     key={h.id}
                     onClick={() => setHosting(h.id)}
-                    className={`flex items-center justify-between px-4 py-3 border text-sm transition-all duration-200 ${
+                    className={`p-3 text-left text-sm border transition-all ${
                       hosting === h.id
-                        ? 'border-neon bg-neon/5 text-foreground'
-                        : 'border-border text-muted hover:border-neon/50'
+                        ? 'border-neon text-neon bg-neon/5'
+                        : 'border-border text-muted hover:border-foreground hover:text-foreground'
                     }`}
                   >
-                    <span className="flex items-center gap-2">
-                      <span
-                        className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
-                          hosting === h.id ? 'border-neon' : 'border-border'
-                        }`}
-                      >
-                        {hosting === h.id && (
-                          <span className="w-2 h-2 rounded-full bg-neon" />
-                        )}
-                      </span>
-                      {h.label}
-                    </span>
-                    <span className="font-mono text-xs">
-                      {h.price === 0 ? 'Gratis' : `€${h.price}${h.period}`}
-                    </span>
+                    {h.label}
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Price Summary */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 border border-neon bg-background p-6 flex flex-col gap-6">
-              <div className="text-center">
-                <div className="text-muted text-xs uppercase tracking-widest mb-2">
-                  Tu presupuesto estimado
-                </div>
-                <div className="text-5xl font-black neon-text mono">{formatCurrency(total)}</div>
-                <div className="text-muted text-xs mt-1">Pago único · Sin sorpresas</div>
-              </div>
-
-              {monthlyFee > 0 && (
-                <div className="border-t border-border pt-4 text-center">
-                  <div className="text-muted text-xs uppercase tracking-widest mb-1">
-                    Mantenimiento mensual
-                  </div>
-                  <div className="text-2xl font-bold text-foreground mono">
-                    {formatCurrency(monthlyFee)}<span className="text-muted text-sm">/mes</span>
-                  </div>
-                  <div className="text-muted text-xs mt-1">Primer mes gratuito</div>
-                </div>
-              )}
-
-              <div className="border-t border-border pt-4 space-y-2">
-                {[
-                  { label: 'Base', value: formatCurrency(base) },
-                  ...(addonsTotal > 0 ? [{ label: 'Extras', value: `+${formatCurrency(addonsTotal)}` }] : []),
-                ].map((line) => (
-                  <div key={line.label} className="flex justify-between text-sm">
+          {/* Right: summary */}
+          <div className="border border-border bg-card p-8 flex flex-col justify-between">
+            <div>
+              <h3 className="text-xs uppercase tracking-widest text-muted mb-6">Resumen</h3>
+              <div className="space-y-3 mb-6">
+                {breakdown.map((line, i) => (
+                  <div key={i} className="flex justify-between text-sm">
                     <span className="text-muted">{line.label}</span>
                     <span className="mono">{line.value}</span>
                   </div>
                 ))}
               </div>
 
+              <div className="border-t border-border pt-4 flex justify-between items-center">
+                <span className="text-xs uppercase tracking-widest text-muted">Total proyecto</span>
+                <span className="text-3xl font-black neon-text mono">€{total}</span>
+              </div>
+
+              {hosting !== 'none' && (
+                <div className="mt-2 flex justify-between items-center">
+                  <span className="text-xs uppercase tracking-widest text-muted">Mantenimiento</span>
+                  <span className="text-sm font-mono text-muted">
+                    +€{HOSTING.find((h) => h.id === hosting)?.price}/mes
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 space-y-3">
               <div className="flex items-start gap-3 border border-neon/30 bg-neon/5 px-4 py-3">
                 <ShieldCheck size={16} className="text-neon flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-foreground leading-relaxed">
@@ -206,10 +171,7 @@ export function PricingCalculator() {
                   Solicitar este proyecto
                 </Button>
               </Link>
-
-              <p className="text-muted text-xs text-center leading-relaxed">
-                Presupuesto orientativo. Precio final confirmado tras el briefing.
-              </p>
+              <p className="text-muted text-xs text-center">Entrega garantizada en 48h</p>
             </div>
           </div>
         </div>

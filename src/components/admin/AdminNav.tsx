@@ -60,27 +60,6 @@ export function AdminNav() {
             <span className="hidden md:inline">Salir</span>
           </button>
         </div>
-
-        {/* Mobile nav */}
-        <nav className="md:hidden flex items-center gap-1 pb-2 overflow-x-auto">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon
-            const active = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 text-xs uppercase tracking-wider whitespace-nowrap transition-all',
-                  active ? 'text-neon border border-neon' : 'text-muted border border-transparent'
-                )}
-              >
-                <Icon size={12} />
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
       </div>
     </header>
   )

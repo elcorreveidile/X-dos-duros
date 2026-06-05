@@ -28,40 +28,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials) {
         try {
-          console.log('[authorize] called with keys:', Object.keys(credentials ?? {}))
           const parsed = credentialsSchema.safeParse(credentials)
-          if (!parsed.success) {
-            console.log('[authorize] schema parse failed:', parsed.error.flatten())
-            return null
-          }
+          if (!parsed.success) return null
 
           const { email, password, magicToken } = parsed.data
-          console.log('[authorize] email=%s magicToken=%s password=%s', email, magicToken ? magicToken.slice(0, 8) + '...' : 'NONE', password ? '***' : 'NONE')
 
           const user = await prisma.user.findUnique({ where: { email } })
-          console.log('[authorize] user found=%s role=%s', !!user, user?.role)
           if (!user) return null
 
-          // Magic link flow
           if (magicToken) {
             const record = await prisma.verificationToken.findFirst({
               where: { identifier: email, token: magicToken },
             })
-            console.log('[authorize] token record found=%s expired=%s', !!record, record ? record.expires < new Date() : 'N/A')
             if (!record || record.expires < new Date()) return null
             await prisma.verificationToken.deleteMany({ where: { identifier: email, token: magicToken } })
-            console.log('[authorize] token deleted, returning user')
             return { id: user.id, email: user.email, name: user.name, role: user.role }
           }
 
-          // Password flow
           if (!password || !user.password) return null
           const valid = await bcrypt.compare(password, user.password)
           if (!valid) return null
 
           return { id: user.id, email: user.email, name: user.name, role: user.role }
         } catch (err) {
-          console.error('[authorize] EXCEPTION:', err)
+          console.error('[auth] authorize error:', err)
           return null
         }
       },

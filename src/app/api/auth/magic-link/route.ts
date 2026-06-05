@@ -19,11 +19,12 @@ export async function POST(req: Request) {
     const token = crypto.randomBytes(32).toString('hex')
     const expires = new Date(Date.now() + 15 * 60 * 1000) // 15 min
 
+    await prisma.verificationToken.deleteMany({ where: { identifier: email } })
     await prisma.verificationToken.create({ data: { identifier: email, token, expires } })
 
     const link = `${APP_URL}/login/verify?token=${token}&email=${encodeURIComponent(email)}`
 
-    await resend.emails.send({
+    const { error: resendError } = await resend.emails.send({
       from: FROM,
       to: email,
       subject: 'Tu enlace de acceso — Por 2 Duros',
@@ -54,6 +55,11 @@ export async function POST(req: Request) {
 </body>
 </html>`,
     })
+
+    if (resendError) {
+      console.error('[magic-link] resend error:', resendError)
+      return NextResponse.json({ error: 'Email no enviado', detail: resendError }, { status: 500 })
+    }
 
     return NextResponse.json({ ok: true })
   } catch (err) {

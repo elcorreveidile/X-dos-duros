@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import VerifyClient from './VerifyClient'
+import { signIn } from '@/lib/auth'
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 interface Props {
   searchParams: Promise<{ token?: string; email?: string }>
@@ -7,6 +8,15 @@ interface Props {
 
 export default async function VerifyPage({ searchParams }: Props) {
   const { token, email } = await searchParams
-  if (!token || !email) redirect('/login?error=invalid')
-  return <VerifyClient token={token} email={email} />
+
+  if (!token || !email) {
+    redirect('/login?error=invalid')
+  }
+
+  try {
+    await signIn('credentials', { email, magicToken: token, redirectTo: '__role__' })
+  } catch (error) {
+    if (isRedirectError(error)) throw error
+    redirect('/login?error=expired')
+  }
 }
