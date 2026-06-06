@@ -191,24 +191,7 @@ export default async function AdminProjectDetailPage({ params }: Props) {
         </section>
       )}
 
-<<<<<<< HEAD
       <AdminTicketSystem projectId={project.id} />
-=======
-      {/* Tickets */}
-      {project.tickets.length > 0 && (
-        <section className="border border-border p-5 space-y-3">
-          <h2 className="text-xs uppercase tracking-widest text-muted flex items-center gap-2">
-            <MessageSquare size={12} /> Mensajes recientes
-          </h2>
-          {project.tickets.map((t) => (
-            <div key={t.id} className="flex items-center justify-between text-sm">
-              <span>{t.subject}</span>
-              <span className="text-muted text-xs">{t.status}</span>
-            </div>
-          ))}
-        </section>
-      )}
->>>>>>> origin/main
     </div>
   )
 }
