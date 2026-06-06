@@ -23,9 +23,19 @@ const ADDONS = [
 ]
 
 const HOSTING = [
-  { id: 'none', label: 'Sin mantenimiento', price: 0 },
-  { id: 'basic', label: 'Básico — €29/mes', price: 29 },
-  { id: 'pro', label: 'Pro — €49/mes', price: 49 },
+  { id: 'none', label: 'Sin mantenimiento', price: 0, features: [] },
+  {
+    id: 'basic',
+    label: 'Básico — €29/mes',
+    price: 29,
+    features: ['Hosting & dominio', 'Actualizaciones de seguridad', 'Copias de seguridad semanales', 'Soporte por email'],
+  },
+  {
+    id: 'pro',
+    label: 'Pro — €49/mes',
+    price: 49,
+    features: ['Todo lo del Básico', 'Cambios de contenido ilimitados', 'Copias de seguridad diarias', 'Soporte prioritario 24h'],
+  },
 ]
 
 export function PricingCalculator() {
@@ -127,6 +137,15 @@ export function PricingCalculator() {
                   </button>
                 ))}
               </div>
+              {hosting !== 'none' && (
+                <ul className="mt-3 space-y-1">
+                  {HOSTING.find((h) => h.id === hosting)?.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-xs text-muted">
+                      <span className="text-neon">✓</span> {f}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
 
