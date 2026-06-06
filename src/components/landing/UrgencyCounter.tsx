@@ -11,47 +11,56 @@ function pad(n: number) {
   return n.toString().padStart(2, '0')
 }
 
-export function UrgencyCounter() {
+function secondsToUnits(totalSeconds: number): TimeUnit[] {
+  const h = Math.floor(totalSeconds / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
+  const s = totalSeconds % 60
+  return [
+    { value: h, label: 'h' },
+    { value: m, label: 'm' },
+    { value: s, label: 's' },
+  ]
+}
+
+interface Props {
+  deadline?: string | null
+}
+
+export function UrgencyCounter({ deadline }: Props) {
   const [units, setUnits] = useState<TimeUnit[]>([
-    { value: 47, label: 'h' },
-    { value: 59, label: 'm' },
-    { value: 59, label: 's' },
+    { value: 0, label: 'h' },
+    { value: 0, label: 'm' },
+    { value: 0, label: 's' },
   ])
   const [ticking, setTicking] = useState(false)
 
   useEffect(() => {
-    // Simulate a random project with time remaining to create urgency
-    const randomHours = Math.floor(Math.random() * 20) + 8
-    const randomMinutes = Math.floor(Math.random() * 60)
-    const randomSeconds = Math.floor(Math.random() * 60)
+    let totalSeconds: number
 
-    let totalSeconds = randomHours * 3600 + randomMinutes * 60 + randomSeconds
+    if (deadline) {
+      totalSeconds = Math.max(0, Math.floor((new Date(deadline).getTime() - Date.now()) / 1000))
+    } else {
+      const randomHours = Math.floor(Math.random() * 20) + 8
+      const randomMinutes = Math.floor(Math.random() * 60)
+      const randomSeconds = Math.floor(Math.random() * 60)
+      totalSeconds = randomHours * 3600 + randomMinutes * 60 + randomSeconds
+    }
 
-    setUnits([
-      { value: randomHours, label: 'h' },
-      { value: randomMinutes, label: 'm' },
-      { value: randomSeconds, label: 's' },
-    ])
-
+    setUnits(secondsToUnits(totalSeconds))
     setTicking(true)
+
     const interval = setInterval(() => {
       totalSeconds--
       if (totalSeconds < 0) {
         clearInterval(interval)
+        setTicking(false)
         return
       }
-      const h = Math.floor(totalSeconds / 3600)
-      const m = Math.floor((totalSeconds % 3600) / 60)
-      const s = totalSeconds % 60
-      setUnits([
-        { value: h, label: 'h' },
-        { value: m, label: 'm' },
-        { value: s, label: 's' },
-      ])
+      setUnits(secondsToUnits(totalSeconds))
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [deadline])
 
   return (
     <div className="inline-flex flex-col items-center gap-3 border border-border bg-card px-8 py-5">
