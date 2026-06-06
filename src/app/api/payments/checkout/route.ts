@@ -61,6 +61,7 @@ export async function POST(req: Request) {
       clientId: project.clientId,
       type: 'project_payment',
     },
+    allow_promotion_codes: true,
     success_url: `${appUrl}/dashboard?payment=success`,
     cancel_url: `${appUrl}/dashboard?payment=cancelled`,
   })

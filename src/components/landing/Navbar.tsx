@@ -24,7 +24,12 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
         <div className="bg-neon text-background text-xs font-bold uppercase tracking-widest px-4 py-2 flex items-center justify-center gap-3 relative">
           <Tag size={12} />
           <span>
-            Oferta de lanzamiento — 20% dto. en tus primeros 2 meses.{' '}
+            Oferta de lanzamiento — 20% dto. en tu primera factura.{' '}
+            Código{' '}
+            <strong className="bg-background/20 px-1.5 py-0.5 rounded font-mono tracking-wider">
+              LAUNCH20
+            </strong>
+            {' '}·{' '}
             <span className="opacity-80">
               Quedan <strong>{remainingSlots}</strong> de {LAUNCH_TOTAL} plazas.
             </span>{' '}
@@ -32,7 +37,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
               href="/#contacto"
               className="underline underline-offset-2 hover:opacity-80 transition-opacity"
             >
-              Reservar ahora →
+              Solicitar ahora →
             </Link>
           </span>
           <button
