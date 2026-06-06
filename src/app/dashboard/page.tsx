@@ -7,7 +7,7 @@ import { PayButton } from '@/components/dashboard/PayButton'
 import { FreeConfirmBlock } from '@/components/dashboard/FreeConfirmBlock'
 import { PaymentNotice } from '@/components/dashboard/PaymentNotice'
 import { Badge } from '@/components/ui/Badge'
-import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard } from 'lucide-react'
+import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/lib/utils'
 import type { ProjectStatus } from '@/types'
@@ -98,6 +98,21 @@ export default async function DashboardPage() {
           </a>
         )}
       </div>
+
+      {project.status === 'LEAD' && (
+        <div className="border border-yellow-400/40 bg-yellow-400/5 p-5 flex items-start gap-4">
+          <FileText size={20} className="text-yellow-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-bold text-foreground uppercase tracking-tight">Paso siguiente: rellena el briefing</p>
+            <p className="text-muted text-sm mt-1">
+              Para que podamos empezar a trabajar, necesitamos los detalles de tu proyecto: textos, logos, referencias y cualquier material relevante.
+            </p>
+            <Link href="/dashboard/briefing" className="inline-flex items-center gap-2 mt-3 text-yellow-400 text-xs font-bold uppercase tracking-widest hover:underline">
+              Ir al briefing <ArrowRight size={12} />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {showPayButton && (
         <div className="border border-neon/40 bg-neon/5 p-5 space-y-3">
