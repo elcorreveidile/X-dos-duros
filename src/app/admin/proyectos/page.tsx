@@ -6,7 +6,15 @@ import type { ProjectStatus } from '@/types'
 
 export default async function AdminProyectosPage() {
   const rawProjects = await prisma.project.findMany({
-    include: { client: { select: { name: true, email: true } } },
+    include: {
+      client: { select: { name: true, email: true } },
+      tickets: {
+        where: { status: { in: ['OPEN', 'IN_PROGRESS'] } },
+        select: {
+          messages: { orderBy: { createdAt: 'desc' }, take: 1, select: { isAdmin: true } },
+        },
+      },
+    },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -19,6 +27,7 @@ export default async function AdminProyectosPage() {
     clientEmail: p.client?.email ?? '',
     timerDeadline: p.timerDeadline?.toISOString() ?? null,
     createdAt: p.createdAt.toISOString(),
+    unreadMessages: p.tickets.filter((t) => t.messages[0]?.isAdmin === false).length,
   }))
 
   return (

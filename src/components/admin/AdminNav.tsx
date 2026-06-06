@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { href: '/admin/ajustes', label: 'Ajustes', icon: Settings },
 ]
 
-export function AdminNav() {
+export function AdminNav({ pendingMessages = 0 }: { pendingMessages?: number }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -37,6 +37,7 @@ export function AdminNav() {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon
               const active = pathname === item.href
+              const badge = item.href === '/admin/proyectos' && pendingMessages > 0 ? pendingMessages : 0
               return (
                 <Link
                   key={item.href}
@@ -50,6 +51,11 @@ export function AdminNav() {
                 >
                   <Icon size={14} />
                   {item.label}
+                  {badge > 0 && (
+                    <span className="bg-neon text-background text-xs font-black px-1.5 py-0.5 min-w-[18px] text-center leading-none">
+                      {badge}
+                    </span>
+                  )}
                 </Link>
               )
             })}
@@ -83,6 +89,7 @@ export function AdminNav() {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon
               const active = pathname === item.href
+              const badge = item.href === '/admin/proyectos' && pendingMessages > 0 ? pendingMessages : 0
               return (
                 <Link
                   key={item.href}
@@ -97,6 +104,11 @@ export function AdminNav() {
                 >
                   <Icon size={16} />
                   {item.label}
+                  {badge > 0 && (
+                    <span className="bg-neon text-background text-xs font-black px-1.5 py-0.5 min-w-[18px] text-center leading-none">
+                      {badge}
+                    </span>
+                  )}
                 </Link>
               )
             })}
