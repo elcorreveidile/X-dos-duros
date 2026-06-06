@@ -1,11 +1,23 @@
-'use client'
-
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { UrgencyCounter } from './UrgencyCounter'
 import { ArrowDown, Zap } from 'lucide-react'
+import { prisma } from '@/lib/db'
 
-export function HeroSection() {
+async function getActiveDeadline(): Promise<string | null> {
+  const project = await prisma.project.findFirst({
+    where: {
+      status: { in: ['DEVELOPMENT', 'REVIEW'] },
+      timerDeadline: { not: null, gt: new Date() },
+    },
+    orderBy: { updatedAt: 'desc' },
+    select: { timerDeadline: true },
+  })
+  return project?.timerDeadline?.toISOString() ?? null
+}
+
+export async function HeroSection() {
+  const deadline = await getActiveDeadline()
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center grid-bg overflow-hidden pt-16">
       <div className="scanline absolute inset-0" />
@@ -54,7 +66,7 @@ export function HeroSection() {
         </div>
 
         {/* Urgency Counter */}
-        <UrgencyCounter />
+        <UrgencyCounter deadline={deadline} />
 
         {/* Social proof */}
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 animate-fade-in">
