@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { updateProject } from '@/app/admin/proyectos/[id]/actions'
+import { updateProject, recordManualPayment } from '@/app/admin/proyectos/[id]/actions'
 import type { ProjectStatus } from '@/types'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2, PlusCircle } from 'lucide-react'
 
 const STATUSES: { value: ProjectStatus; label: string }[] = [
   { value: 'LEAD', label: 'Lead' },
@@ -20,6 +20,7 @@ interface Props {
   currentPrice: number
   currentDeadline: string | null
   currentDemoUrl: string | null
+  hasPaidPayment: boolean
 }
 
 export function AdminProjectEditPanel({
@@ -28,6 +29,7 @@ export function AdminProjectEditPanel({
   currentPrice,
   currentDeadline,
   currentDemoUrl,
+  hasPaidPayment,
 }: Props) {
   const [status, setStatus] = useState<ProjectStatus>(currentStatus)
   const [price, setPrice] = useState(String(currentPrice))
@@ -36,6 +38,8 @@ export function AdminProjectEditPanel({
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [paymentPending, startPaymentTransition] = useTransition()
+  const [paymentRecorded, setPaymentRecorded] = useState(false)
 
   const handleSave = () => {
     setError('')
@@ -133,26 +137,54 @@ export function AdminProjectEditPanel({
         <p className="text-red-400 text-xs border border-red-400/30 bg-red-400/5 px-3 py-2">{error}</p>
       )}
 
-      <button
-        type="button"
-        onClick={handleSave}
-        disabled={isPending || !dirty}
-        className={`flex items-center gap-2 px-5 py-2 text-xs uppercase tracking-widest font-bold transition-all ${
-          saved
-            ? 'bg-neon/20 text-neon border border-neon'
-            : dirty
-            ? 'bg-neon text-background hover:bg-neon/90'
-            : 'bg-card text-muted border border-border cursor-not-allowed'
-        }`}
-      >
-        {isPending ? (
-          <><Loader2 size={12} className="animate-spin" /> Guardando…</>
-        ) : saved ? (
-          <><Check size={12} /> Guardado</>
-        ) : (
-          'Guardar cambios'
+      <div className="flex items-center gap-3 flex-wrap">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={isPending || !dirty}
+          className={`flex items-center gap-2 px-5 py-2 text-xs uppercase tracking-widest font-bold transition-all ${
+            saved
+              ? 'bg-neon/20 text-neon border border-neon'
+              : dirty
+              ? 'bg-neon text-background hover:bg-neon/90'
+              : 'bg-card text-muted border border-border cursor-not-allowed'
+          }`}
+        >
+          {isPending ? (
+            <><Loader2 size={12} className="animate-spin" /> Guardando…</>
+          ) : saved ? (
+            <><Check size={12} /> Guardado</>
+          ) : (
+            'Guardar cambios'
+          )}
+        </button>
+
+        {!hasPaidPayment && !paymentRecorded && parseFloat(price) > 0 && (
+          <button
+            type="button"
+            disabled={paymentPending}
+            onClick={() =>
+              startPaymentTransition(async () => {
+                await recordManualPayment(projectId, parseFloat(price) || currentPrice)
+                setPaymentRecorded(true)
+              })
+            }
+            className="flex items-center gap-2 px-5 py-2 text-xs uppercase tracking-widest font-bold border border-border text-muted hover:border-neon/40 hover:text-foreground transition-colors disabled:opacity-40"
+          >
+            {paymentPending ? (
+              <><Loader2 size={12} className="animate-spin" /> Registrando…</>
+            ) : (
+              <><PlusCircle size={12} /> Registrar pago manual</>
+            )}
+          </button>
         )}
-      </button>
+
+        {paymentRecorded && (
+          <span className="flex items-center gap-1 text-xs text-neon">
+            <Check size={12} /> Pago registrado
+          </span>
+        )}
+      </div>
     </section>
   )
 }

@@ -9,7 +9,13 @@ export default async function AdminClientesPage() {
   const rawClients = await prisma.user.findMany({
     where: { role: 'CLIENT' },
     include: {
-      projects: { select: { id: true, price: true } },
+      projects: {
+        select: {
+          id: true,
+          price: true,
+          payments: { where: { status: 'PAID' }, select: { amount: true } },
+        },
+      },
       subscriptions: { where: { status: 'ACTIVE' }, select: { id: true, price: true } },
     },
     orderBy: { createdAt: 'desc' },
@@ -21,7 +27,10 @@ export default async function AdminClientesPage() {
     email: c.email,
     createdAt: c.createdAt.toISOString(),
     projectCount: c.projects.length,
-    totalSpent: c.projects.reduce((s, p) => s + p.price, 0),
+    totalSpent: c.projects.reduce(
+      (s, p) => s + p.payments.reduce((ps, pay) => ps + pay.amount, 0),
+      0
+    ),
     hasSubscription: c.subscriptions.length > 0,
     subscriptionPrice: c.subscriptions[0]?.price ?? null,
   }))
