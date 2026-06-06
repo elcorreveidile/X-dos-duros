@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Badge } from '@/components/ui/Badge'
 import { Search } from 'lucide-react'
+import Link from 'next/link'
 import type { ProjectStatus } from '@/types'
 
 type ProjectRow = {
@@ -103,9 +104,13 @@ export function ProjectsTable({ initialProjects }: { initialProjects: ProjectRow
               {filtered.map((project, i) => (
                 <tr
                   key={project.id}
-                  className={`border-b border-border hover:bg-card transition-colors ${i % 2 === 0 ? '' : 'bg-card/30'}`}
+                  className={`border-b border-border hover:bg-card transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-card/30'}`}
                 >
-                  <td className="px-4 py-3 font-medium">{project.name}</td>
+                  <td className="px-4 py-3 font-medium">
+                    <Link href={`/admin/proyectos/${project.id}`} className="hover:text-neon transition-colors block">
+                      {project.name}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="text-xs">{project.clientName || '—'}</div>
                     <div className="text-xs text-muted mono">{project.clientEmail}</div>

@@ -25,7 +25,6 @@ export function BriefingForm() {
     desiredFeatures: '',
     referenceUrls: [''],
     brandColors: ['#39FF14'],
-    logoUrl: '',
     deadline: '',
     additionalNotes: '',
   })
@@ -34,7 +33,9 @@ export function BriefingForm() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [logoError, setLogoError] = useState<string | null>(null)
+  // Object URL for preview only — never stored in React state
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const logoFileRef = useRef<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const addUrl = () => setForm((f) => ({ ...f, referenceUrls: [...f.referenceUrls, ''] }))
@@ -55,7 +56,7 @@ export function BriefingForm() {
       brandColors: f.brandColors.map((c, idx) => (idx === i ? val : c)),
     }))
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
     setLogoError(null)
@@ -66,17 +67,16 @@ export function BriefingForm() {
       return
     }
 
-    try {
-      const dataUrl = await readFileAsDataURL(file)
-      setForm((f) => ({ ...f, logoUrl: dataUrl }))
-      setLogoPreview(dataUrl)
-    } catch {
-      setLogoError('No se pudo leer el archivo. Prueba con otro formato.')
-    }
+    // Store the File object in a ref — zero React re-renders
+    logoFileRef.current = file
+    // Object URL for preview: instant, no base64 encoding
+    if (logoPreview) URL.revokeObjectURL(logoPreview)
+    setLogoPreview(URL.createObjectURL(file))
   }
 
   const removeLogo = () => {
-    setForm((f) => ({ ...f, logoUrl: '' }))
+    if (logoPreview) URL.revokeObjectURL(logoPreview)
+    logoFileRef.current = null
     setLogoPreview(null)
     setLogoError(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
@@ -86,8 +86,21 @@ export function BriefingForm() {
     e.preventDefault()
     setLoading(true)
     setError(null)
+
+    // Convert to base64 only at submit time, not on file selection
+    let logoUrl = ''
+    if (logoFileRef.current) {
+      try {
+        logoUrl = await readFileAsDataURL(logoFileRef.current)
+      } catch {
+        setError('No se pudo leer el logo. Prueba sin logo o con otro archivo.')
+        setLoading(false)
+        return
+      }
+    }
+
     try {
-      await submitBriefing(form)
+      await submitBriefing({ ...form, logoUrl })
       setSubmitted(true)
       setTimeout(() => router.push('/dashboard'), 1500)
     } catch (err) {
@@ -243,17 +256,17 @@ export function BriefingForm() {
         <label className="label">Logo (opcional)</label>
         {logoPreview ? (
           <div className="border border-neon/40 bg-neon/5 p-4 flex items-center gap-4">
-            {logoPreview.startsWith('data:image') ? (
+            {logoFileRef.current?.type.startsWith('image/') ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={logoPreview} alt="Logo preview" className="h-16 w-auto object-contain bg-white p-1" />
             ) : (
               <div className="flex items-center gap-2 text-muted">
                 <ImageIcon size={32} />
-                <span className="text-sm">Archivo adjunto</span>
               </div>
             )}
             <div className="flex-1 min-w-0">
               <p className="text-xs text-neon font-bold uppercase tracking-widest">Logo cargado</p>
+              <p className="text-muted text-xs truncate mt-0.5">{logoFileRef.current?.name}</p>
             </div>
             <button
               type="button"
