@@ -131,7 +131,7 @@ model Briefing {
   targetAudience      String?
   desiredFeatures     String   @db.Text
   referenceUrls       String[] @default([])
-  logoUrl             String?
+  logoUrl             String?  @db.Text
   brandColors         String[] @default([])
   deadline            String?
   additionalNotes     String?  @db.Text

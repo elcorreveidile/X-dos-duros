@@ -1,8 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
-import { Upload, Plus, X, CheckCircle } from 'lucide-react'
+import { Plus, X, CheckCircle, AlertCircle, Upload, ImageIcon } from 'lucide-react'
+import { submitBriefing } from '@/app/dashboard/briefing/actions'
+
+const MAX_FILE_BYTES = 2 * 1024 * 1024 // 2 MB
+
+function readFileAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo'))
+    reader.readAsDataURL(file)
+  })
+}
 
 export function BriefingForm() {
   const [form, setForm] = useState({
@@ -12,11 +25,17 @@ export function BriefingForm() {
     desiredFeatures: '',
     referenceUrls: [''],
     brandColors: ['#39FF14'],
+    logoUrl: '',
     deadline: '',
     additionalNotes: '',
   })
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState<string | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const addUrl = () => setForm((f) => ({ ...f, referenceUrls: [...f.referenceUrls, ''] }))
   const removeUrl = (i: number) =>
@@ -36,12 +55,46 @@ export function BriefingForm() {
       brandColors: f.brandColors.map((c, idx) => (idx === i ? val : c)),
     }))
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setLogoError(null)
+
+    if (file.size > MAX_FILE_BYTES) {
+      setLogoError(`El archivo pesa ${(file.size / 1024 / 1024).toFixed(1)} MB. El máximo es 2 MB.`)
+      e.target.value = ''
+      return
+    }
+
+    try {
+      const dataUrl = await readFileAsDataURL(file)
+      setForm((f) => ({ ...f, logoUrl: dataUrl }))
+      setLogoPreview(dataUrl)
+    } catch {
+      setLogoError('No se pudo leer el archivo. Prueba con otro formato.')
+    }
+  }
+
+  const removeLogo = () => {
+    setForm((f) => ({ ...f, logoUrl: '' }))
+    setLogoPreview(null)
+    setLogoError(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 1000))
-    setLoading(false)
-    setSubmitted(true)
+    setError(null)
+    try {
+      await submitBriefing(form)
+      setSubmitted(true)
+      setTimeout(() => router.push('/dashboard'), 1500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar el briefing. Inténtalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {
@@ -58,6 +111,13 @@ export function BriefingForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {error && (
+        <div className="border border-red-400/40 bg-red-400/5 p-4 flex items-center gap-3 text-red-400 text-sm">
+          <AlertCircle size={16} className="flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <label className="label">Nombre del negocio *</label>
@@ -179,14 +239,57 @@ export function BriefingForm() {
         </div>
       </div>
 
-      {/* Logo upload area */}
       <div>
-        <label className="label">Logo (próximamente)</label>
-        <div className="border border-dashed border-border p-8 flex flex-col items-center gap-2 text-center opacity-50 cursor-not-allowed">
-          <Upload size={24} className="text-muted" />
-          <span className="text-muted text-sm">Arrastra tu logo aquí (PNG, SVG, PDF)</span>
-          <span className="text-xs text-muted">Disponible próximamente</span>
-        </div>
+        <label className="label">Logo (opcional)</label>
+        {logoPreview ? (
+          <div className="border border-neon/40 bg-neon/5 p-4 flex items-center gap-4">
+            {logoPreview.startsWith('data:image') ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoPreview} alt="Logo preview" className="h-16 w-auto object-contain bg-white p-1" />
+            ) : (
+              <div className="flex items-center gap-2 text-muted">
+                <ImageIcon size={32} />
+                <span className="text-sm">Archivo adjunto</span>
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-neon font-bold uppercase tracking-widest">Logo cargado</p>
+            </div>
+            <button
+              type="button"
+              onClick={removeLogo}
+              className="text-muted hover:text-red-400 transition-colors flex-shrink-0"
+              aria-label="Eliminar logo"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full border border-dashed border-border p-8 flex flex-col items-center gap-2 text-center hover:border-neon hover:bg-neon/5 transition-colors group"
+          >
+            <Upload size={24} className="text-muted group-hover:text-neon transition-colors" />
+            <span className="text-muted text-sm group-hover:text-foreground transition-colors">
+              Haz clic para subir tu logo
+            </span>
+            <span className="text-xs text-muted">PNG, JPG, SVG · Máx. 2 MB</span>
+          </button>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/svg+xml,image/gif,image/webp"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+        {logoError && (
+          <div className="mt-2 flex items-center gap-2 text-red-400 text-xs">
+            <AlertCircle size={12} className="flex-shrink-0" />
+            {logoError}
+          </div>
+        )}
       </div>
 
       <div>
