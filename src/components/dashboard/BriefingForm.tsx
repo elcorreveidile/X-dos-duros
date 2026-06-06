@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
-import { Upload, Plus, X, CheckCircle } from 'lucide-react'
+import { Plus, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { submitBriefing } from '@/app/dashboard/briefing/actions'
 
 export function BriefingForm() {
   const [form, setForm] = useState({
@@ -12,11 +13,13 @@ export function BriefingForm() {
     desiredFeatures: '',
     referenceUrls: [''],
     brandColors: ['#39FF14'],
+    logoUrl: '',
     deadline: '',
     additionalNotes: '',
   })
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const addUrl = () => setForm((f) => ({ ...f, referenceUrls: [...f.referenceUrls, ''] }))
   const removeUrl = (i: number) =>
@@ -39,9 +42,15 @@ export function BriefingForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 1000))
-    setLoading(false)
-    setSubmitted(true)
+    setError(null)
+    try {
+      await submitBriefing(form)
+      setSubmitted(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar el briefing. Inténtalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {
@@ -58,6 +67,13 @@ export function BriefingForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {error && (
+        <div className="border border-red-400/40 bg-red-400/5 p-4 flex items-center gap-3 text-red-400 text-sm">
+          <AlertCircle size={16} className="flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <label className="label">Nombre del negocio *</label>
@@ -179,14 +195,18 @@ export function BriefingForm() {
         </div>
       </div>
 
-      {/* Logo upload area */}
       <div>
-        <label className="label">Logo (próximamente)</label>
-        <div className="border border-dashed border-border p-8 flex flex-col items-center gap-2 text-center opacity-50 cursor-not-allowed">
-          <Upload size={24} className="text-muted" />
-          <span className="text-muted text-sm">Arrastra tu logo aquí (PNG, SVG, PDF)</span>
-          <span className="text-xs text-muted">Disponible próximamente</span>
-        </div>
+        <label className="label">Logo (URL)</label>
+        <input
+          type="url"
+          className="input"
+          placeholder="https://drive.google.com/... o https://dropbox.com/..."
+          value={form.logoUrl}
+          onChange={(e) => setForm({ ...form, logoUrl: e.target.value })}
+        />
+        <p className="text-muted text-xs mt-1.5">
+          Sube tu logo a Google Drive, Dropbox o cualquier servicio y pega el enlace aquí. Acepta PNG, SVG o PDF.
+        </p>
       </div>
 
       <div>
