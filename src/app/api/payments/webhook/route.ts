@@ -27,17 +27,21 @@ export async function POST(req: Request) {
       const { type, projectId, clientId } = session.metadata ?? {}
 
       if (type === 'project_payment' && projectId) {
-        await prisma.payment.create({
-          data: {
+        const piId =
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : (session.payment_intent as { id?: string } | null)?.id ?? null
+        const uniqueId = piId ?? `session_${session.id}`
+        await prisma.payment.upsert({
+          where: { stripePaymentId: uniqueId },
+          create: {
             projectId,
             amount: (session.amount_total ?? 0) / 100,
             status: 'PAID',
-            stripePaymentId:
-              typeof session.payment_intent === 'string'
-                ? session.payment_intent
-                : session.payment_intent?.id ?? null,
+            stripePaymentId: uniqueId,
             paidAt: new Date(),
           },
+          update: { status: 'PAID' },
         })
 
         const project = await prisma.project.findUnique({

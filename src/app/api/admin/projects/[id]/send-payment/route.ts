@@ -47,7 +47,7 @@ export async function POST(
       type: 'project_payment',
     },
     allow_promotion_codes: true,
-    success_url: `${appUrl}/dashboard?payment=success`,
+    success_url: `${appUrl}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/dashboard?payment=cancelled`,
   })
 

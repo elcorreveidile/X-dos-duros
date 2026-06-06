@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { stripe } from '@/lib/stripe'
 import { ProjectTimer } from '@/components/dashboard/ProjectTimer'
 import { PayButton } from '@/components/dashboard/PayButton'
 import { FreeConfirmBlock } from '@/components/dashboard/FreeConfirmBlock'
@@ -25,8 +26,38 @@ const STATUS_ORDER: ProjectStatus[] = ['LEAD', 'BRIEFING', 'DEVELOPMENT', 'REVIE
 
 const PAYMENT_STATUSES: ProjectStatus[] = ['BRIEFING', 'DEVELOPMENT', 'REVIEW', 'DELIVERED']
 
-export default async function DashboardPage() {
+interface Props {
+  searchParams: Promise<{ payment?: string; session_id?: string }>
+}
+
+export default async function DashboardPage({ searchParams }: Props) {
   const session = await auth()
+
+  // Verify payment with Stripe directly on success redirect (before webhook arrives)
+  const { payment, session_id } = await searchParams
+  if (payment === 'success' && session_id) {
+    try {
+      const stripeSession = await stripe.checkout.sessions.retrieve(session_id)
+      if (stripeSession.payment_status === 'paid' && stripeSession.metadata?.projectId) {
+        const paymentIntentId =
+          typeof stripeSession.payment_intent === 'string'
+            ? stripeSession.payment_intent
+            : (stripeSession.payment_intent as { id?: string } | null)?.id ?? null
+        const uniqueId = paymentIntentId ?? `session_${session_id}`
+        await prisma.payment.upsert({
+          where: { stripePaymentId: uniqueId },
+          create: {
+            projectId: stripeSession.metadata.projectId,
+            amount: (stripeSession.amount_total ?? 0) / 100,
+            status: 'PAID',
+            stripePaymentId: uniqueId,
+            paidAt: new Date(),
+          },
+          update: { status: 'PAID' },
+        })
+      }
+    } catch {}
+  }
 
   const project = await prisma.project.findFirst({
     where: { clientId: session!.user!.id },
