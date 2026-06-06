@@ -33,6 +33,13 @@ export default async function DashboardPage() {
     orderBy: { createdAt: 'desc' },
     include: {
       payments: { where: { status: 'PAID' }, select: { id: true } },
+      tickets: {
+        where: { status: { in: ['OPEN', 'IN_PROGRESS'] } },
+        select: {
+          id: true,
+          messages: { orderBy: { createdAt: 'desc' }, take: 1, select: { isAdmin: true } },
+        },
+      },
     },
   })
 
@@ -57,6 +64,10 @@ export default async function DashboardPage() {
   }
 
   const isPaid = project.payments.length > 0
+  // Tickets where the last message is from admin (client hasn't replied yet)
+  const unreadCount = project.tickets.filter(
+    (t) => t.messages[0]?.isAdmin === true
+  ).length
   const needsConfirmation = !isPaid && PAYMENT_STATUSES.includes(project.status as ProjectStatus)
   const showPayButton = project.price > 0 && needsConfirmation
   const showFreeConfirm = project.price === 0 && needsConfirmation
@@ -160,18 +171,25 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
-          { href: '/dashboard/briefing', icon: FileText, title: 'Briefing', description: 'Envía textos, logos y referencias' },
-          { href: '/dashboard/tickets', icon: MessageSquare, title: 'Mensajes', description: 'Habla directamente con el equipo' },
-          { href: '/dashboard/suscripcion', icon: Package, title: 'Suscripción', description: 'Gestiona tu plan de mantenimiento' },
+          { href: '/dashboard/briefing', icon: FileText, title: 'Briefing', description: 'Envía textos, logos y referencias', badge: 0 },
+          { href: '/dashboard/tickets', icon: MessageSquare, title: 'Mensajes', description: 'Habla directamente con el equipo', badge: unreadCount },
+          { href: '/dashboard/suscripcion', icon: Package, title: 'Suscripción', description: 'Gestiona tu plan de mantenimiento', badge: 0 },
         ].map((item) => {
           const Icon = item.icon
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="card-hover flex flex-col gap-2 p-5 border border-border group"
+              className="card-hover flex flex-col gap-2 p-5 border border-border group relative"
             >
-              <Icon size={18} className="text-muted group-hover:text-neon transition-colors" />
+              <div className="flex items-center justify-between">
+                <Icon size={18} className="text-muted group-hover:text-neon transition-colors" />
+                {item.badge > 0 && (
+                  <span className="bg-neon text-background text-xs font-black px-1.5 py-0.5 min-w-[20px] text-center leading-none">
+                    {item.badge}
+                  </span>
+                )}
+              </div>
               <h3 className="font-bold text-sm uppercase tracking-tight">{item.title}</h3>
               <p className="text-muted text-xs">{item.description}</p>
             </Link>
