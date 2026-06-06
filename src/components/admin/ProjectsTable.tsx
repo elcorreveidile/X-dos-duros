@@ -15,6 +15,7 @@ type ProjectRow = {
   clientEmail: string
   timerDeadline: string | null
   createdAt: string
+  unreadMessages: number
 }
 
 function formatCurrencyClient(n: number) {
@@ -108,8 +109,13 @@ export function ProjectsTable({ initialProjects }: { initialProjects: ProjectRow
                   className={`border-b border-border hover:bg-card transition-colors cursor-pointer ${i % 2 === 0 ? '' : 'bg-card/30'}`}
                 >
                   <td className="px-4 py-3 font-medium">
-                    <Link href={`/admin/proyectos/${project.id}`} className="hover:text-neon transition-colors block">
+                    <Link href={`/admin/proyectos/${project.id}`} className="hover:text-neon transition-colors flex items-center gap-2">
                       {project.name}
+                      {project.unreadMessages > 0 && (
+                        <span className="bg-neon text-background text-xs font-black px-1.5 py-0.5 min-w-[20px] text-center leading-none flex-shrink-0">
+                          {project.unreadMessages}
+                        </span>
+                      )}
                     </Link>
                   </td>
                   <td className="px-4 py-3 hidden sm:table-cell">
