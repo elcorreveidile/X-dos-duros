@@ -183,6 +183,29 @@ model Payment {
   @@map("payments")
 }
 
+enum PortfolioCategory {
+  LANDING
+  ECOMMERCE
+  MVP
+  CUSTOM
+}
+
+model PortfolioItem {
+  id          String            @id @default(cuid())
+  title       String
+  category    PortfolioCategory
+  description String
+  imageUrl    String
+  demoUrl     String?
+  tags        String[]          @default([])
+  order       Int               @default(0)
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("portfolio_items")
+}
+
 model Subscription {
   id                   String             @id @default(cuid())
   clientId             String

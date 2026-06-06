@@ -4,6 +4,7 @@ import { NavbarWrapper } from '@/components/landing/NavbarWrapper'
 import { Navbar } from '@/components/landing/Navbar'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { ServicesSection } from '@/components/landing/ServicesSection'
+import { PortfolioSection } from '@/components/landing/PortfolioSection'
 import { PricingCalculator } from '@/components/landing/PricingCalculator'
 import { ProcessSection } from '@/components/landing/ProcessSection'
 import { ContactSection } from '@/components/landing/ContactSection'
@@ -19,6 +20,9 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <ServicesSection />
+        <Suspense fallback={null}>
+          <PortfolioSection />
+        </Suspense>
         <PricingCalculator />
         <ProcessSection />
         <Suspense fallback={null}>
