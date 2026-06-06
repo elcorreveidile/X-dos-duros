@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { signIn } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
 
 interface Props {
@@ -13,8 +14,14 @@ export default async function VerifyPage({ searchParams }: Props) {
     redirect('/login?error=invalid')
   }
 
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { role: true },
+  })
+  const redirectTo = user?.role === 'ADMIN' ? '/admin' : '/dashboard'
+
   try {
-    await signIn('credentials', { email, magicToken: token, redirectTo: '__role__' })
+    await signIn('credentials', { email, magicToken: token, redirectTo })
   } catch (error) {
     if (isRedirectError(error)) throw error
     redirect('/login?error=expired')
