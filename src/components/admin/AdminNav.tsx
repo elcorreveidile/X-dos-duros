@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Kanban, Users, CreditCard, Settings, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Kanban, Users, CreditCard, Settings, LogOut, Menu, X, ImageIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/admin/proyectos', label: 'Proyectos', icon: Kanban },
   { href: '/admin/clientes', label: 'Clientes', icon: Users },
   { href: '/admin/pagos', label: 'Pagos', icon: CreditCard },
+  { href: '/admin/portfolio', label: 'Portfolio', icon: ImageIcon },
   { href: '/admin/ajustes', label: 'Ajustes', icon: Settings },
 ]
 
