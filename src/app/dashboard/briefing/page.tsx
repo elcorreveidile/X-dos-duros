@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { BriefingForm } from '@/components/dashboard/BriefingForm'
 import { FileText } from 'lucide-react'
 

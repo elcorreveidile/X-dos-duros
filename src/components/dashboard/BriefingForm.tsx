@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Plus, X, CheckCircle, AlertCircle, Upload, ImageIcon } from 'lucide-react'
 import { submitBriefing } from '@/app/dashboard/briefing/actions'
@@ -28,6 +29,7 @@ export function BriefingForm() {
     deadline: '',
     additionalNotes: '',
   })
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -87,6 +89,7 @@ export function BriefingForm() {
     try {
       await submitBriefing(form)
       setSubmitted(true)
+      setTimeout(() => router.push('/dashboard'), 1500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al enviar el briefing. Inténtalo de nuevo.')
     } finally {
