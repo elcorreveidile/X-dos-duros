@@ -26,7 +26,6 @@ export async function POST(
 
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'payment',
-    payment_method_types: ['card'],
     customer_email: project.client.email,
     expires_at: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24h
     line_items: [
