@@ -2,9 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, MessageSquare, CreditCard, LogOut } from 'lucide-react'
+import { LayoutDashboard, FileText, MessageSquare, CreditCard, LogOut, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
+import { useState } from 'react'
 
 const NAV_ITEMS = [
   { href: '/dashboard', label: 'Mi Proyecto', icon: LayoutDashboard },
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 
 export function DashboardNav() {
   const pathname = usePathname()
+  const [open, setOpen] = useState(false)
 
   return (
     <header className="border-b border-border bg-background sticky top-0 z-40">
@@ -26,6 +28,7 @@ export function DashboardNav() {
             <span className="text-foreground"> Duros</span>
           </Link>
 
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon
@@ -48,36 +51,54 @@ export function DashboardNav() {
             })}
           </nav>
 
-          <button
-            onClick={() => signOut({ callbackUrl: '/' })}
-            className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
-          >
-            <LogOut size={14} />
-            <span className="hidden md:inline">Salir</span>
-          </button>
-        </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
+            >
+              <LogOut size={14} />
+              <span className="hidden md:inline">Salir</span>
+            </button>
 
-        {/* Mobile nav */}
-        <nav className="md:hidden flex items-center gap-1 pb-2 overflow-x-auto">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon
-            const active = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 text-xs uppercase tracking-wider whitespace-nowrap transition-all',
-                  active ? 'text-neon' : 'text-muted'
-                )}
-              >
-                <Icon size={12} />
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden text-muted hover:text-neon transition-colors"
+              onClick={() => setOpen(!open)}
+              aria-label="Menú"
+            >
+              {open ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </div>
       </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="md:hidden border-t border-border bg-background animate-fade-in">
+          <nav className="max-w-screen-xl mx-auto px-4 py-3 flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon
+              const active = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-3 text-sm uppercase tracking-wider transition-colors border-l-2',
+                    active
+                      ? 'text-neon border-neon bg-neon/5'
+                      : 'text-muted hover:text-foreground border-transparent hover:border-border'
+                  )}
+                >
+                  <Icon size={16} />
+                  {item.label}
+                </Link>
+              )
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   )
 }

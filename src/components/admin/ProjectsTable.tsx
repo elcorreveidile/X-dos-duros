@@ -89,15 +89,16 @@ export function ProjectsTable({ initialProjects }: { initialProjects: ProjectRow
           <p className="text-muted text-sm">Sin proyectos en esta categoría.</p>
         </div>
       ) : (
-        <div className="border border-border overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="border border-border overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead className="border-b border-border bg-card">
               <tr>
-                {['Proyecto', 'Cliente', 'Estado', 'Precio', 'Deadline', 'Creado'].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium">
-                    {h}
-                  </th>
-                ))}
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium">Proyecto</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium hidden sm:table-cell">Cliente</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium">Estado</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium">Precio</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium hidden lg:table-cell">Deadline</th>
+                <th className="text-left px-4 py-3 text-xs uppercase tracking-widest text-muted font-medium hidden lg:table-cell">Creado</th>
               </tr>
             </thead>
             <tbody>
@@ -111,7 +112,7 @@ export function ProjectsTable({ initialProjects }: { initialProjects: ProjectRow
                       {project.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 hidden sm:table-cell">
                     <div className="text-xs">{project.clientName || '—'}</div>
                     <div className="text-xs text-muted mono">{project.clientEmail}</div>
                   </td>
@@ -119,10 +120,10 @@ export function ProjectsTable({ initialProjects }: { initialProjects: ProjectRow
                     <Badge variant={STATUS_VARIANTS[project.status]}>{STATUS_LABELS[project.status]}</Badge>
                   </td>
                   <td className="px-4 py-3 mono font-bold neon-text">{formatCurrencyClient(project.price)}</td>
-                  <td className="px-4 py-3 text-muted text-xs mono">
+                  <td className="px-4 py-3 text-muted text-xs mono hidden lg:table-cell">
                     {project.timerDeadline ? formatDateClient(project.timerDeadline) : '—'}
                   </td>
-                  <td className="px-4 py-3 text-muted text-xs">{formatDateClient(project.createdAt)}</td>
+                  <td className="px-4 py-3 text-muted text-xs hidden lg:table-cell">{formatDateClient(project.createdAt)}</td>
                 </tr>
               ))}
             </tbody>
