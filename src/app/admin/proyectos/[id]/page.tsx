@@ -6,6 +6,7 @@ import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/
 import { ArrowLeft, ExternalLink, FileText, Palette, Globe, Calendar, User } from 'lucide-react'
 import Link from 'next/link'
 import { AdminTicketSystem } from '@/components/admin/AdminTicketSystem'
+import { AdminProjectEditPanel } from '@/components/admin/AdminProjectEditPanel'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -52,6 +53,15 @@ export default async function AdminProjectDetailPage({ params }: Props) {
           </a>
         )}
       </div>
+
+      {/* Edit panel */}
+      <AdminProjectEditPanel
+        projectId={project.id}
+        currentStatus={project.status as import('@/types').ProjectStatus}
+        currentPrice={project.price}
+        currentDeadline={project.timerDeadline?.toISOString() ?? null}
+        currentDemoUrl={project.demoUrl}
+      />
 
       {/* Client info */}
       <section className="border border-border p-5 space-y-3">

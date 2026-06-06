@@ -354,6 +354,63 @@ export async function sendTicketReplyToClient(data: {
     ),
   })
 }
+/** 15. Estado del proyecto cambiado — al cliente */
+export async function sendProjectStatusChanged(data: {
+  project: Project
+  client: User
+  oldStatus: string
+  newStatus: string
+}) {
+  const STATUS_LABELS: Record<string, string> = {
+    LEAD: 'Lead',
+    BRIEFING: 'Briefing completado',
+    DEVELOPMENT: 'En desarrollo',
+    REVIEW: 'En revisión',
+    DELIVERED: 'Entregado',
+    CANCELLED: 'Cancelado',
+  }
+  const newLabel = STATUS_LABELS[data.newStatus] ?? data.newStatus
+
+  let extraContent = ''
+  if (data.newStatus === 'DEVELOPMENT') {
+    extraContent = p('El equipo ha comenzado a trabajar en tu proyecto. Te avisaremos en cuanto esté listo para revisión.')
+  } else if (data.newStatus === 'REVIEW') {
+    extraContent = p('Tu proyecto está listo para revisión. Entra en tu panel para ver el avance y dejarnos feedback.')
+  } else if (data.newStatus === 'DELIVERED') {
+    extraContent = p('¡Tu proyecto ha sido entregado! Accede a tu panel para ver el resultado final.')
+  } else if (data.newStatus === 'CANCELLED') {
+    extraContent = p('Tu proyecto ha sido cancelado. Si tienes alguna duda, no dudes en contactarnos.')
+  }
+
+  return resend.emails.send({
+    from: FROM,
+    to: data.client.email,
+    subject: `Actualización de tu proyecto — ${data.project.name}`,
+    html: baseTemplate(
+      'Estado actualizado',
+      `${h1('Tu proyecto ha avanzado')}
+       ${p(`El estado de tu proyecto ${highlight(data.project.name)} ha cambiado a ${highlight(newLabel)}.`)}
+       ${extraContent}
+       ${btn('Ver mi proyecto', `${APP_URL}/dashboard`)}`
+    ),
+  })
+}
+
+/** 16. Email de prueba — al admin */
+export async function sendTestEmail() {
+  return resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: '[Por 2 Duros] Email de prueba',
+    html: baseTemplate(
+      'Email de prueba',
+      `${h1('Todo funciona')}
+       ${p(`Este es un email de prueba enviado desde el panel de administración de Por 2 Duros.`)}
+       ${p(`Si estás recibiendo este mensaje, la configuración de Resend es correcta.`)}`
+    ),
+  })
+}
+
 export async function sendSubscriptionActivated(data: { client: User; plan: string }) {
   const planLabel = data.plan === 'pro' ? 'Pro (€49/mes)' : 'Básico (€29/mes)'
   return resend.emails.send({
