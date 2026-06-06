@@ -51,3 +51,24 @@ export async function updateProject(
   revalidatePath('/admin/proyectos')
   revalidatePath('/admin')
 }
+
+export async function recordManualPayment(projectId: string, amount: number) {
+  const session = await auth()
+  if (session?.user?.role !== 'ADMIN') throw new Error('No autorizado')
+
+  const project = await prisma.project.findUnique({ where: { id: projectId } })
+  if (!project) throw new Error('Proyecto no encontrado')
+
+  await prisma.payment.create({
+    data: {
+      projectId,
+      amount,
+      status: 'PAID',
+      paidAt: new Date(),
+    },
+  })
+
+  revalidatePath(`/admin/proyectos/${projectId}`)
+  revalidatePath('/admin/pagos')
+  revalidatePath('/admin/clientes')
+}

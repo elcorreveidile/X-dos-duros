@@ -20,7 +20,7 @@ export default async function AdminProjectDetailPage({ params }: Props) {
     include: {
       client: { select: { name: true, email: true, createdAt: true } },
       briefing: true,
-      payments: { orderBy: { createdAt: 'desc' } },
+      payments: { orderBy: { createdAt: 'desc' }, select: { id: true, amount: true, status: true, stripePaymentId: true, paidAt: true, createdAt: true } },
       tickets: { orderBy: { updatedAt: 'desc' }, include: { messages: { orderBy: { createdAt: 'asc' } } } },
     },
   })
@@ -61,6 +61,7 @@ export default async function AdminProjectDetailPage({ params }: Props) {
         currentPrice={project.price}
         currentDeadline={project.timerDeadline?.toISOString() ?? null}
         currentDemoUrl={project.demoUrl}
+        hasPaidPayment={project.payments.some((p) => p.status === 'PAID')}
       />
 
       {/* Client info */}

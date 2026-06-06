@@ -38,7 +38,10 @@ export default async function DashboardPage({ searchParams }: Props) {
   if (payment === 'success' && session_id) {
     try {
       const stripeSession = await stripe.checkout.sessions.retrieve(session_id)
-      if (stripeSession.payment_status === 'paid' && stripeSession.metadata?.projectId) {
+      if (
+        (stripeSession.payment_status === 'paid' || stripeSession.payment_status === 'no_payment_required') &&
+        stripeSession.metadata?.projectId
+      ) {
         const paymentIntentId =
           typeof stripeSession.payment_intent === 'string'
             ? stripeSession.payment_intent
