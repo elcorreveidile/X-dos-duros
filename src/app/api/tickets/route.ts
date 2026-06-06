@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { z } from 'zod'
+import {
+  sendTicketCreatedToAdmin,
+  sendTicketCreatedToClient,
+  sendTicketReplyToAdmin,
+  sendTicketReplyToClient,
+} from '@/lib/email'
+import type { Project, User } from '@/types'
 
 const createTicketSchema = z.object({
   projectId: z.string(),
@@ -35,18 +42,19 @@ export async function POST(req: Request) {
   if (!session?.user) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
   const body = await req.json()
+  const isAdmin = session.user.role === 'ADMIN'
 
   if (body.ticketId) {
-    // Add message to existing ticket
+    // Reply to existing ticket
     const parsed = messageSchema.safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const message = await prisma.ticketMessage.create({
       data: {
         ticketId: parsed.data.ticketId,
-        authorId: session.user.id,
+        authorId: session.user.id!,
         content: parsed.data.content,
-        isAdmin: session.user.role === 'ADMIN',
+        isAdmin,
       },
     })
 
@@ -54,6 +62,29 @@ export async function POST(req: Request) {
       where: { id: parsed.data.ticketId },
       data: { status: 'IN_PROGRESS', updatedAt: new Date() },
     })
+
+    // Send email notification to the other party
+    try {
+      const ticket = await prisma.ticket.findUnique({
+        where: { id: parsed.data.ticketId },
+        include: { project: { include: { client: true } } },
+      })
+      if (ticket) {
+        const emailData = {
+          project: ticket.project as unknown as Project,
+          client: ticket.project.client as unknown as User,
+          subject: ticket.subject,
+          message: parsed.data.content,
+        }
+        if (isAdmin) {
+          await sendTicketReplyToClient(emailData)
+        } else {
+          await sendTicketReplyToAdmin(emailData)
+        }
+      }
+    } catch {
+      // email failure doesn't block the response
+    }
 
     return NextResponse.json(message, { status: 201 })
   }
@@ -68,14 +99,36 @@ export async function POST(req: Request) {
       subject: parsed.data.subject,
       messages: {
         create: {
-          authorId: session.user.id,
+          authorId: session.user.id!,
           content: parsed.data.message,
-          isAdmin: session.user.role === 'ADMIN',
+          isAdmin,
         },
       },
     },
-    include: { messages: true },
+    include: {
+      messages: true,
+      project: { include: { client: true } },
+    },
   })
 
-  return NextResponse.json(ticket, { status: 201 })
+  // Send email notification to the other party
+  try {
+    const emailData = {
+      project: ticket.project as unknown as Project,
+      client: ticket.project.client as unknown as User,
+      subject: parsed.data.subject,
+      message: parsed.data.message,
+    }
+    if (isAdmin) {
+      await sendTicketCreatedToClient(emailData)
+    } else {
+      await sendTicketCreatedToAdmin(emailData)
+    }
+  } catch {
+    // email failure doesn't block the response
+  }
+
+  // Don't expose project/client data to the client response
+  const { project: _project, ...ticketResponse } = ticket
+  return NextResponse.json(ticketResponse, { status: 201 })
 }
