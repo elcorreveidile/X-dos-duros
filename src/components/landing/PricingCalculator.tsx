@@ -7,7 +7,8 @@ import Link from 'next/link'
 
 const PROJECT_TYPES = [
   { id: 'landing', label: 'Landing Page', base: 297 },
-  { id: 'ecommerce', label: 'E-commerce', base: 497 },
+  { id: 'ecommerce', label: 'E-commerce básico', base: 497 },
+  { id: 'ecommerce_adv', label: 'E-commerce avanzado', base: 1497 },
   { id: 'mvp', label: 'MVP Web App', base: 797 },
   { id: 'custom', label: 'App a medida', base: 1297 },
 ]
@@ -80,7 +81,7 @@ export function PricingCalculator() {
                       projectType === type.id
                         ? 'border-neon text-neon bg-neon/5'
                         : 'border-border text-muted hover:border-foreground hover:text-foreground'
-                    }`}
+                    } ${type.id === 'ecommerce_adv' ? 'col-span-2 sm:col-span-1' : ''}`}
                   >
                     {type.label}
                     <span className="block text-xs mt-1 font-mono">€{type.base}</span>
@@ -174,6 +175,21 @@ export function PricingCalculator() {
               <p className="text-muted text-xs text-center">Entrega garantizada en 48h</p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 border border-dashed border-border p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-tight">¿Proyecto más complejo?</p>
+            <p className="text-muted text-xs mt-1 max-w-sm">
+              Tiendas con inventario avanzado, integraciones con terceros, portales de cliente… Cuéntanos y te damos presupuesto en 24h.
+            </p>
+          </div>
+          <Link
+            href="/#contacto"
+            className="flex-shrink-0 px-5 py-2.5 border border-border text-xs uppercase tracking-widest font-bold text-muted hover:border-neon hover:text-neon transition-colors whitespace-nowrap"
+          >
+            Solicitar presupuesto
+          </Link>
         </div>
       </div>
     </section>
