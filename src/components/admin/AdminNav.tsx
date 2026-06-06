@@ -2,9 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Kanban, Users, CreditCard, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Kanban, Users, CreditCard, Settings, LogOut, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
+import { useState } from 'react'
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
 
 export function AdminNav() {
   const pathname = usePathname()
+  const [open, setOpen] = useState(false)
 
   return (
     <header className="border-b border-border bg-background sticky top-0 z-40">
@@ -30,6 +32,7 @@ export function AdminNav() {
             <span className="badge border border-neon text-neon text-xs">Admin</span>
           </div>
 
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon
@@ -52,15 +55,54 @@ export function AdminNav() {
             })}
           </nav>
 
-          <button
-            onClick={() => signOut({ callbackUrl: '/' })}
-            className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
-          >
-            <LogOut size={14} />
-            <span className="hidden md:inline">Salir</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="flex items-center gap-2 text-muted hover:text-red-400 text-xs uppercase tracking-wider transition-colors"
+            >
+              <LogOut size={14} />
+              <span className="hidden md:inline">Salir</span>
+            </button>
+
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden text-muted hover:text-neon transition-colors"
+              onClick={() => setOpen(!open)}
+              aria-label="Menú"
+            >
+              {open ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div className="md:hidden border-t border-border bg-background animate-fade-in">
+          <nav className="max-w-screen-2xl mx-auto px-4 py-3 flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon
+              const active = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-3 text-sm uppercase tracking-wider transition-colors border-l-2',
+                    active
+                      ? 'text-neon border-neon bg-neon/5'
+                      : 'text-muted hover:text-foreground border-transparent hover:border-border'
+                  )}
+                >
+                  <Icon size={16} />
+                  {item.label}
+                </Link>
+              )
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
