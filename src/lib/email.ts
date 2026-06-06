@@ -255,7 +255,105 @@ export async function sendPaymentRequest(data: {
   })
 }
 
-/** 10. Suscripción activada — al cliente */
+/** 11. Nuevo ticket del cliente — al admin */
+export async function sendTicketCreatedToAdmin(data: {
+  project: Project
+  client: User
+  subject: string
+  message: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: `[Por 2 Duros] Nuevo mensaje de ${data.client.name ?? data.client.email} — ${data.project.name}`,
+    html: baseTemplate(
+      'Nuevo mensaje',
+      `${h1('Nuevo mensaje del cliente')}
+       ${p(`<strong>${data.client.name ?? data.client.email}</strong> ha enviado un mensaje en el proyecto ${highlight(data.project.name)}.`)}
+       <table style="background:#111;border:1px solid #222;padding:20px;margin:16px 0;width:100%;box-sizing:border-box;">
+         <tr><td style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;">Asunto</td></tr>
+         <tr><td style="font-weight:700;color:#FFF;">${data.subject}</td></tr>
+         <tr><td style="padding:12px 0 4px;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mensaje</td></tr>
+         <tr><td style="color:#CCC;line-height:1.6;">${data.message}</td></tr>
+       </table>
+       ${btn('Responder en el panel', `${APP_URL}/admin`)}`
+    ),
+  })
+}
+
+/** 12. Admin inicia conversación — al cliente */
+export async function sendTicketCreatedToClient(data: {
+  project: Project
+  client: User
+  subject: string
+  message: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.client.email,
+    subject: `Nuevo mensaje sobre tu proyecto — ${data.project.name}`,
+    html: baseTemplate(
+      'Nuevo mensaje',
+      `${h1('Tienes un nuevo mensaje')}
+       ${p(`El equipo de Por 2 Duros te ha enviado un mensaje sobre tu proyecto ${highlight(data.project.name)}.`)}
+       <table style="background:#111;border:1px solid #222;padding:20px;margin:16px 0;width:100%;box-sizing:border-box;">
+         <tr><td style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;">Asunto</td></tr>
+         <tr><td style="font-weight:700;color:#FFF;">${data.subject}</td></tr>
+         <tr><td style="padding:12px 0 4px;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Mensaje</td></tr>
+         <tr><td style="color:#CCC;line-height:1.6;">${data.message}</td></tr>
+       </table>
+       ${btn('Ver y responder', `${APP_URL}/dashboard/tickets`)}`
+    ),
+  })
+}
+
+/** 13. Respuesta del cliente a ticket — al admin */
+export async function sendTicketReplyToAdmin(data: {
+  project: Project
+  client: User
+  subject: string
+  message: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: `[Por 2 Duros] Respuesta de ${data.client.name ?? data.client.email} — ${data.subject}`,
+    html: baseTemplate(
+      'Respuesta del cliente',
+      `${h1('Respuesta del cliente')}
+       ${p(`<strong>${data.client.name ?? data.client.email}</strong> ha respondido en ${highlight(data.project.name)}.`)}
+       <table style="background:#111;border:1px solid #222;padding:20px;margin:16px 0;width:100%;box-sizing:border-box;">
+         <tr><td style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;">Hilo: ${data.subject}</td></tr>
+         <tr><td style="color:#CCC;line-height:1.6;">${data.message}</td></tr>
+       </table>
+       ${btn('Ver conversación', `${APP_URL}/admin`)}`
+    ),
+  })
+}
+
+/** 14. Respuesta del admin a ticket — al cliente */
+export async function sendTicketReplyToClient(data: {
+  project: Project
+  client: User
+  subject: string
+  message: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.client.email,
+    subject: `Respuesta a tu mensaje — ${data.subject}`,
+    html: baseTemplate(
+      'Respuesta',
+      `${h1('El equipo ha respondido')}
+       ${p(`Tienes una nueva respuesta del equipo de Por 2 Duros en el proyecto ${highlight(data.project.name)}.`)}
+       <table style="background:#111;border:1px solid #222;padding:20px;margin:16px 0;width:100%;box-sizing:border-box;">
+         <tr><td style="color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;">Hilo: ${data.subject}</td></tr>
+         <tr><td style="color:#CCC;line-height:1.6;">${data.message}</td></tr>
+       </table>
+       ${btn('Ver y responder', `${APP_URL}/dashboard/tickets`)}`
+    ),
+  })
+}
 export async function sendSubscriptionActivated(data: { client: User; plan: string }) {
   const planLabel = data.plan === 'pro' ? 'Pro (€49/mes)' : 'Básico (€29/mes)'
   return resend.emails.send({

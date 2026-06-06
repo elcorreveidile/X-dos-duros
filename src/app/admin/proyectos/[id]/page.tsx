@@ -3,8 +3,9 @@ export const dynamic = 'force-dynamic'
 import { prisma } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/lib/utils'
-import { ArrowLeft, ExternalLink, FileText, Palette, Globe, Calendar, MessageSquare, User } from 'lucide-react'
+import { ArrowLeft, ExternalLink, FileText, Palette, Globe, Calendar, User } from 'lucide-react'
 import Link from 'next/link'
+import { AdminTicketSystem } from '@/components/admin/AdminTicketSystem'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -19,7 +20,7 @@ export default async function AdminProjectDetailPage({ params }: Props) {
       client: { select: { name: true, email: true, createdAt: true } },
       briefing: true,
       payments: { orderBy: { createdAt: 'desc' } },
-      tickets: { orderBy: { createdAt: 'desc' }, take: 5 },
+      tickets: { orderBy: { updatedAt: 'desc' }, include: { messages: { orderBy: { createdAt: 'asc' } } } },
     },
   })
 
@@ -190,6 +191,9 @@ export default async function AdminProjectDetailPage({ params }: Props) {
         </section>
       )}
 
+<<<<<<< HEAD
+      <AdminTicketSystem projectId={project.id} />
+=======
       {/* Tickets */}
       {project.tickets.length > 0 && (
         <section className="border border-border p-5 space-y-3">
@@ -204,6 +208,7 @@ export default async function AdminProjectDetailPage({ params }: Props) {
           ))}
         </section>
       )}
+>>>>>>> origin/main
     </div>
   )
 }
