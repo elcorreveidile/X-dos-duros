@@ -46,7 +46,7 @@ export default async function AdminPortfolioPage() {
             <div key={item.id} className={`border p-4 space-y-3 ${item.active ? 'border-border' : 'border-border/40 opacity-50'}`}>
               <div className="aspect-video bg-card border border-border overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover object-top" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
