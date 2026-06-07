@@ -38,7 +38,7 @@ export async function PortfolioSection() {
                 <img
                   src={item.imageUrl}
                   alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="p-5 flex flex-col flex-1 gap-3">

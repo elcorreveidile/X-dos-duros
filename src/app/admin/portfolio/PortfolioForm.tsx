@@ -125,7 +125,7 @@ export function PortfolioForm({ item }: Props) {
         {imageUrl && (
           <div className="mt-2 aspect-video max-w-sm border border-border overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+            <img src={imageUrl} alt="Preview" className="w-full h-full object-cover object-top" />
           </div>
         )}
       </div>
