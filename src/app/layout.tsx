@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { JsonLd } from '@/components/JsonLd'
 
 export const metadata: Metadata = {
   title: 'Por 2 Duros — Tu web en 48 horas',
@@ -44,6 +45,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
           rel="stylesheet"
         />
+        <JsonLd />
       </head>
       <body className="min-h-screen bg-background text-foreground">
         {children}
