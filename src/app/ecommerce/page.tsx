@@ -4,6 +4,17 @@ import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { CheckCircle, ArrowRight, Clock, Code, Zap } from 'lucide-react'
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: '¿Incluye sistema de inventario?', acceptedAnswer: { '@type': 'Answer', text: 'El MVP de e-commerce incluye gestión básica de stock por producto. Funcionalidades avanzadas (variantes, almacenes múltiples, sincronización con ERP) se presupuestan por separado.' } },
+    { '@type': 'Question', name: '¿Qué métodos de pago admite?', acceptedAnswer: { '@type': 'Answer', text: 'Stripe soporta tarjeta de crédito/débito, Apple Pay, Google Pay y transferencia bancaria. También podemos integrar Bizum o PayPal si lo necesitas.' } },
+    { '@type': 'Question', name: '¿Las comisiones de Stripe son vuestras?', acceptedAnswer: { '@type': 'Answer', text: 'No. Conectamos tu propio cuenta de Stripe, así que las comisiones (1,5% + 0,25€ por transacción en España) van directamente a ti.' } },
+    { '@type': 'Question', name: '¿Puedo añadir más productos yo solo después?', acceptedAnswer: { '@type': 'Answer', text: 'Sí. El panel de administración te permite añadir, editar y desactivar productos sin tocar código. No necesitas llamarnos para el día a día.' } },
+  ],
+}
+
 export const metadata: Metadata = {
   title: 'Tienda online profesional en 48 horas desde €599 — Por 2 Duros',
   description:
@@ -51,6 +62,7 @@ export default function EcommerceService() {
   return (
     <>
       <Navbar />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <main className="pt-16">
 
         {/* Hero */}
@@ -155,6 +167,23 @@ export default function EcommerceService() {
                 <p className="text-muted text-sm leading-relaxed">{a}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Otros servicios */}
+        <section className="py-16 border-t border-border px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+          <p className="text-center text-muted text-sm mb-8 uppercase tracking-widest font-mono">— También hacemos —</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <Link href="/landing-page" className="border border-border p-6 hover:border-neon/40 transition-colors group">
+              <p className="text-xs text-neon uppercase tracking-widest font-mono mb-2">Landing Page</p>
+              <p className="font-bold uppercase">Página de alta conversión</p>
+              <p className="text-muted text-sm mt-1">Desde €299 · 24 horas</p>
+            </Link>
+            <Link href="/mvp" className="border border-border p-6 hover:border-neon/40 transition-colors group">
+              <p className="text-xs text-neon uppercase tracking-widest font-mono mb-2">MVP Web App</p>
+              <p className="font-bold uppercase">Producto mínimo viable</p>
+              <p className="text-muted text-sm mt-1">Desde €799 · 48 horas</p>
+            </Link>
           </div>
         </section>
 
