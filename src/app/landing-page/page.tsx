@@ -4,6 +4,17 @@ import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { CheckCircle, ArrowRight, Clock, Code, Zap } from 'lucide-react'
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: '¿Realmente entregáis en 24 horas?', acceptedAnswer: { '@type': 'Answer', text: 'Sí. El contador de 24 horas arranca en el momento en que confirmamos los requisitos y materiales (logo, textos, colores). Sin brief completo, el reloj no empieza.' } },
+    { '@type': 'Question', name: '¿Puedo pedir cambios después?', acceptedAnswer: { '@type': 'Answer', text: 'Incluimos una ronda de revisiones antes de la entrega final. Cambios posteriores se presupuestan por separado o con el plan de mantenimiento mensual.' } },
+    { '@type': 'Question', name: '¿Qué necesito tener preparado?', acceptedAnswer: { '@type': 'Answer', text: 'Logo en SVG o PNG, textos principales (o nos dices el negocio y los redactamos nosotros), paleta de colores si la tienes, y referencias de webs que te gusten.' } },
+    { '@type': 'Question', name: '¿Usáis WordPress o Wix?', acceptedAnswer: { '@type': 'Answer', text: 'No. Desarrollamos en Next.js con código propio — más rápido, más seguro y sin licencias que pagar cada mes. Tú eres dueño del código al 100%.' } },
+  ],
+}
+
 export const metadata: Metadata = {
   title: 'Landing Page profesional en 24 horas desde €299 — Por 2 Duros',
   description:
@@ -51,6 +62,7 @@ export default function LandingPageService() {
   return (
     <>
       <Navbar />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <main className="pt-16">
 
         {/* Hero */}
@@ -155,6 +167,23 @@ export default function LandingPageService() {
                 <p className="text-muted text-sm leading-relaxed">{a}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Otros servicios */}
+        <section className="py-16 border-t border-border px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+          <p className="text-center text-muted text-sm mb-8 uppercase tracking-widest font-mono">— También hacemos —</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <Link href="/mvp" className="border border-border p-6 hover:border-neon/40 transition-colors group">
+              <p className="text-xs text-neon uppercase tracking-widest font-mono mb-2">MVP Web App</p>
+              <p className="font-bold uppercase">Producto mínimo viable</p>
+              <p className="text-muted text-sm mt-1">Desde €799 · 48 horas</p>
+            </Link>
+            <Link href="/ecommerce" className="border border-border p-6 hover:border-neon/40 transition-colors group">
+              <p className="text-xs text-neon uppercase tracking-widest font-mono mb-2">E-commerce</p>
+              <p className="font-bold uppercase">Tienda online completa</p>
+              <p className="text-muted text-sm mt-1">Desde €599 · 48 horas</p>
+            </Link>
           </div>
         </section>
 
