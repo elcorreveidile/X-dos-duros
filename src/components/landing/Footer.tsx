@@ -25,10 +25,15 @@ export function Footer() {
           <div>
             <h4 className="text-xs uppercase tracking-widest text-muted mb-4">Servicios</h4>
             <ul className="space-y-2">
-              {['Landing Page', 'MVP Web App', 'E-commerce', 'App a medida'].map((s) => (
-                <li key={s}>
-                  <Link href="/#servicios" className="text-sm text-muted hover:text-neon transition-colors">
-                    {s}
+              {[
+                { label: 'Landing Page', href: '/landing-page' },
+                { label: 'MVP Web App', href: '/mvp' },
+                { label: 'E-commerce', href: '/ecommerce' },
+                { label: 'App a medida', href: '/#servicios' },
+              ].map((s) => (
+                <li key={s.label}>
+                  <Link href={s.href} className="text-sm text-muted hover:text-neon transition-colors">
+                    {s.label}
                   </Link>
                 </li>
               ))}
@@ -39,6 +44,7 @@ export function Footer() {
             <h4 className="text-xs uppercase tracking-widest text-muted mb-4">Empresa</h4>
             <ul className="space-y-2">
               {[
+                { label: 'Blog', href: '/blog' },
                 { label: 'Proceso', href: '/#proceso' },
                 { label: 'Precios', href: '/#precio' },
                 { label: 'Contacto', href: '/#contacto' },
