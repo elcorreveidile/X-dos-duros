@@ -10,10 +10,15 @@ const CATEGORY_LABELS: Record<string, string> = {
 }
 
 export async function PortfolioSection() {
-  const items = await prisma.portfolioItem.findMany({
-    where: { active: true },
-    orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
-  })
+  let items: Awaited<ReturnType<typeof prisma.portfolioItem.findMany>> = []
+  try {
+    items = await prisma.portfolioItem.findMany({
+      where: { active: true },
+      orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
+    })
+  } catch {
+    return null
+  }
 
   if (items.length === 0) return null
 
