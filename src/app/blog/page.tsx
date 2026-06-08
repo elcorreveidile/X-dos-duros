@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  let posts: Awaited<ReturnType<typeof prisma.blogPost.findMany>> = []
+  let posts: { slug: string; title: string; excerpt: string; publishedAt: Date | null }[] = []
   try {
     posts = await prisma.blogPost.findMany({
       where: { published: true },
