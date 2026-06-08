@@ -55,7 +55,7 @@ export function ServicesSection() {
           Desde una simple landing hasta una app completa. Entregas reales en 48 horas.
         </p>
         <p className="text-sm text-muted mt-2 text-center">
-          Todos nuestros proyectos parten de código cero: sin plantillas ni atajos.
+          Todos nuestros proyectos parten de código cero —sin plantillas ni atajos— y cumplen con el RGPD.
         </p>
       </div>
 
