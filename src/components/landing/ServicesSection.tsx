@@ -54,6 +54,9 @@ export function ServicesSection() {
         <p className="section-subtitle mx-auto mt-4 text-center">
           Desde una simple landing hasta una app completa. Entregas reales en 48 horas.
         </p>
+        <p className="text-sm text-muted mt-2 text-center">
+          Todos nuestros proyectos parten de código cero: sin plantillas ni atajos.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
