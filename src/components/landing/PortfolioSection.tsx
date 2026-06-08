@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db'
 import { ExternalLink } from 'lucide-react'
+import Image from 'next/image'
 
 const CATEGORY_LABELS: Record<string, string> = {
   LANDING: 'Landing Page',
@@ -33,12 +34,13 @@ export async function PortfolioSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item) => (
             <div key={item.id} className="group border border-border bg-card flex flex-col overflow-hidden hover:border-neon/40 transition-colors">
-              <div className="aspect-video overflow-hidden bg-card border-b border-border">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+              <div className="aspect-video overflow-hidden bg-card border-b border-border relative">
+                <Image
                   src={item.imageUrl}
                   alt={item.title}
-                  className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
               <div className="p-5 flex flex-col flex-1 gap-3">

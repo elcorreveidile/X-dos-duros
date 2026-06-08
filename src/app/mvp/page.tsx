@@ -4,6 +4,17 @@ import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { CheckCircle, ArrowRight, Clock, Code, Zap } from 'lucide-react'
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: '¿Qué es exactamente un MVP?', acceptedAnswer: { '@type': 'Answer', text: 'Un Producto Mínimo Viable es la versión más pequeña de tu idea que ya funciona de verdad y que puedes poner en manos de usuarios reales para validar si el mercado lo necesita — antes de invertir meses en desarrollo.' } },
+    { '@type': 'Question', name: '¿El MVP incluye pagos?', acceptedAnswer: { '@type': 'Answer', text: 'La integración con Stripe (pagos únicos o suscripciones) se puede añadir al MVP por un coste adicional. Cuéntanos tu caso en el brief y lo presupuestamos.' } },
+    { '@type': 'Question', name: '¿Entregáis el código fuente?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, siempre. El repositorio es tuyo. Puedes seguir desarrollando con tu propio equipo o contratarnos para iteraciones posteriores.' } },
+    { '@type': 'Question', name: '¿Podéis escalar el MVP después?', acceptedAnswer: { '@type': 'Answer', text: 'El stack que usamos (Next.js, Supabase, Vercel) escala desde 0 hasta millones de usuarios sin cambiar de tecnología. Te dejamos una base sólida desde el día 1.' } },
+  ],
+}
+
 export const metadata: Metadata = {
   title: 'MVP Web App en 48 horas desde €799 — Por 2 Duros',
   description:
@@ -51,6 +62,7 @@ export default function MvpService() {
   return (
     <>
       <Navbar />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <main className="pt-16">
 
         {/* Hero */}
@@ -155,6 +167,23 @@ export default function MvpService() {
                 <p className="text-muted text-sm leading-relaxed">{a}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Otros servicios */}
+        <section className="py-16 border-t border-border px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+          <p className="text-center text-muted text-sm mb-8 uppercase tracking-widest font-mono">— También hacemos —</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <Link href="/landing-page" className="border border-border p-6 hover:border-neon/40 transition-colors group">
+              <p className="text-xs text-neon uppercase tracking-widest font-mono mb-2">Landing Page</p>
+              <p className="font-bold uppercase">Página de alta conversión</p>
+              <p className="text-muted text-sm mt-1">Desde €299 · 24 horas</p>
+            </Link>
+            <Link href="/ecommerce" className="border border-border p-6 hover:border-neon/40 transition-colors group">
+              <p className="text-xs text-neon uppercase tracking-widest font-mono mb-2">E-commerce</p>
+              <p className="font-bold uppercase">Tienda online completa</p>
+              <p className="text-muted text-sm mt-1">Desde €599 · 48 horas</p>
+            </Link>
           </div>
         </section>
 
