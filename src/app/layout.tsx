@@ -13,8 +13,17 @@ export const metadata: Metadata = {
     siteName: 'Por 2 Duros',
     locale: 'es_ES',
     type: 'website',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Por 2 Duros — Tu web lista en 48 horas' }],
   },
   robots: { index: true, follow: true },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Por 2 Duros — Tu web en 48 horas',
+    description: 'MVPs, Landing Pages y E-commerce listos en 48 horas desde la confirmación.',
+    site: '@por2duros',
+    images: ['/og-image.jpg'],
+  },
+  metadataBase: new URL('https://por2duros.com'),
 }
 
 export const viewport: Viewport = {
