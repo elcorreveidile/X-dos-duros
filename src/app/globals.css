@@ -139,4 +139,27 @@
     );
     pointer-events: none;
   }
+
+  .prose-blog h2 {
+    @apply text-2xl font-black uppercase tracking-tight mt-12 mb-4 text-foreground;
+  }
+  .prose-blog h3 {
+    @apply text-lg font-bold uppercase tracking-tight mt-8 mb-3 text-foreground;
+  }
+  .prose-blog p {
+    @apply text-muted leading-relaxed mb-5;
+  }
+  .prose-blog strong {
+    @apply text-foreground font-bold;
+  }
+  .prose-blog ul {
+    @apply mb-5 space-y-2;
+  }
+  .prose-blog li {
+    @apply text-muted text-sm pl-4 relative;
+  }
+  .prose-blog li::before {
+    content: '—';
+    @apply text-neon absolute left-0;
+  }
 }
