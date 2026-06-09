@@ -9,7 +9,7 @@ const TESTIMONIALS = [
   },
   {
     name: 'Javier Benítez Láinez',
-    role: 'Escritor',
+    role: 'Escritor — Diario de un Instante',
     text: 'La uso cada día para no perder ningún instante. Me ayuda a organizar mis clases, mis finanzas, mis ideas para escribir... Cuando necesito encontrar algo, está ahí, categorizado y listo.',
     initials: 'JB',
   },
