@@ -5,6 +5,7 @@ import { Navbar } from '@/components/landing/Navbar'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { ServicesSection } from '@/components/landing/ServicesSection'
 import { PortfolioSection } from '@/components/landing/PortfolioSection'
+import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { PricingCalculator } from '@/components/landing/PricingCalculator'
 import { ProcessSection } from '@/components/landing/ProcessSection'
 import { ContactSection } from '@/components/landing/ContactSection'
@@ -23,6 +24,7 @@ export default function HomePage() {
         <Suspense fallback={null}>
           <PortfolioSection />
         </Suspense>
+        <TestimonialsSection />
         <PricingCalculator />
         <ProcessSection />
         <Suspense fallback={null}>
