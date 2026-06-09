@@ -8,6 +8,8 @@ import { PortfolioSection } from '@/components/landing/PortfolioSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { PricingCalculator } from '@/components/landing/PricingCalculator'
 import { ProcessSection } from '@/components/landing/ProcessSection'
+import { FaqSection } from '@/components/landing/FaqSection'
+import { CitiesSection } from '@/components/landing/CitiesSection'
 import { ContactSection } from '@/components/landing/ContactSection'
 import { Footer } from '@/components/landing/Footer'
 import { Suspense } from 'react'
@@ -27,6 +29,8 @@ export default function HomePage() {
         <TestimonialsSection />
         <PricingCalculator />
         <ProcessSection />
+        <FaqSection />
+        <CitiesSection />
         <Suspense fallback={null}>
           <ContactSection />
         </Suspense>
