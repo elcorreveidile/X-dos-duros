@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { JsonLd } from '@/components/JsonLd'
+import { GoogleAnalytics } from '@/components/GoogleAnalytics'
+import { WhatsAppButton } from '@/components/WhatsAppButton'
 
 export const metadata: Metadata = {
   title: 'Por 2 Duros — Tu web en 48 horas',
@@ -48,7 +50,9 @@ export default function RootLayout({
         <JsonLd />
       </head>
       <body className="min-h-screen bg-background text-foreground">
+        <GoogleAnalytics />
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   )
