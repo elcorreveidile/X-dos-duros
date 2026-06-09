@@ -1,15 +1,17 @@
-import { Quote } from 'lucide-react'
+import { Quote, ExternalLink } from 'lucide-react'
 
 const TESTIMONIALS = [
   {
     name: 'Karim',
     role: 'Conductor de MakiCar',
+    url: 'https://makicar.app',
     text: 'Ya tengo mi lista de pasajeros habituales y publicar un viaje me lleva menos de un minuto. Exactamente lo que necesitaba — rápido, sencillo y funciona perfecto desde el primer día.',
     initials: 'K',
   },
   {
     name: 'Javier Benítez Láinez',
     role: 'Escritor — Diario de un Instante',
+    url: 'https://diariodeuninstante.com',
     text: 'La uso cada día para no perder ningún instante. Me ayuda a organizar mis clases, mis finanzas, mis ideas para escribir... Cuando necesito encontrar algo, está ahí, categorizado y listo.',
     initials: 'JB',
   },
@@ -43,7 +45,14 @@ export function TestimonialsSection() {
                 </div>
                 <div>
                   <p className="font-black uppercase tracking-tight text-sm">{t.name}</p>
-                  <p className="text-muted text-xs mt-0.5">{t.role}</p>
+                  <a
+                    href={t.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-neon text-xs mt-0.5 hover:underline"
+                  >
+                    {t.role} <ExternalLink size={10} />
+                  </a>
                 </div>
               </div>
             </div>
