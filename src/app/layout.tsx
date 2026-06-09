@@ -3,6 +3,7 @@ import './globals.css'
 import { JsonLd } from '@/components/JsonLd'
 import { GoogleAnalytics } from '@/components/GoogleAnalytics'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
+import { ScrollToTop } from '@/components/ScrollToTop'
 
 export const metadata: Metadata = {
   title: 'Por 2 Duros — Tu web en 48 horas',
@@ -53,6 +54,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         {children}
         <WhatsAppButton />
+        <ScrollToTop />
       </body>
     </html>
   )
