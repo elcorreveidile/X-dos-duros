@@ -57,6 +57,11 @@ export function ServicesSection() {
         <p className="text-sm text-muted mt-2 text-center">
           Todos nuestros proyectos parten de código cero —sin plantillas ni atajos— y cumplen con el RGPD y la normativa de cookies.
         </p>
+        <p className="text-sm text-muted/60 mt-3 text-center">
+          El precio medio en el mercado para estos proyectos supera los{' '}
+          <span className="line-through">€3.000</span>.{' '}
+          <span className="text-foreground font-semibold">Aquí, desde €299.</span>
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">

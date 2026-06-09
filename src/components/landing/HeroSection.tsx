@@ -48,12 +48,19 @@ export async function HeroSection() {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-muted text-lg sm:text-xl max-w-2xl mx-auto mb-10 animate-slide-up leading-relaxed">
+        <p className="text-muted text-lg sm:text-xl max-w-2xl mx-auto mb-4 animate-slide-up leading-relaxed">
           MVPs, Landing Pages, E-commerce y Apps a medida.
           Pago único. Sin suscripciones obligatorias.
-          Desde{' '}
-          <span className="text-foreground font-bold">€299</span>.
         </p>
+
+        {/* Price anchor */}
+        <div className="inline-flex flex-col sm:flex-row items-center gap-3 mb-10 animate-slide-up">
+          <span className="text-muted/60 text-sm line-through">Agencias tradicionales: €3.000–€8.000</span>
+          <span className="text-muted/60 text-sm hidden sm:inline">→</span>
+          <span className="text-foreground font-black text-xl">
+            Aquí desde <span className="neon-text">€299</span>
+          </span>
+        </div>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-slide-up">
