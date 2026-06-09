@@ -7,6 +7,12 @@ const TESTIMONIALS = [
     text: 'Ya tengo mi lista de pasajeros habituales y publicar un viaje me lleva menos de un minuto. Exactamente lo que necesitaba — rápido, sencillo y funciona perfecto desde el primer día.',
     initials: 'K',
   },
+  {
+    name: 'Javier Benítez Láinez',
+    role: 'Escritor',
+    text: 'La uso cada día para no perder ningún instante. Me ayuda a organizar mis clases, mis finanzas, mis ideas para escribir... Cuando necesito encontrar algo, está ahí, categorizado y listo.',
+    initials: 'JB',
+  },
 ]
 
 export function TestimonialsSection() {
