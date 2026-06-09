@@ -3,7 +3,7 @@ import { Quote } from 'lucide-react'
 const TESTIMONIALS = [
   {
     name: 'Karim',
-    role: 'Conductor — Panel de gestión de pasajeros',
+    role: 'Conductor de MakiCar',
     text: 'Ya tengo mi lista de pasajeros habituales y publicar un viaje me lleva menos de un minuto. Exactamente lo que necesitaba — rápido, sencillo y funciona perfecto desde el primer día.',
     initials: 'K',
   },
