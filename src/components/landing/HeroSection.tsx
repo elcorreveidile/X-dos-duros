@@ -5,15 +5,19 @@ import { ArrowDown, Zap } from 'lucide-react'
 import { prisma } from '@/lib/db'
 
 async function getActiveDeadline(): Promise<string | null> {
-  const project = await prisma.project.findFirst({
-    where: {
-      status: { in: ['DEVELOPMENT', 'REVIEW'] },
-      timerDeadline: { not: null, gt: new Date() },
-    },
-    orderBy: { updatedAt: 'desc' },
-    select: { timerDeadline: true },
-  })
-  return project?.timerDeadline?.toISOString() ?? null
+  try {
+    const project = await prisma.project.findFirst({
+      where: {
+        status: { in: ['DEVELOPMENT', 'REVIEW'] },
+        timerDeadline: { not: null, gt: new Date() },
+      },
+      orderBy: { updatedAt: 'desc' },
+      select: { timerDeadline: true },
+    })
+    return project?.timerDeadline?.toISOString() ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function HeroSection() {

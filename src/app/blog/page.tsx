@@ -19,11 +19,16 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  const posts = await prisma.blogPost.findMany({
-    where: { published: true },
-    orderBy: { publishedAt: 'desc' },
-    select: { slug: true, title: true, excerpt: true, publishedAt: true },
-  })
+  let posts: { slug: string; title: string; excerpt: string; publishedAt: Date | null }[] = []
+  try {
+    posts = await prisma.blogPost.findMany({
+      where: { published: true },
+      orderBy: { publishedAt: 'desc' },
+      select: { slug: true, title: true, excerpt: true, publishedAt: true },
+    })
+  } catch {
+    // DB unavailable — show empty state
+  }
 
   return (
     <>
