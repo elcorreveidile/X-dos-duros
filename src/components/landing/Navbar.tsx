@@ -70,6 +70,9 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/#proceso" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Proceso
             </Link>
+            <Link href="/blog" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+              Blog
+            </Link>
             <Link href="/login">
               <Button variant="outline" size="sm">Acceder</Button>
             </Link>
@@ -95,6 +98,9 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             </Link>
             <Link href="/#proceso" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Proceso
+            </Link>
+            <Link href="/blog" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+              Blog
             </Link>
             <Link href="/login" onClick={() => setOpen(false)}>
               <Button variant="outline" size="sm" className="w-full">Acceder</Button>
