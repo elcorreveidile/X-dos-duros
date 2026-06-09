@@ -1,9 +1,8 @@
 'use client'
 
-const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '34690026370'
 
 export function WhatsAppButton() {
-  if (!WA_NUMBER) return null
   const message = encodeURIComponent('Hola, me interesa un presupuesto para mi web. ¿Podéis ayudarme?')
   return (
     <a
