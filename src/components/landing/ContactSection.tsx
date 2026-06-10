@@ -78,6 +78,12 @@ export function ContactSection() {
       })
       if (res.ok) {
         setStep('done')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).dataLayer?.push({
+          event: 'contact_form_submitted',
+          project_type: form.projectType,
+          budget: form.budget,
+        })
       } else {
         const data = await res.json()
         setError(data.error ?? 'Código incorrecto. Inténtalo de nuevo.')
