@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const BASE_URL = 'https://por2duros.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
