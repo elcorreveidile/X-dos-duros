@@ -111,7 +111,7 @@ const reviewSchema = {
   aggregateRating: {
     '@type': 'AggregateRating',
     ratingValue: '5',
-    reviewCount: '1',
+    reviewCount: '2',
     bestRating: '5',
     worstRating: '1',
   },
@@ -122,6 +122,13 @@ const reviewSchema = {
       reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
       reviewBody:
         'Ya tengo mi lista de pasajeros habituales y publicar un viaje me lleva menos de un minuto. Exactamente lo que necesitaba — rápido, sencillo y funciona perfecto desde el primer día.',
+    },
+    {
+      '@type': 'Review',
+      author: { '@type': 'Person', name: 'Javier Benítez Láinez' },
+      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+      reviewBody:
+        'La uso cada día para no perder ningún instante. Me ayuda a organizar mis clases, mis finanzas, mis ideas para escribir... Cuando necesito encontrar algo, está ahí, categorizado y listo.',
     },
   ],
 }
