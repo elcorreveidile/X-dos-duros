@@ -34,7 +34,7 @@ export default async function BlogPage() {
     <>
       <Navbar />
       <main className="pt-16">
-        <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
+        <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <span className="text-neon text-xs uppercase tracking-widest font-mono mb-6 block">— Blog —</span>
           <h1 className="section-title mb-4">
             Artículos sobre{' '}
@@ -47,21 +47,41 @@ export default async function BlogPage() {
           {posts.length === 0 ? (
             <p className="text-muted text-sm">Próximamente — los primeros artículos están en camino.</p>
           ) : (
-            <div className="divide-y divide-border">
-              {posts.map((post) => (
-                <article key={post.slug} className="py-8 group">
-                  <time className="text-xs text-muted font-mono uppercase tracking-widest">
-                    {post.publishedAt?.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </time>
-                  <h2 className="text-xl font-black uppercase tracking-tight mt-2 mb-3 group-hover:text-neon transition-colors">
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h2>
-                  <p className="text-muted text-sm leading-relaxed mb-4">{post.excerpt}</p>
-                  <Link href={`/blog/${post.slug}`} className="flex items-center gap-2 text-xs text-neon uppercase tracking-widest hover:underline">
-                    Leer artículo <ArrowRight size={12} />
-                  </Link>
-                </article>
-              ))}
+            <div className="space-y-12">
+              {/* Featured post */}
+              <Link href={`/blog/${posts[0].slug}`} className="group block neon-border p-8 md:p-10 hover:border-neon transition-colors">
+                <time className="text-xs text-neon font-mono uppercase tracking-widest">
+                  {posts[0].publishedAt?.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  <span className="ml-3 text-muted">— Último artículo</span>
+                </time>
+                <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight mt-3 mb-4 group-hover:text-neon transition-colors leading-tight">
+                  {posts[0].title}
+                </h2>
+                <p className="text-muted leading-relaxed mb-6 max-w-2xl">{posts[0].excerpt}</p>
+                <span className="flex items-center gap-2 text-xs text-neon uppercase tracking-widest">
+                  Leer artículo <ArrowRight size={12} />
+                </span>
+              </Link>
+
+              {/* Grid */}
+              {posts.length > 1 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {posts.slice(1).map((post) => (
+                    <Link key={post.slug} href={`/blog/${post.slug}`} className="group block border border-border hover:border-neon/40 p-6 transition-colors">
+                      <time className="text-xs text-muted font-mono uppercase tracking-widest">
+                        {post.publishedAt?.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </time>
+                      <h2 className="text-base font-black uppercase tracking-tight mt-2 mb-3 group-hover:text-neon transition-colors leading-tight">
+                        {post.title}
+                      </h2>
+                      <p className="text-muted text-sm leading-relaxed mb-4 line-clamp-3">{post.excerpt}</p>
+                      <span className="flex items-center gap-2 text-xs text-neon uppercase tracking-widest">
+                        Leer <ArrowRight size={10} />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </section>
