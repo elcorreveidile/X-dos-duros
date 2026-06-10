@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { CheckCircle, ArrowRight, MapPin } from 'lucide-react'
@@ -82,8 +83,16 @@ export default function AgenciaWebEsteponaPage() {
       <main className="pt-16">
 
         {/* Hero */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8 grid-bg overflow-hidden">
-          <div className="max-w-4xl mx-auto text-center">
+        <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+          <Image
+            src="/images/estepona/estepona-paseo-antiguo.webp"
+            alt="Paseo marítimo de Estepona, años 60"
+            fill
+            className="object-cover opacity-30"
+            priority
+          />
+          <div className="absolute inset-0 bg-background/70" />
+          <div className="relative max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
               <MapPin size={14} className="text-neon" />
               <span className="text-neon text-xs uppercase tracking-widest font-mono">De Estepona · Para Estepona</span>
@@ -110,6 +119,20 @@ export default function AgenciaWebEsteponaPage() {
             </div>
           </div>
         </section>
+
+        {/* Photo strip */}
+        <div className="grid grid-cols-3 h-48 sm:h-64 overflow-hidden">
+          {[
+            { src: '/images/estepona/estepona-playa.webp', alt: 'Playa de Estepona' },
+            { src: '/images/estepona/estepona-casco-antiguo.webp', alt: 'Casco antiguo de Estepona' },
+            { src: '/images/estepona/estepona-plaza-noche.webp', alt: 'Plaza de Estepona de noche' },
+          ].map((img) => (
+            <div key={img.src} className="relative overflow-hidden">
+              <Image src={img.src} alt={img.alt} fill className="object-cover opacity-60 hover:opacity-80 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-background/40" />
+            </div>
+          ))}
+        </div>
 
         {/* Services */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
