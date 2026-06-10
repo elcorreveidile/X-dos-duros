@@ -2,6 +2,11 @@
 
 const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '34690026370'
 
+function pushWaClick() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ;(window as any).dataLayer?.push({ event: 'whatsapp_click' })
+}
+
 export function WhatsAppButton() {
   const message = encodeURIComponent('Hola, me interesa un presupuesto para mi web. ¿Podéis ayudarme?')
   return (
@@ -10,6 +15,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"
+      onClick={pushWaClick}
       className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white px-4 py-3 shadow-2xl transition-all duration-200 hover:scale-105"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
