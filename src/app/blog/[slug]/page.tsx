@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const post = await prisma.blogPost.findUnique({ where: { slug, published: true }, select: { title: true, metaDesc: true, excerpt: true } })
   if (!post) return {}
+  const ogImage = { url: 'https://por2duros.com/og-image.jpg', width: 1200, height: 630, alt: post.title }
   return {
     title: `${post.title} — Por 2 Duros`,
     description: post.metaDesc || post.excerpt,
@@ -20,7 +21,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: post.title,
       description: post.metaDesc || post.excerpt,
       url: `https://por2duros.com/blog/${slug}`,
-      images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
+      images: [ogImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.metaDesc || post.excerpt,
+      site: '@por2duros',
+      images: ['https://por2duros.com/og-image.jpg'],
     },
   }
 }
