@@ -86,6 +86,23 @@ const servicesSchema = {
   ],
 }
 
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Por 2 Duros',
+  description: 'Agencia de desarrollo web con entrega garantizada en 48 horas. Landing pages, tiendas online, MVPs y apps a medida desde €299. Código a medida, sin plantillas.',
+  url: BASE_URL,
+  telephone: '+34690026370',
+  email: 'hola@por2duros.com',
+  areaServed: [
+    { '@type': 'State', name: 'Andalucía' },
+    { '@type': 'Country', name: 'España' },
+  ],
+  priceRange: '€€',
+  serviceType: ['Diseño web', 'Desarrollo web', 'Landing page', 'Tienda online', 'MVP', 'App a medida'],
+  sameAs: ['https://twitter.com/por2duros'],
+}
+
 const reviewSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -123,6 +140,10 @@ export function JsonLd() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
       />
       <script
         type="application/ld+json"
