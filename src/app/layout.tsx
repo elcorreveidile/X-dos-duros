@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { JsonLd } from '@/components/JsonLd'
-import { GoogleAnalytics } from '@/components/GoogleAnalytics'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
@@ -53,7 +52,6 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background text-foreground">
         <noscript dangerouslySetInnerHTML={{ __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MX4L7L77" height="0" width="0" style="display:none;visibility:hidden"></iframe>` }} />
-        <GoogleAnalytics />
         {children}
         <WhatsAppButton />
         <ScrollToTop />
