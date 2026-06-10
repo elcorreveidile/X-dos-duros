@@ -88,10 +88,10 @@ export default function AgenciaWebEsteponaPage() {
             src="/images/estepona/estepona-paseo-antiguo.webp"
             alt="Paseo marítimo de Estepona, años 60"
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-60"
             priority
           />
-          <div className="absolute inset-0 bg-background/70" />
+          <div className="absolute inset-0 bg-background/50" />
           <div className="relative max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
               <MapPin size={14} className="text-neon" />
