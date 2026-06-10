@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Badge } from '@/components/ui/Badge'
-import { Trash2, Search } from 'lucide-react'
+import { Trash2, Search, Send } from 'lucide-react'
 
 type ClientRow = {
   id: string
@@ -27,6 +27,7 @@ export function ClientsTable({ initialClients }: { initialClients: ClientRow[] }
   const [clients, setClients] = useState(initialClients)
   const [search, setSearch] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [sendingAccessId, setSendingAccessId] = useState<string | null>(null)
 
   const filtered = clients.filter((c) => {
     const q = search.toLowerCase()
@@ -35,6 +36,19 @@ export function ClientsTable({ initialClients }: { initialClients: ClientRow[] }
       (c.name ?? '').toLowerCase().includes(q)
     )
   })
+
+  const handleSendAccess = async (client: ClientRow) => {
+    setSendingAccessId(client.id)
+    try {
+      const res = await fetch(`/api/admin/clients/${client.id}/send-access`, { method: 'POST' })
+      if (!res.ok) throw new Error('Error al enviar')
+      alert(`Acceso enviado a ${client.email}`)
+    } catch {
+      alert('No se pudo enviar el acceso.')
+    } finally {
+      setSendingAccessId(null)
+    }
+  }
 
   const handleDelete = async (client: ClientRow) => {
     if (!confirm(`¿Eliminar a "${client.name ?? client.email}" y todos sus proyectos? Esta acción no se puede deshacer.`)) return
@@ -95,14 +109,24 @@ export function ClientsTable({ initialClients }: { initialClients: ClientRow[] }
                   </td>
                   <td className="px-4 py-3 text-muted text-xs">{formatDateClient(client.createdAt)}</td>
                   <td className="px-4 py-3">
-                    <button
-                      disabled={deletingId === client.id}
-                      onClick={() => handleDelete(client)}
-                      className="text-muted hover:text-red-400 transition-colors disabled:opacity-40"
-                      title="Eliminar cliente"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        disabled={sendingAccessId === client.id}
+                        onClick={() => handleSendAccess(client)}
+                        className="text-muted hover:text-neon transition-colors disabled:opacity-40"
+                        title="Enviar acceso"
+                      >
+                        <Send size={14} />
+                      </button>
+                      <button
+                        disabled={deletingId === client.id}
+                        onClick={() => handleDelete(client)}
+                        className="text-muted hover:text-red-400 transition-colors disabled:opacity-40"
+                        title="Eliminar cliente"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
