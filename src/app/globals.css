@@ -162,4 +162,7 @@
     content: '—';
     @apply text-neon absolute left-0;
   }
+  .prose-blog .cta-inline {
+    @apply inline-block mt-4 px-6 py-3 bg-neon text-background font-black uppercase tracking-tight text-sm hover:bg-neon/90 transition-colors;
+  }
 }
