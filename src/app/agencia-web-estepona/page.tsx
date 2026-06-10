@@ -5,13 +5,13 @@ import { Footer } from '@/components/landing/Footer'
 import { CheckCircle, ArrowRight, MapPin } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Agencia Web en Estepona — Tu web lista en 48 horas | Por 2 Duros',
+  title: 'Agencia Web en Estepona — De Estepona para Estepona | Por 2 Duros',
   description:
-    'Agencia de desarrollo web en Estepona. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
+    'Agencia web en Estepona con raíces locales. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas. Alguien que conoce el pueblo de verdad.',
   keywords: ['agencia web Estepona', 'diseño web Estepona', 'desarrollo web Estepona', 'páginas web Estepona', 'crear web Estepona'],
   openGraph: {
-    title: 'Agencia Web en Estepona — Tu web lista en 48 horas',
-    description: 'Desarrollo web profesional en Estepona. Desde €299, entrega en 48 horas, código a medida.',
+    title: 'Agencia Web en Estepona — De Estepona para Estepona',
+    description: 'Desarrollo web profesional en Estepona. Desde €299, entrega en 48 horas, código a medida. De alguien que conoce el pueblo de verdad.',
     url: 'https://por2duros.com/agencia-web-estepona',
     images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
@@ -86,18 +86,19 @@ export default function AgenciaWebEsteponaPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
               <MapPin size={14} className="text-neon" />
-              <span className="text-neon text-xs uppercase tracking-widest font-mono">Agencia Web · Estepona</span>
+              <span className="text-neon text-xs uppercase tracking-widest font-mono">De Estepona · Para Estepona</span>
             </div>
             <h1 className="text-5xl sm:text-6xl font-black uppercase tracking-tighter leading-none mb-6">
               Tu web lista en{' '}
               <span className="neon-text">48 horas.</span>
               <br />
-              Desde Estepona.
+              Por alguien de aquí.
             </h1>
             <p className="text-muted text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-              Desarrollamos webs, landing pages, tiendas online y MVPs para negocios de Estepona y la Costa del Sol occidental.
-              Código a medida, sin plantillas, sin suscripciones. Pago único desde{' '}
-              <strong className="text-foreground">€299</strong>.
+              Hay muchas agencias que te hacen una web para Estepona sin haber pisado el pueblo.
+              Nosotros somos de aquí. Conocemos el paseo, el casco antiguo, la gente de toda la vida —
+              y sabemos lo que necesita un negocio local para destacar de verdad.
+              Desde <strong className="text-foreground">€299</strong>, entrega en 48 horas.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/#contacto" className="btn-primary inline-flex items-center gap-2">
@@ -147,18 +148,37 @@ export default function AgenciaWebEsteponaPage() {
           </div>
         </section>
 
-        {/* Why us */}
+        {/* Local identity */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
           <div className="max-w-4xl mx-auto">
-            <h2 className="section-title text-center mb-4">Por qué elegirnos para tu web en Estepona</h2>
+            <h2 className="section-title text-center mb-4">
+              Estepona no es solo{' '}
+              <span className="neon-text">la Costa del Sol.</span>
+            </h2>
             <p className="section-subtitle text-center mx-auto mb-12">
-              Estepona crece cada año. Hoteles, restaurantes, inmobiliarias, comercios — todos necesitan una web que funcione.
+              Hay un Estepona que los turistas no ven. El de las calles del casco antiguo, los negocios de toda la vida, las plazas con flores en verano y el paseo cuando todavía no ha llegado nadie.
+              Ese es el Estepona que conocemos.
             </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              <div className="neon-border p-8">
+                <h3 className="font-black uppercase tracking-tight text-sm neon-text mb-4">El problema con las agencias de fuera</h3>
+                <p className="text-muted text-sm leading-relaxed">
+                  Una agencia de Madrid o Barcelona puede hacerte una web para Estepona. Pero no saben que aquí conviven tres públicos distintos: el vecino de toda la vida, el residente extranjero y el turista de paso. Cada negocio local tiene que saber a cuál de los tres hablarle — y cómo.
+                  Eso no se aprende en un briefing de media hora.
+                </p>
+              </div>
+              <div className="neon-border p-8">
+                <h3 className="font-black uppercase tracking-tight text-sm neon-text mb-4">Lo que cambia cuando eres de aquí</h3>
+                <p className="text-muted text-sm leading-relaxed">
+                  Sabemos que el cliente de un restaurante del casco antiguo no es el mismo que el de un chiringuito en la playa de la Rada. Que una inmobiliaria en Estepona habla con compradores de seis países distintos. Que hay negocios que llevan décadas aquí y otros que acaban de abrir. Cada web tiene que hablarle a su gente.
+                </p>
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { title: 'Velocidad real', desc: 'Mientras otras agencias tardan semanas, nosotros entregamos en 48 horas. Porque cada día sin web es un día perdiendo clientes.' },
-                { title: 'Código a medida', desc: 'Sin WordPress, sin Wix, sin plantillas genéricas. Tu web es única, más rápida y sin cuotas mensuales de licencia.' },
-                { title: 'SEO desde el inicio', desc: 'Tu web llega optimizada para aparecer en Google desde el primer día. No es un extra — es parte del trabajo.' },
+                { title: 'Velocidad real', desc: 'Entregamos en 48 horas. Porque cada día sin web es un día perdiendo clientes frente a quien ya aparece en Google.' },
+                { title: 'Código a medida', desc: 'Sin WordPress, sin plantillas genéricas. Tu web es única, más rápida y sin cuotas mensuales de licencia.' },
+                { title: 'SEO local', desc: 'Tu web llega optimizada para aparecer cuando alguien busca tu tipo de negocio en Estepona. No es un extra — es parte del trabajo.' },
               ].map((item) => (
                 <div key={item.title} className="card">
                   <h3 className="font-black uppercase tracking-tight text-sm neon-text mb-3">{item.title}</h3>
@@ -188,9 +208,9 @@ export default function AgenciaWebEsteponaPage() {
         <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl font-black uppercase tracking-tighter mb-4">
-              ¿Tu negocio en Estepona necesita una web?
+              Tu negocio en Estepona merece una web hecha por alguien de aquí.
             </h2>
-            <p className="text-muted mb-8">Cuéntanos tu proyecto y te respondemos con un presupuesto en menos de 2 horas.</p>
+            <p className="text-muted mb-8">Cuéntanos tu proyecto. Te respondemos con un presupuesto en menos de 2 horas — sin rodeos, sin comerciales, sin letra pequeña.</p>
             <Link href="/#contacto" className="btn-primary inline-flex items-center gap-2">
               Pedir presupuesto gratis <ArrowRight size={16} />
             </Link>
