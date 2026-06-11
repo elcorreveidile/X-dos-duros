@@ -85,8 +85,8 @@ export default function AgenciaWebEsteponaPage() {
         {/* Hero */}
         <section className="relative min-h-[55vh] flex items-end px-4 sm:px-6 lg:px-8 overflow-hidden">
           <Image
-            src="/images/estepona/estepona-casco-noche.webp"
-            alt="Casco antiguo de Estepona de noche con la torre de la iglesia"
+            src="/images/estepona/estepona-puerto.webp"
+            alt="Puerto deportivo de Estepona con el Mediterráneo y Gibraltar al fondo"
             fill
             className="object-cover object-center"
             priority
