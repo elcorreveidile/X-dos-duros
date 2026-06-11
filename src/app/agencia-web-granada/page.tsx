@@ -88,7 +88,7 @@ export default function AgenciaWebGranadaPage() {
       <main className="pt-16">
 
         {/* Hero */}
-        <section className="relative min-h-[80vh] flex items-end px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="relative min-h-[55vh] flex items-end px-4 sm:px-6 lg:px-8 overflow-hidden">
           <Image
             src="/images/granada/granada-alhambra-noche.webp"
             alt="La Alhambra iluminada de noche, Granada"

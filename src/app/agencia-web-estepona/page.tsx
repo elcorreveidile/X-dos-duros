@@ -83,7 +83,7 @@ export default function AgenciaWebEsteponaPage() {
       <main className="pt-16">
 
         {/* Hero */}
-        <section className="relative min-h-[80vh] flex items-end px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="relative min-h-[55vh] flex items-end px-4 sm:px-6 lg:px-8 overflow-hidden">
           <Image
             src="/images/estepona/estepona-casco-noche.webp"
             alt="Casco antiguo de Estepona de noche con la torre de la iglesia"
