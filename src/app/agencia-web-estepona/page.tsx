@@ -83,16 +83,16 @@ export default function AgenciaWebEsteponaPage() {
       <main className="pt-16">
 
         {/* Hero */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="relative min-h-[80vh] flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden">
           <Image
-            src="/images/estepona/estepona-paseo-antiguo.webp"
-            alt="Paseo marítimo de Estepona, años 60"
+            src="/images/estepona/estepona-casco-noche.webp"
+            alt="Casco antiguo de Estepona de noche con la torre de la iglesia"
             fill
-            className="object-cover opacity-60"
+            className="object-cover object-center"
             priority
           />
-          <div className="absolute inset-0 bg-background/50" />
-          <div className="relative max-w-4xl mx-auto text-center">
+          <div className="absolute inset-0 bg-background/30" />
+          <div className="relative max-w-4xl mx-auto text-center w-full py-24">
             <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
               <MapPin size={14} className="text-neon" />
               <span className="text-neon text-xs uppercase tracking-widest font-mono">De Estepona · Para Estepona</span>
@@ -119,20 +119,6 @@ export default function AgenciaWebEsteponaPage() {
             </div>
           </div>
         </section>
-
-        {/* Photo strip */}
-        <div className="grid grid-cols-3 h-48 sm:h-64 overflow-hidden">
-          {[
-            { src: '/images/estepona/estepona-playa.webp', alt: 'Playa de Estepona' },
-            { src: '/images/estepona/estepona-casco-antiguo.webp', alt: 'Casco antiguo de Estepona' },
-            { src: '/images/estepona/estepona-plaza-noche.webp', alt: 'Plaza de Estepona de noche' },
-          ].map((img) => (
-            <div key={img.src} className="relative overflow-hidden">
-              <Image src={img.src} alt={img.alt} fill className="object-cover opacity-60 hover:opacity-80 transition-opacity duration-500" />
-              <div className="absolute inset-0 bg-background/40" />
-            </div>
-          ))}
-        </div>
 
         {/* Services */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
