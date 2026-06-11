@@ -88,16 +88,16 @@ export default function AgenciaWebGranadaPage() {
       <main className="pt-16">
 
         {/* Hero */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="relative min-h-[80vh] flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden">
           <Image
-            src="/images/granada/granada-albaicin.webp"
-            alt="Calle del Albaicín con la Alhambra al fondo, Granada"
+            src="/images/granada/granada-alhambra-noche.webp"
+            alt="La Alhambra iluminada de noche, Granada"
             fill
-            className="object-cover opacity-60"
+            className="object-cover object-center"
             priority
           />
-          <div className="absolute inset-0 bg-background/50" />
-          <div className="relative max-w-4xl mx-auto text-center">
+          <div className="absolute inset-0 bg-background/30" />
+          <div className="relative max-w-4xl mx-auto text-center w-full py-24">
             <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
               <MapPin size={14} className="text-neon" />
               <span className="text-neon text-xs uppercase tracking-widest font-mono">Granada · Andalucía</span>
@@ -124,20 +124,6 @@ export default function AgenciaWebGranadaPage() {
             </div>
           </div>
         </section>
-
-        {/* Photo strip */}
-        <div className="grid grid-cols-3 h-48 sm:h-64 overflow-hidden">
-          {[
-            { src: '/images/granada/granada-iglesia.webp', alt: 'Iglesia de Granada' },
-            { src: '/images/granada/granada-catedral-noche.webp', alt: 'Catedral de Granada de noche' },
-            { src: '/images/granada/granada-catedral.webp', alt: 'Fachada de la Catedral de Granada' },
-          ].map((img) => (
-            <div key={img.src} className="relative overflow-hidden">
-              <Image src={img.src} alt={img.alt} fill className="object-cover opacity-60 hover:opacity-80 transition-opacity duration-500" />
-              <div className="absolute inset-0 bg-background/40" />
-            </div>
-          ))}
-        </div>
 
         {/* Services */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
