@@ -29,7 +29,13 @@ export async function POST(
   await prisma.verificationToken.create({ data: { identifier: user.email, token, expires } })
 
   const magicLink = `${APP_URL}/login/verify?email=${encodeURIComponent(user.email)}&token=${token}`
-  await sendClientMagicAccess({ name: user.name ?? user.email, email: user.email, magicLink })
+  const result = await sendClientMagicAccess({ name: user.name ?? user.email, email: user.email, magicLink })
+
+  if ('error' in result && result.error) {
+    // Roll back token so a stale entry isn't left in the DB
+    await prisma.verificationToken.deleteMany({ where: { identifier: user.email } })
+    return NextResponse.json({ error: 'No se pudo enviar el email' }, { status: 502 })
+  }
 
   return NextResponse.json({ ok: true })
 }
