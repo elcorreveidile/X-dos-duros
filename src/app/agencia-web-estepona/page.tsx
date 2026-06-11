@@ -83,7 +83,7 @@ export default function AgenciaWebEsteponaPage() {
       <main className="pt-16">
 
         {/* Hero */}
-        <section className="relative min-h-[80vh] flex items-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <section className="relative min-h-[80vh] flex items-end px-4 sm:px-6 lg:px-8 overflow-hidden">
           <Image
             src="/images/estepona/estepona-casco-noche.webp"
             alt="Casco antiguo de Estepona de noche con la torre de la iglesia"
@@ -91,8 +91,8 @@ export default function AgenciaWebEsteponaPage() {
             className="object-cover object-center"
             priority
           />
-          <div className="absolute inset-0 bg-background/30" />
-          <div className="relative max-w-4xl mx-auto text-center w-full py-24">
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
+          <div className="relative max-w-4xl mx-auto text-center w-full pb-20 pt-32">
             <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
               <MapPin size={14} className="text-neon" />
               <span className="text-neon text-xs uppercase tracking-widest font-mono">De Estepona · Para Estepona</span>
