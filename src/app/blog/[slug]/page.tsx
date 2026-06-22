@@ -45,7 +45,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const post = await prisma.blogPost.findUnique({ where: { slug, published: true } })
   if (!post) notFound()
 
-  const htmlContent = markdownToHtml(post.content)
+  const rawHtml = markdownToHtml(post.content)
+  const htmlContent = slug === 'gestor-cuadrantes-turnos-sin-excel'
+    ? rawHtml.replace(
+        /href="[^"]*por2duros\.com[^"]*"/g,
+        'href="https://www.planturnos.com" target="_blank" rel="noopener noreferrer"'
+      )
+    : rawHtml
 
   return (
     <>
