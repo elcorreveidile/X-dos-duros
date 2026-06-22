@@ -9,6 +9,9 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/dashboard', '/api', '/login', '/login/verify'],
       },
     ],
-    sitemap: 'https://por2duros.com/sitemap.xml',
+    sitemap: [
+      'https://por2duros.com/sitemap.xml',
+      'https://por2duros.com/sitemap-images.xml',
+    ],
   }
 }
