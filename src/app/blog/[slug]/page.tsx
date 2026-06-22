@@ -46,12 +46,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   if (!post) notFound()
 
   const rawHtml = markdownToHtml(post.content)
-  const htmlContent = slug === 'gestor-cuadrantes-turnos-sin-excel'
-    ? rawHtml.replace(
-        /<a\s[^>]*>([^<]*Quiero probar PlanTurnos[^<]*)<\/a>/gi,
-        '<a href="https://www.planturnos.com" target="_blank" rel="noopener noreferrer">$1</a>'
-      )
-    : rawHtml
+  const htmlContent = rawHtml.replace(
+    /<a\s[^>]*>([^<]*Quiero probar PlanTurnos[^<]*)<\/a>/gi,
+    '<a href="https://www.planturnos.com" target="_blank" rel="noopener noreferrer">$1</a>'
+  )
 
   return (
     <>
