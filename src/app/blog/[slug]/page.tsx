@@ -11,9 +11,12 @@ export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = await prisma.blogPost.findUnique({ where: { slug, published: true }, select: { title: true, metaDesc: true, excerpt: true } })
+  const post = await prisma.blogPost.findUnique({ where: { slug, published: true }, select: { title: true, metaDesc: true, excerpt: true, coverImageUrl: true } })
   if (!post) return {}
-  const ogImage = { url: 'https://por2duros.com/og-image.jpg', width: 1200, height: 630, alt: post.title }
+  const ogImageUrl = post.coverImageUrl
+    ? post.coverImageUrl.startsWith('http') ? post.coverImageUrl : `https://por2duros.com${post.coverImageUrl}`
+    : 'https://por2duros.com/og-image.jpg'
+  const ogImage = { url: ogImageUrl, width: 1200, height: 630, alt: post.title }
   return {
     title: `${post.title} — Por 2 Duros`,
     description: post.metaDesc || post.excerpt,
