@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { prisma } from '@/lib/db'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
@@ -63,6 +64,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               {post.title}
             </h1>
             <p className="text-lg text-muted leading-relaxed border-l-2 border-neon pl-4">{post.excerpt}</p>
+            {post.coverImageUrl && (
+              <div className="relative w-full h-56 sm:h-72 mt-10 overflow-hidden border border-border">
+                <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover opacity-90" />
+              </div>
+            )}
           </header>
 
           <div
