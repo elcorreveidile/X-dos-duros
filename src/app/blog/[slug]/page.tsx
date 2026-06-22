@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: post.title,
       description: post.metaDesc || post.excerpt,
       site: '@por2duros',
-      images: ['https://por2duros.com/og-image.jpg'],
+      images: [ogImageUrl],
     },
   }
 }
