@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Córdoba. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
   keywords: ['agencia web Córdoba', 'diseño web Córdoba', 'desarrollo web Córdoba', 'páginas web Córdoba', 'crear web Córdoba'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-cordoba',
+  },
   openGraph: {
     title: 'Agencia Web en Córdoba — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Córdoba. Desde €299, entrega en 48 horas, código a medida.',

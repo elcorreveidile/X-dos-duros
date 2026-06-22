@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { prisma } from '@/lib/db'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
@@ -11,12 +12,18 @@ export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const post = await prisma.blogPost.findUnique({ where: { slug, published: true }, select: { title: true, metaDesc: true, excerpt: true } })
+  const post = await prisma.blogPost.findUnique({ where: { slug, published: true }, select: { title: true, metaDesc: true, excerpt: true, coverImageUrl: true } })
   if (!post) return {}
-  const ogImage = { url: 'https://por2duros.com/og-image.jpg', width: 1200, height: 630, alt: post.title }
+  const ogImageUrl = post.coverImageUrl
+    ? post.coverImageUrl.startsWith('http') ? post.coverImageUrl : `https://por2duros.com${post.coverImageUrl}`
+    : 'https://por2duros.com/og-image.jpg'
+  const ogImage = { url: ogImageUrl, width: 1200, height: 630, alt: post.title }
   return {
     title: `${post.title} — Por 2 Duros`,
     description: post.metaDesc || post.excerpt,
+    alternates: {
+      canonical: `https://por2duros.com/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.metaDesc || post.excerpt,
@@ -57,6 +64,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               {post.title}
             </h1>
             <p className="text-lg text-muted leading-relaxed border-l-2 border-neon pl-4">{post.excerpt}</p>
+            {post.coverImageUrl && (
+              <div className="relative w-full h-56 sm:h-72 mt-10 overflow-hidden border border-border">
+                <Image src={post.coverImageUrl} alt={post.title} fill className="object-cover opacity-90" />
+              </div>
+            )}
           </header>
 
           <div

@@ -10,6 +10,7 @@ type BlogPostData = {
   excerpt: string
   content: string
   metaDesc: string
+  coverImageUrl: string
   published: boolean
 }
 

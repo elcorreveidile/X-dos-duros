@@ -13,6 +13,7 @@ export function BlogForm({ post }: { post?: BlogPost }) {
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? '')
   const [content, setContent] = useState(post?.content ?? '')
   const [metaDesc, setMetaDesc] = useState(post?.metaDesc ?? '')
+  const [coverImageUrl, setCoverImageUrl] = useState(post?.coverImageUrl ?? '')
   const [published, setPublished] = useState(post?.published ?? false)
 
   function toSlug(str: string) {
@@ -25,9 +26,9 @@ export function BlogForm({ post }: { post?: BlogPost }) {
     setSaving(true)
     try {
       if (post) {
-        await updateBlogPost(post.id, { title, slug, excerpt, content, metaDesc, published })
+        await updateBlogPost(post.id, { title, slug, excerpt, content, metaDesc, coverImageUrl, published })
       } else {
-        await createBlogPost({ title, slug, excerpt, content, metaDesc, published })
+        await createBlogPost({ title, slug, excerpt, content, metaDesc, coverImageUrl, published })
       }
       router.push('/admin/blog')
       router.refresh()
@@ -101,6 +102,19 @@ export function BlogForm({ post }: { post?: BlogPost }) {
           maxLength={160}
         />
         <p className="text-xs text-muted">{metaDesc.length}/160</p>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-xs uppercase tracking-widest text-muted">Imagen de portada (URL)</label>
+        <input
+          className="input w-full"
+          value={coverImageUrl}
+          onChange={(e) => setCoverImageUrl(e.target.value)}
+          placeholder="/images/blog/nombre-del-articulo.webp"
+        />
+        {coverImageUrl && (
+          <img src={coverImageUrl} alt="Vista previa" className="h-32 w-full object-cover border border-border opacity-80" />
+        )}
       </div>
 
       <div className="flex items-center gap-3">

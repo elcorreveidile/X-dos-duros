@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Marbella. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
   keywords: ['agencia web Marbella', 'diseño web Marbella', 'desarrollo web Marbella', 'páginas web Marbella', 'crear web Marbella'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-marbella',
+  },
   openGraph: {
     title: 'Agencia Web en Marbella — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Marbella. Desde €299, entrega en 48 horas, código a medida.',
