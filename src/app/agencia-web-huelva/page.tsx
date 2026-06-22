@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Huelva. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
   keywords: ['agencia web Huelva', 'diseño web Huelva', 'desarrollo web Huelva', 'páginas web Huelva', 'crear web Huelva'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-huelva',
+  },
   openGraph: {
     title: 'Agencia Web en Huelva — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Huelva. Desde €299, entrega en 48 horas, código a medida.',

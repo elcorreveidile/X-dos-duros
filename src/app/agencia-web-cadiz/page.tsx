@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Cádiz. Webs para negocios locales, peñas y agrupaciones del Carnaval, tiendas online y landing pages desde €299. Entrega en 48 horas.',
   keywords: ['agencia web Cádiz', 'diseño web Cádiz', 'desarrollo web Cádiz', 'páginas web Cádiz', 'web carnaval Cádiz', 'web peña carnaval'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-cadiz',
+  },
   openGraph: {
     title: 'Agencia Web en Cádiz — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Cádiz. Webs para negocios y Carnaval. Desde €299, entrega en 48 horas.',

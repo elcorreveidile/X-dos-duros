@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Sevilla. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
   keywords: ['agencia web Sevilla', 'diseño web Sevilla', 'desarrollo web Sevilla', 'páginas web Sevilla', 'crear web Sevilla'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-sevilla',
+  },
   openGraph: {
     title: 'Agencia Web en Sevilla — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Sevilla. Desde €299, entrega en 48 horas, código a medida.',

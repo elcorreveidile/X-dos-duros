@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Almería. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
   keywords: ['agencia web Almería', 'diseño web Almería', 'desarrollo web Almería', 'páginas web Almería', 'crear web Almería'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-almeria',
+  },
   openGraph: {
     title: 'Agencia Web en Almería — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Almería. Desde €299, entrega en 48 horas, código a medida.',

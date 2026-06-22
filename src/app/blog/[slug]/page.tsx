@@ -17,6 +17,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${post.title} — Por 2 Duros`,
     description: post.metaDesc || post.excerpt,
+    alternates: {
+      canonical: `https://por2duros.com/blog/${slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.metaDesc || post.excerpt,

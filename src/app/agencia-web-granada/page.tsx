@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description:
     'Agencia web en Granada. La ciudad más buscada de Andalucía necesita negocios con web. Webs, landing pages y tiendas online desde €299. Código a medida, entrega en 48 horas.',
   keywords: ['agencia web Granada', 'diseño web Granada', 'desarrollo web Granada', 'páginas web Granada', 'crear web Granada', 'web Albaicín', 'web negocio Granada'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-granada',
+  },
   openGraph: {
     title: 'Agencia Web en Granada — 3 millones de turistas te buscan',
     description: 'La ciudad más visitada de Andalucía merece negocios con presencia digital. Webs desde €299, entrega en 48 horas, código a medida.',

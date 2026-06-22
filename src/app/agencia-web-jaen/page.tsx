@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   description:
     'Agencia de desarrollo web en Jaén. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas garantizada.',
   keywords: ['agencia web Jaén', 'diseño web Jaén', 'desarrollo web Jaén', 'páginas web Jaén', 'crear web Jaén'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-jaen',
+  },
   openGraph: {
     title: 'Agencia Web en Jaén — Tu web lista en 48 horas',
     description: 'Desarrollo web profesional en Jaén. Desde €299, entrega en 48 horas, código a medida.',

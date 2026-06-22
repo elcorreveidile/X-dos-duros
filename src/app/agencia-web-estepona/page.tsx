@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description:
     'Agencia web en Estepona con raíces locales. Webs, landing pages, tiendas online y MVPs desde €299. Código a medida, sin plantillas, entrega en 48 horas. Alguien que conoce el pueblo de verdad.',
   keywords: ['agencia web Estepona', 'diseño web Estepona', 'desarrollo web Estepona', 'páginas web Estepona', 'crear web Estepona'],
+  alternates: {
+    canonical: 'https://por2duros.com/agencia-web-estepona',
+  },
   openGraph: {
     title: 'Agencia Web en Estepona — De Estepona para Estepona',
     description: 'Desarrollo web profesional en Estepona. Desde €299, entrega en 48 horas, código a medida. De alguien que conoce el pueblo de verdad.',
