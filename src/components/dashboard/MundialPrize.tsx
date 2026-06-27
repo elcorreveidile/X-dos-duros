@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Trophy, Globe, Rocket, ShoppingBag, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Trophy, Globe, Rocket, ShoppingBag, Loader2, X } from 'lucide-react'
 
 const PRODUCTS = [
   { key: 'landing', icon: Globe, label: 'Landing Page', basePrice: 297, delivery: '24h' },
@@ -18,6 +18,18 @@ export function MundialPrize({ couponCode, pct }: Props) {
   const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [dismissed, setDismissed] = useState(false)
+
+  const storageKey = `dismissed_mundial_${couponCode}`
+
+  useEffect(() => {
+    if (localStorage.getItem(storageKey) === '1') setDismissed(true)
+  }, [storageKey])
+
+  function handleDismiss() {
+    localStorage.setItem(storageKey, '1')
+    setDismissed(true)
+  }
 
   function discountedPrice(base: number) {
     if (pct >= 100) return 0
@@ -48,16 +60,27 @@ export function MundialPrize({ couponCode, pct }: Props) {
     }
   }
 
+  if (dismissed) return null
+
   return (
     <div className="border border-neon/40 bg-neon/5 p-6 space-y-6">
-      <div className="flex items-center gap-3">
-        <Trophy size={20} className="text-neon flex-shrink-0" />
-        <div>
-          <p className="text-xs uppercase tracking-widest text-neon font-mono">Premio Mundial 2026</p>
-          <p className="font-black uppercase tracking-tight">
-            {pct === 100 ? 'WEB GRATIS' : `${pct}% de descuento`}
-          </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Trophy size={20} className="text-neon flex-shrink-0" />
+          <div>
+            <p className="text-xs uppercase tracking-widest text-neon font-mono">Premio Mundial 2026</p>
+            <p className="font-black uppercase tracking-tight">
+              {pct === 100 ? 'WEB GRATIS' : `${pct}% de descuento`}
+            </p>
+          </div>
         </div>
+        <button
+          onClick={handleDismiss}
+          className="text-muted hover:text-foreground transition-colors flex-shrink-0 p-1"
+          title="Descartar oferta"
+        >
+          <X size={16} />
+        </button>
       </div>
 
       <p className="text-muted text-sm">
