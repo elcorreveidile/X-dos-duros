@@ -222,6 +222,18 @@ model BlogPost {
   @@map("blog_posts")
 }
 
+model MundialCoupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  pct         Int
+  email       String?
+  redeemedAt  DateTime?
+  projectId   String?
+  createdAt   DateTime  @default(now())
+
+  @@map("mundial_coupons")
+}
+
 model Subscription {
   id                   String             @id @default(cuid())
   clientId             String
