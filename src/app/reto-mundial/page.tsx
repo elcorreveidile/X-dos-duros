@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Flame, Trophy, Zap, Shield } from 'lucide-react'
 import { getMundialRetoPct } from '@/lib/espanias'
 import { RetoClient } from './RetoClient'
+import { Navbar } from '@/components/landing/Navbar'
+import { Footer } from '@/components/landing/Footer'
 
 export const metadata: Metadata = {
   title: 'Reto Mundial 2026 — Por 2 Duros',
@@ -14,7 +16,9 @@ export default async function RetoMundialPage() {
   const isFree = reto.pct >= 100 || reto.champion
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <>
+    <Navbar />
+    <main className="min-h-screen bg-background text-foreground pt-16">
       <div className="max-w-2xl mx-auto px-6 py-24 space-y-16">
 
         {/* Hero */}
@@ -120,5 +124,7 @@ export default async function RetoMundialPage() {
 
       </div>
     </main>
+    <Footer />
+    </>
   )
 }
