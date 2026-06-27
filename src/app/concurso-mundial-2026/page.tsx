@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
-import { Trophy, Globe, Rocket, ShoppingBag, ExternalLink, CheckCircle } from 'lucide-react'
+import { Trophy, Globe, Rocket, ShoppingBag, ExternalLink, CheckCircle, Flame } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Mundial 2026 — Gana tu web gratis con Espanias · Por 2 Duros',
@@ -169,6 +169,33 @@ export default function ConcursoMundialPage() {
                 <span className="text-sm font-medium">{g}</span>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Reto Mundial — mecánica complementaria */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+          <div className="border border-orange-500/40 bg-orange-500/5 p-8 sm:p-10 flex flex-col sm:flex-row items-center gap-8">
+            <div className="flex-shrink-0 w-16 h-16 border-2 border-orange-500 flex items-center justify-center">
+              <Flame size={28} className="text-orange-400" />
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <span className="text-orange-400 text-xs uppercase tracking-widest font-mono mb-2 block">Mecánica alternativa</span>
+              <h2 className="text-2xl font-black uppercase tracking-tight mb-3">Reto Mundial: descuento dinámico</h2>
+              <p className="text-muted text-sm leading-relaxed">
+                ¿No participas en Espanias? Sin problema. Con el <strong className="text-foreground">Reto Mundial</strong> tu
+                descuento en Por 2 Duros crece automáticamente con cada victoria de España —{' '}
+                sin rasca, sin cupón fijo. Si España gana el Mundial, tu web es gratis.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <Link
+                href="/reto-mundial"
+                className="inline-flex items-center gap-2 font-bold px-6 py-3 border border-orange-500 text-orange-400 hover:bg-orange-500/10 transition-colors whitespace-nowrap text-sm uppercase tracking-widest"
+              >
+                <Flame size={14} />
+                Ver el Reto
+              </Link>
+            </div>
           </div>
         </section>
 
