@@ -78,8 +78,8 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href={session ? '/dashboard' : '/login'}>
               <Button variant="outline" size="sm">{session ? 'Mi Área' : 'Acceder'}</Button>
             </Link>
-            <Link href="/#contacto">
-              <Button variant="primary" size="sm">Empezar Ya</Button>
+            <Link href={session ? '/dashboard' : '/#contacto'}>
+              <Button variant="primary" size="sm">{session ? 'Mi Área' : 'Empezar Ya'}</Button>
             </Link>
           </div>
 
@@ -107,8 +107,8 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href={session ? '/dashboard' : '/login'} onClick={() => setOpen(false)}>
               <Button variant="outline" size="sm" className="w-full">{session ? 'Mi Área' : 'Acceder'}</Button>
             </Link>
-            <Link href="/#contacto" onClick={() => setOpen(false)}>
-              <Button variant="primary" size="sm" className="w-full">Empezar Ya</Button>
+            <Link href={session ? '/dashboard' : '/#contacto'} onClick={() => setOpen(false)}>
+              <Button variant="primary" size="sm" className="w-full">{session ? 'Mi Área' : 'Empezar Ya'}</Button>
             </Link>
           </div>
         </div>
