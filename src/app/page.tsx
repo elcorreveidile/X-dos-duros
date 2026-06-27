@@ -22,6 +22,7 @@ export default function HomePage() {
         <NavbarWrapper />
       </Suspense>
       <main>
+        <MundialSection />
         <HeroSection />
         <ServicesSection />
         <Suspense fallback={null}>
@@ -31,7 +32,6 @@ export default function HomePage() {
         <PricingCalculator />
         <ProcessSection />
         <FaqSection />
-        <MundialSection />
         <CitiesSection />
         <Suspense fallback={null}>
           <ContactSection />

@@ -3,7 +3,7 @@ import { Trophy, ExternalLink } from 'lucide-react'
 
 export function MundialSection() {
   return (
-    <section id="mundial" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="mundial" className="pt-24 pb-0 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="border border-neon/40 bg-neon/5 p-8 sm:p-12 relative overflow-hidden">
         {/* Background glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-neon/5 to-transparent pointer-events-none" />
