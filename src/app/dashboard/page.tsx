@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/lib/utils'
 import type { ProjectStatus } from '@/types'
 import { Suspense } from 'react'
+import { MundialPrize } from '@/components/dashboard/MundialPrize'
 
 const STATUS_STEPS: { status: ProjectStatus; label: string }[] = [
   { status: 'LEAD', label: 'Solicitud recibida' },
@@ -61,6 +62,12 @@ export default async function DashboardPage({ searchParams }: Props) {
       }
     } catch {}
   }
+
+  // Check for pending Mundial prize
+  const mundialCoupon = await prisma.mundialCoupon.findFirst({
+    where: { userId: session!.user!.id, redeemedAt: null },
+    orderBy: { createdAt: 'desc' },
+  })
 
   const project = await prisma.project.findFirst({
     where: { clientId: session!.user!.id },
@@ -112,6 +119,10 @@ export default async function DashboardPage({ searchParams }: Props) {
       <Suspense fallback={null}>
         <PaymentNotice />
       </Suspense>
+
+      {mundialCoupon && (
+        <MundialPrize couponCode={mundialCoupon.code} pct={mundialCoupon.pct} />
+      )}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

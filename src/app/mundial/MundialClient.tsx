@@ -1,76 +1,40 @@
 'use client'
 
 import { useState } from 'react'
-import { Globe, Rocket, ShoppingBag, CheckCircle, ArrowRight, Loader2 } from 'lucide-react'
-
-const PRODUCTS = [
-  {
-    key: 'landing' as const,
-    icon: Globe,
-    label: 'Landing Page',
-    basePrice: 297,
-    desc: 'Página de aterrizaje de alta conversión, SEO básico y formulario de contacto.',
-    delivery: '24h',
-  },
-  {
-    key: 'mvp' as const,
-    icon: Rocket,
-    label: 'MVP Web App',
-    basePrice: 797,
-    desc: 'Producto mínimo viable con panel de usuario, auth, base de datos y lógica de negocio.',
-    delivery: '48h',
-  },
-  {
-    key: 'ecommerce' as const,
-    icon: ShoppingBag,
-    label: 'E-commerce',
-    basePrice: 497,
-    desc: 'Tienda online con catálogo, carrito, checkout con Stripe y gestión de pedidos.',
-    delivery: '48h',
-  },
-]
+import { Trophy, CheckCircle, Loader2, Mail } from 'lucide-react'
 
 interface Props {
   code: string
   pct: number
   sig: string
-  leadEmail?: string
+  leadEmail: string
 }
 
 export default function MundialClient({ code, pct, sig, leadEmail }: Props) {
-  const [selected, setSelected] = useState<string | null>(null)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState(leadEmail ?? '')
+  const [email, setEmail] = useState(leadEmail)
   const [loading, setLoading] = useState(false)
-  const [done, setDone] = useState(false)
+  const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
 
-  function discountedPrice(base: number) {
-    return Math.round(base * (1 - pct / 100))
-  }
+  const prizeLabel = pct === 100 ? 'WEB GRATIS' : `${pct}% de descuento`
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!selected) return
     setLoading(true)
     setError('')
 
     try {
-      const res = await fetch('/api/mundial/redeem', {
+      const res = await fetch('/api/mundial/send-magic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, pct: String(pct), sig, product: selected, name, email }),
+        body: JSON.stringify({ code, pct: String(pct), sig, email }),
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Error al canjear el cupón')
+        setError(data.error ?? 'Error al enviar el enlace')
         return
       }
-      if (data.type === 'free') {
-        setDone(true)
-      } else {
-        window.location.href = data.stripeUrl
-      }
+      setSent(true)
     } catch {
       setError('Error de conexión. Inténtalo de nuevo.')
     } finally {
@@ -78,144 +42,99 @@ export default function MundialClient({ code, pct, sig, leadEmail }: Props) {
     }
   }
 
-  if (done) {
+  if (sent) {
     return (
       <div className="min-h-screen grid-bg flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <CheckCircle size={64} className="text-neon mx-auto mb-6" />
           <h1 className="text-4xl font-black uppercase tracking-tighter neon-text mb-4">
-            ¡Listo!
+            ¡Premio validado!
           </h1>
-          <p className="text-muted mb-2">Tu web está en camino.</p>
-          <p className="text-muted text-sm">
-            Te hemos enviado un acceso mágico a <span className="text-foreground font-mono">{email}</span>.
-            Úsalo para entrar a tu panel y completar el briefing.
+          <p className="text-muted mb-2">
+            Te hemos enviado un enlace a{' '}
+            <span className="text-foreground font-mono">{email}</span>
           </p>
-          <p className="text-muted/60 text-xs mt-6">Revisa también tu carpeta de spam.</p>
+          <p className="text-muted text-sm">
+            Pulsa el enlace del email para entrar en tu área y elegir tu producto con el{' '}
+            <span className="text-neon font-bold">{prizeLabel}</span> aplicado.
+          </p>
+          <p className="text-muted/50 text-xs mt-6">Revisa también la carpeta de spam. El enlace caduca en 7 días.</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen grid-bg px-4 py-24">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-8">
+    <div className="min-h-screen grid-bg flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        {/* Prize header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-neon mb-6">
+            <Trophy size={28} className="text-neon" />
+          </div>
+          <div className="inline-flex items-center gap-2 border border-neon/40 bg-neon/5 px-4 py-2 mb-6">
             <span className="text-neon text-xs uppercase tracking-widest font-mono">
-              Cupón Mundial validado
+              Mundial 2026 · Premio validado
             </span>
           </div>
-          <h1 className="text-5xl sm:text-7xl font-black uppercase tracking-tighter leading-none mb-6">
+          <h1 className="text-5xl font-black uppercase tracking-tighter leading-none mb-4">
             {pct === 100 ? (
-              <>
-                Tu web,{' '}
-                <span className="neon-text">GRATIS.</span>
-              </>
+              <span className="neon-text">Web gratis.</span>
             ) : (
-              <>
-                {pct}% de
-                <br />
-                <span className="neon-text">descuento.</span>
-              </>
+              <><span className="neon-text">{pct}%</span> de descuento.</>
             )}
           </h1>
-          <p className="text-muted text-lg max-w-xl mx-auto">
-            {pct === 100
-              ? 'Has ganado una web completamente gratis. Elige tu producto y empieza ahora.'
-              : `Has ganado un ${pct}% de descuento. Elige tu producto y paga solo lo que queda.`}
+          <p className="text-muted">
+            Confirma tu email y te enviamos el acceso a tu área para elegir y activar tu premio.
           </p>
         </div>
 
-        {/* Product selector */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border mb-12">
-          {PRODUCTS.map((p) => {
-            const Icon = p.icon
-            const final = discountedPrice(p.basePrice)
-            const isSelected = selected === p.key
-            return (
-              <button
-                key={p.key}
-                onClick={() => setSelected(p.key)}
-                className={`bg-background p-8 flex flex-col gap-4 text-left transition-colors duration-200 ${
-                  isSelected ? 'bg-neon/10 border border-neon' : 'hover:bg-card'
-                }`}
-              >
-                <div className={`w-10 h-10 border flex items-center justify-center transition-colors ${isSelected ? 'border-neon' : 'border-border'}`}>
-                  <Icon size={20} className={isSelected ? 'text-neon' : 'text-muted'} />
-                </div>
-                <h3 className="text-xl font-bold uppercase tracking-tight">{p.label}</h3>
-                <p className="text-muted text-sm leading-relaxed flex-1">{p.desc}</p>
-                <div className="border-t border-border pt-4">
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-muted line-through text-sm">€{p.basePrice}</span>
-                    {pct === 100 ? (
-                      <span className="text-neon font-black text-2xl">GRATIS</span>
-                    ) : (
-                      <span className="text-foreground font-black text-2xl">€{final}</span>
-                    )}
-                  </div>
-                  <span className="text-neon text-xs font-mono mt-1 block">{p.delivery}</span>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-
         {/* Form */}
-        {selected && (
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
-            <h2 className="text-xl font-bold uppercase tracking-tight text-center mb-6">
-              Tus datos para empezar
-            </h2>
-            <div>
-              <label className="block text-xs uppercase tracking-widest text-muted mb-2">Nombre</label>
-              <input
-                type="text"
-                required
-                minLength={2}
-                value={name}
-                onChange={e => setName(e.target.value)}
-                className="w-full bg-card border border-border px-4 py-3 text-sm focus:outline-none focus:border-neon transition-colors"
-                placeholder="Tu nombre"
-              />
-            </div>
-            <div>
-              <label className="block text-xs uppercase tracking-widest text-muted mb-2">Email</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs uppercase tracking-widest text-muted mb-2">
+              Tu email
+            </label>
+            <div className="relative">
+              <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full bg-card border border-border px-4 py-3 text-sm focus:outline-none focus:border-neon transition-colors"
+                className="w-full bg-card border border-border pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-neon transition-colors"
                 placeholder="tu@email.com"
               />
             </div>
-            {error && (
-              <p className="text-red-500 text-sm border border-red-500/30 bg-red-500/10 px-4 py-3">
-                {error}
+            {leadEmail && email !== leadEmail && (
+              <p className="text-muted/60 text-xs mt-1">
+                Email distinto al original. Asegúrate de que es correcto.
               </p>
             )}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {loading ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <>
-                  {pct === 100 ? 'Canjear mi web gratis' : 'Ir al pago'}
-                  <ArrowRight size={16} />
-                </>
-              )}
-            </button>
-            <p className="text-muted/60 text-xs text-center">
-              Sin permanencia. Garantía de devolución de 15 días.
+          </div>
+
+          {error && (
+            <p className="text-red-500 text-sm border border-red-500/30 bg-red-500/10 px-4 py-3">
+              {error}
             </p>
-          </form>
-        )}
+          )}
+
+          <button
+            type="submit"
+            disabled={loading || !email}
+            className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            {loading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              'Enviar enlace de acceso'
+            )}
+          </button>
+
+          <p className="text-muted/50 text-xs text-center">
+            Sin permanencia. Garantía de devolución de 15 días.
+          </p>
+        </form>
       </div>
     </div>
   )

@@ -426,3 +426,22 @@ export async function sendSubscriptionActivated(data: { client: User; plan: stri
     ),
   })
 }
+
+
+/** Mundial — enlace mágico al área de cliente */
+export async function sendMundialMagicLink(data: { email: string; pct: number; magicLink: string }) {
+  const prize = data.pct === 100 ? 'una WEB GRATIS' : `un ${data.pct}% de descuento en tu web`
+  return resend.emails.send({
+    from: FROM,
+    to: data.email,
+    subject: `🏆 Has ganado ${prize} — Por 2 Duros`,
+    html: baseTemplate(
+      'Premio Mundial 2026',
+      `${h1('¡Enhorabuena!')}
+       ${p(`Has ganado ${highlight(data.pct === 100 ? 'una web completamente GRATIS' : `un ${data.pct}% de descuento`)} en el Mundial 2026 de Espanias.`)}
+       ${p('Pulsa el botón para entrar en tu área de cliente y elegir tu producto (Landing Page, MVP o E-commerce).')}
+       ${p('El enlace es personal y de un solo uso. Caduca en 7 días.')}
+       ${btn('Entrar y elegir mi producto', data.magicLink)}`
+    ),
+  })
+}
