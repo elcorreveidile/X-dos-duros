@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Trophy, ExternalLink } from 'lucide-react'
+import { Trophy, ExternalLink, Flame } from 'lucide-react'
 
 export function MundialSection() {
   return (
@@ -47,6 +47,13 @@ export function MundialSection() {
               className="btn-outline inline-flex items-center justify-center gap-2 text-sm"
             >
               Más información
+            </Link>
+            <Link
+              href="/reto-mundial"
+              className="inline-flex items-center justify-center gap-2 text-sm font-bold px-4 py-2.5 border border-orange-500/60 text-orange-400 hover:bg-orange-500/10 transition-colors whitespace-nowrap"
+            >
+              <Flame size={14} />
+              Reto dinámico
             </Link>
           </div>
         </div>
