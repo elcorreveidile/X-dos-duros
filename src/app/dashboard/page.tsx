@@ -86,20 +86,29 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   if (!project) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
-        <Inbox size={48} className="text-muted" />
-        <div>
-          <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
-          <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
-            Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.
-          </p>
+      <div className="space-y-8">
+        {mundialCoupon && (
+          <MundialPrize couponCode={mundialCoupon.code} pct={mundialCoupon.pct} />
+        )}
+        <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
+          <Inbox size={48} className="text-muted" />
+          <div>
+            <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
+            <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
+              {mundialCoupon
+                ? 'Elige tu producto arriba para activar tu premio y empezar tu proyecto.'
+                : 'Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.'}
+            </p>
+          </div>
+          {!mundialCoupon && (
+            <a
+              href="/#contacto"
+              className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
+            >
+              Solicitar un proyecto
+            </a>
+          )}
         </div>
-        <a
-          href="/#contacto"
-          className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
-        >
-          Solicitar un proyecto
-        </a>
       </div>
     )
   }
