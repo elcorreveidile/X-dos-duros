@@ -149,12 +149,12 @@ export default async function RetoMundialPage() {
             </Link>
           </div>
         ) : isLoggedIn ? (
-          <div className="border border-border p-8 text-center space-y-4">
+          <div className="border border-border p-8 space-y-4">
             <p className="font-black text-lg uppercase tracking-tight">Ya tienes cuenta</p>
-            <p className="text-muted text-sm max-w-sm mx-auto">
-              Tienes una cuenta en Por 2 Duros pero aún no estás en el Reto Mundial. ¿Quieres apuntarte?
+            <p className="text-muted text-sm">
+              Aún no estás en el Reto Mundial. Un clic y te apuntamos.
             </p>
-            <RetoClient />
+            <RetoClient prefilledEmail={session!.user!.email!} />
           </div>
         ) : (
           <div className="space-y-6">
