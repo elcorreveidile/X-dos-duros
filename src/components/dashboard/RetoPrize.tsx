@@ -20,8 +20,10 @@ export function RetoPrize({ pct, wins, champion }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  const isFree = pct >= 100 || champion
+
   function discountedPrice(base: number) {
-    if (pct >= 100) return 0
+    if (isFree) return 0
     return Math.round(base * (1 - pct / 100))
   }
 
@@ -41,19 +43,13 @@ export function RetoPrize({ pct, wins, champion }: Props) {
         setError(data.error ?? 'Error al activar el descuento')
         return
       }
-      if (data.stripeUrl) {
-        window.location.href = data.stripeUrl
-      } else {
-        window.location.href = '/dashboard/briefing'
-      }
+      window.location.href = '/dashboard/briefing'
     } catch {
       setError('Error de conexión. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
     }
   }
-
-  const isFree = pct >= 100 || champion
 
   return (
     <div className="border border-orange-500/40 bg-orange-500/5 p-6 space-y-6">
@@ -62,9 +58,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
         <div className="flex-1 min-w-0">
           <p className="text-xs uppercase tracking-widest text-orange-400 font-mono">Reto Mundial 2026</p>
           <p className="font-black uppercase tracking-tight">
-            {isFree
-              ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS'
-              : `Ahora mismo -${pct}%`}
+            {isFree ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS' : `Ahora mismo -${pct}%`}
           </p>
           {!isFree && (
             <p className="text-xs text-muted mt-0.5">
@@ -99,9 +93,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
       )}
 
       <p className="text-muted text-sm">
-        {isFree
-          ? '¡España ha ganado el Mundial! Tu web es completamente gratis. Elige tu producto y empezamos.'
-          : 'Elige el producto que quieres lanzar. El descuento crece con cada partido que gane España.'}
+        Elige el tipo de proyecto. Rellena el briefing y te enviaremos el enlace de pago con tu descuento aplicado.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border">
@@ -125,7 +117,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
                   {isFree ? (
                     <span className="text-neon font-black">GRATIS</span>
                   ) : (
-                    <span className="font-black">€{final}</span>
+                    <span className="font-black text-orange-400">€{final}</span>
                   )}
                 </div>
               </div>
@@ -149,7 +141,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
         {loading ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          isFree ? 'Activar web gratis' : `Activar con -${pct}% de descuento`
+          isFree ? 'Activar web gratis y enviar briefing' : 'Elegir y enviar briefing'
         )}
       </button>
     </div>

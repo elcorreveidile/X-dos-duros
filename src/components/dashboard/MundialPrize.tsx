@@ -20,6 +20,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
   const [error, setError] = useState('')
 
   function discountedPrice(base: number) {
+    if (pct >= 100) return 0
     return Math.round(base * (1 - pct / 100))
   }
 
@@ -39,11 +40,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
         setError(data.error ?? 'Error al activar el premio')
         return
       }
-      if (data.stripeUrl) {
-        window.location.href = data.stripeUrl
-      } else {
-        window.location.href = '/dashboard/briefing'
-      }
+      window.location.href = '/dashboard/briefing'
     } catch {
       setError('Error de conexión. Inténtalo de nuevo.')
     } finally {
@@ -64,7 +61,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
       </div>
 
       <p className="text-muted text-sm">
-        Elige el producto con el que quieres usar tu premio. Una vez confirmado, empezamos en 48h.
+        Elige el tipo de proyecto. Rellena el briefing y te enviaremos el enlace de pago con tu descuento aplicado.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border">
@@ -85,7 +82,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
                 <p className="font-bold text-sm uppercase tracking-tight">{p.label}</p>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-muted line-through text-xs">€{p.basePrice}</span>
-                  {pct === 100 ? (
+                  {pct >= 100 ? (
                     <span className="text-neon font-black">GRATIS</span>
                   ) : (
                     <span className="font-black">€{final}</span>
@@ -112,7 +109,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
         {loading ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          pct === 100 ? 'Activar web gratis' : 'Activar con descuento'
+          pct >= 100 ? 'Activar web gratis y enviar briefing' : 'Elegir y enviar briefing'
         )}
       </button>
     </div>
