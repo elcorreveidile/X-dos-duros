@@ -75,12 +75,20 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/blog" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Blog
             </Link>
-            <Link href={session ? '/dashboard' : '/login'}>
-              <Button variant="outline" size="sm">{session ? 'Mi Área' : 'Acceder'}</Button>
-            </Link>
-            <Link href={session ? '/dashboard' : '/#contacto'}>
-              <Button variant="primary" size="sm">{session ? 'Mi Área' : 'Empezar Ya'}</Button>
-            </Link>
+            {session ? (
+              <Link href="/dashboard">
+                <Button variant="primary" size="sm">Mi Área</Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline" size="sm">Acceder</Button>
+                </Link>
+                <Link href="/#contacto">
+                  <Button variant="primary" size="sm">Empezar Ya</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <button className="md:hidden text-muted hover:text-neon" onClick={() => setOpen(!open)}>
@@ -104,12 +112,20 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/blog" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Blog
             </Link>
-            <Link href={session ? '/dashboard' : '/login'} onClick={() => setOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full">{session ? 'Mi Área' : 'Acceder'}</Button>
-            </Link>
-            <Link href={session ? '/dashboard' : '/#contacto'} onClick={() => setOpen(false)}>
-              <Button variant="primary" size="sm" className="w-full">{session ? 'Mi Área' : 'Empezar Ya'}</Button>
-            </Link>
+            {session ? (
+              <Link href="/dashboard" onClick={() => setOpen(false)}>
+                <Button variant="primary" size="sm" className="w-full">Mi Área</Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Acceder</Button>
+                </Link>
+                <Link href="/#contacto" onClick={() => setOpen(false)}>
+                  <Button variant="primary" size="sm" className="w-full">Empezar Ya</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
