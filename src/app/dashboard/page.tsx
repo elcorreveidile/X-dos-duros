@@ -14,6 +14,8 @@ import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/
 import type { ProjectStatus } from '@/types'
 import { Suspense } from 'react'
 import { MundialPrize } from '@/components/dashboard/MundialPrize'
+import { RetoPrize } from '@/components/dashboard/RetoPrize'
+import { getMundialRetoPct } from '@/lib/espanias'
 
 const STATUS_STEPS: { status: ProjectStatus; label: string }[] = [
   { status: 'LEAD', label: 'Solicitud recibida' },
@@ -69,6 +71,13 @@ export default async function DashboardPage({ searchParams }: Props) {
     orderBy: { createdAt: 'desc' },
   })
 
+  // Check for Reto Mundial participation
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session!.user!.id },
+    select: { retoMundial: true },
+  })
+  const retoStatus = dbUser?.retoMundial ? await getMundialRetoPct() : null
+
   const project = await prisma.project.findFirst({
     where: { clientId: session!.user!.id },
     orderBy: { createdAt: 'desc' },
@@ -90,17 +99,20 @@ export default async function DashboardPage({ searchParams }: Props) {
         {mundialCoupon && (
           <MundialPrize couponCode={mundialCoupon.code} pct={mundialCoupon.pct} />
         )}
+        {retoStatus && (
+          <RetoPrize pct={retoStatus.pct} wins={retoStatus.wins} champion={retoStatus.champion} />
+        )}
         <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
           <Inbox size={48} className="text-muted" />
           <div>
             <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
             <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
-              {mundialCoupon
-                ? 'Elige tu producto arriba para activar tu premio y empezar tu proyecto.'
+              {mundialCoupon || retoStatus
+                ? 'Elige tu producto arriba para activar tu descuento y empezar tu proyecto.'
                 : 'Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.'}
             </p>
           </div>
-          {!mundialCoupon && (
+          {!mundialCoupon && !retoStatus && (
             <a
               href="/#contacto"
               className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
@@ -131,6 +143,9 @@ export default async function DashboardPage({ searchParams }: Props) {
 
       {mundialCoupon && (
         <MundialPrize couponCode={mundialCoupon.code} pct={mundialCoupon.pct} />
+      )}
+      {retoStatus && (
+        <RetoPrize pct={retoStatus.pct} wins={retoStatus.wins} champion={retoStatus.champion} />
       )}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

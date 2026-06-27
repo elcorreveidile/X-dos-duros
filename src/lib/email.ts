@@ -428,6 +428,23 @@ export async function sendSubscriptionActivated(data: { client: User; plan: stri
 }
 
 
+/** Reto Mundial — enlace mágico al área de cliente */
+export async function sendRetoMundialMagicLink(data: { email: string; magicLink: string }) {
+  return resend.emails.send({
+    from: FROM,
+    to: data.email,
+    subject: '🔥 Estás en el Reto Mundial — Por 2 Duros',
+    html: baseTemplate(
+      'Reto Mundial 2026',
+      `${h1('¡Apuntado al Reto Mundial!')}
+       ${p(`Estás dentro del ${highlight('Reto Mundial 2026')} de Por 2 Duros.`)}
+       ${p('Tu descuento crece con cada victoria de España. Cuantas más victorias, mayor el descuento. Si España gana el Mundial, tu web es ${highlight("GRATIS")}.')}
+       ${p('Pulsa el botón para acceder a tu área y ver el descuento actual. El enlace caduca en 7 días.')}
+       ${btn('Ver mi descuento', data.magicLink)}`
+    ),
+  })
+}
+
 /** Mundial — enlace mágico al área de cliente */
 export async function sendMundialMagicLink(data: { email: string; pct: number; magicLink: string }) {
   const prize = data.pct === 100 ? 'una WEB GRATIS' : `un ${data.pct}% de descuento en tu web`
