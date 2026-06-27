@@ -34,12 +34,13 @@ interface Props {
   code: string
   pct: number
   sig: string
+  leadEmail?: string
 }
 
-export default function MundialClient({ code, pct, sig }: Props) {
+export default function MundialClient({ code, pct, sig, leadEmail }: Props) {
   const [selected, setSelected] = useState<string | null>(null)
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(leadEmail ?? '')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
