@@ -227,6 +227,7 @@ model MundialCoupon {
   code        String    @unique
   pct         Int
   email       String?
+  userId      String?
   redeemedAt  DateTime?
   projectId   String?
   createdAt   DateTime  @default(now())
