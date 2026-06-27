@@ -55,9 +55,9 @@ function InvalidPage({ message }: { message: string }) {
 export default async function MundialPage({
   searchParams,
 }: {
-  searchParams: Promise<{ code?: string; pct?: string; sig?: string }>
+  searchParams: Promise<{ code?: string; pct?: string; sig?: string; email?: string }>
 }) {
-  const { code = '', pct: pctRaw = '', sig = '' } = await searchParams
+  const { code = '', pct: pctRaw = '', sig = '', email = '' } = await searchParams
 
   const coupon = verifyCoupon(code, pctRaw, sig)
   if (!coupon) {
@@ -70,11 +70,21 @@ export default async function MundialPage({
     return <InvalidPage message="Este cupón ya ha sido canjeado" />
   }
 
+  // Save lead email on first visit (email not signed — only used as contact, pct is already verified)
+  const leadEmail = email.includes('@') ? email : undefined
+  if (leadEmail) {
+    await prisma.mundialCoupon.upsert({
+      where: { code },
+      create: { code, pct: coupon.pct, email: leadEmail },
+      update: existing ? {} : { email: leadEmail },
+    })
+  }
+
   return (
     <>
       <Navbar />
       <main className="pt-16">
-        <MundialClient code={coupon.code} pct={coupon.pct} sig={sig} />
+        <MundialClient code={coupon.code} pct={coupon.pct} sig={sig} leadEmail={leadEmail} />
       </main>
     </>
   )
