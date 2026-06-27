@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Trophy, Globe, Rocket, ShoppingBag, Loader2 } from 'lucide-react'
 
 const PRODUCTS = [
-  { key: 'landing', icon: Globe, label: 'Landing Page', basePrice: 297, delivery: '24h' },
-  { key: 'mvp', icon: Rocket, label: 'MVP Web App', basePrice: 797, delivery: '48h' },
-  { key: 'ecommerce', icon: ShoppingBag, label: 'E-commerce', basePrice: 497, delivery: '48h' },
+  { key: 'landing', icon: Globe, label: 'Landing Page', delivery: '24h' },
+  { key: 'mvp', icon: Rocket, label: 'MVP Web App', delivery: '48h' },
+  { key: 'ecommerce', icon: ShoppingBag, label: 'E-commerce', delivery: '48h' },
 ] as const
 
 interface Props {
@@ -18,10 +18,6 @@ export function MundialPrize({ couponCode, pct }: Props) {
   const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  function discountedPrice(base: number) {
-    return Math.round(base * (1 - pct / 100))
-  }
 
   async function handleClaim() {
     if (!selected) return
@@ -39,11 +35,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
         setError(data.error ?? 'Error al activar el premio')
         return
       }
-      if (data.stripeUrl) {
-        window.location.href = data.stripeUrl
-      } else {
-        window.location.href = '/dashboard/briefing'
-      }
+      window.location.href = '/dashboard/briefing'
     } catch {
       setError('Error de conexión. Inténtalo de nuevo.')
     } finally {
@@ -64,13 +56,12 @@ export function MundialPrize({ couponCode, pct }: Props) {
       </div>
 
       <p className="text-muted text-sm">
-        Elige el producto con el que quieres usar tu premio. Una vez confirmado, empezamos en 48h.
+        Elige el tipo de proyecto. Rellena el briefing y fijaremos el precio con tu descuento aplicado.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border">
         {PRODUCTS.map((p) => {
           const Icon = p.icon
-          const final = discountedPrice(p.basePrice)
           const isSelected = selected === p.key
           return (
             <button
@@ -83,16 +74,8 @@ export function MundialPrize({ couponCode, pct }: Props) {
               <Icon size={18} className={isSelected ? 'text-neon' : 'text-muted'} />
               <div>
                 <p className="font-bold text-sm uppercase tracking-tight">{p.label}</p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-muted line-through text-xs">€{p.basePrice}</span>
-                  {pct === 100 ? (
-                    <span className="text-neon font-black">GRATIS</span>
-                  ) : (
-                    <span className="font-black">€{final}</span>
-                  )}
-                </div>
+                <p className="text-neon text-xs font-mono mt-1">{p.delivery}</p>
               </div>
-              <span className="text-neon text-xs font-mono">{p.delivery}</span>
             </button>
           )
         })}
@@ -112,7 +95,7 @@ export function MundialPrize({ couponCode, pct }: Props) {
         {loading ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          pct === 100 ? 'Activar web gratis' : 'Activar con descuento'
+          'Elegir y enviar briefing'
         )}
       </button>
     </div>

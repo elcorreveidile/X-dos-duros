@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Flame, Globe, Rocket, ShoppingBag, Loader2 } from 'lucide-react'
 
 const PRODUCTS = [
-  { key: 'landing', icon: Globe, label: 'Landing Page', basePrice: 297, delivery: '24h' },
-  { key: 'mvp', icon: Rocket, label: 'MVP Web App', basePrice: 797, delivery: '48h' },
-  { key: 'ecommerce', icon: ShoppingBag, label: 'E-commerce', basePrice: 497, delivery: '48h' },
+  { key: 'landing', icon: Globe, label: 'Landing Page', delivery: '24h' },
+  { key: 'mvp', icon: Rocket, label: 'MVP Web App', delivery: '48h' },
+  { key: 'ecommerce', icon: ShoppingBag, label: 'E-commerce', delivery: '48h' },
 ] as const
 
 interface Props {
@@ -20,10 +20,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  function discountedPrice(base: number) {
-    if (pct >= 100) return 0
-    return Math.round(base * (1 - pct / 100))
-  }
+  const isFree = pct >= 100 || champion
 
   async function handleClaim() {
     if (!selected) return
@@ -41,19 +38,13 @@ export function RetoPrize({ pct, wins, champion }: Props) {
         setError(data.error ?? 'Error al activar el descuento')
         return
       }
-      if (data.stripeUrl) {
-        window.location.href = data.stripeUrl
-      } else {
-        window.location.href = '/dashboard/briefing'
-      }
+      window.location.href = '/dashboard/briefing'
     } catch {
       setError('Error de conexión. Inténtalo de nuevo.')
     } finally {
       setLoading(false)
     }
   }
-
-  const isFree = pct >= 100 || champion
 
   return (
     <div className="border border-orange-500/40 bg-orange-500/5 p-6 space-y-6">
@@ -62,9 +53,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
         <div className="flex-1 min-w-0">
           <p className="text-xs uppercase tracking-widest text-orange-400 font-mono">Reto Mundial 2026</p>
           <p className="font-black uppercase tracking-tight">
-            {isFree
-              ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS'
-              : `Ahora mismo -${pct}%`}
+            {isFree ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS' : `Ahora mismo -${pct}%`}
           </p>
           {!isFree && (
             <p className="text-xs text-muted mt-0.5">
@@ -99,15 +88,12 @@ export function RetoPrize({ pct, wins, champion }: Props) {
       )}
 
       <p className="text-muted text-sm">
-        {isFree
-          ? '¡España ha ganado el Mundial! Tu web es completamente gratis. Elige tu producto y empezamos.'
-          : 'Elige el producto que quieres lanzar. El descuento crece con cada partido que gane España.'}
+        Elige el tipo de proyecto. Rellena el briefing y fijaremos el precio con tu descuento aplicado.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border">
         {PRODUCTS.map((p) => {
           const Icon = p.icon
-          const final = discountedPrice(p.basePrice)
           const isSelected = selected === p.key
           return (
             <button
@@ -120,16 +106,8 @@ export function RetoPrize({ pct, wins, champion }: Props) {
               <Icon size={18} className={isSelected ? 'text-orange-400' : 'text-muted'} />
               <div>
                 <p className="font-bold text-sm uppercase tracking-tight">{p.label}</p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-muted line-through text-xs">€{p.basePrice}</span>
-                  {isFree ? (
-                    <span className="text-neon font-black">GRATIS</span>
-                  ) : (
-                    <span className="font-black">€{final}</span>
-                  )}
-                </div>
+                <p className="text-orange-400 text-xs font-mono mt-1">{p.delivery}</p>
               </div>
-              <span className="text-orange-400 text-xs font-mono">{p.delivery}</span>
             </button>
           )
         })}
@@ -149,7 +127,7 @@ export function RetoPrize({ pct, wins, champion }: Props) {
         {loading ? (
           <Loader2 size={16} className="animate-spin" />
         ) : (
-          isFree ? 'Activar web gratis' : `Activar con -${pct}% de descuento`
+          'Elegir y enviar briefing'
         )}
       </button>
     </div>

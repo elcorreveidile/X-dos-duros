@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { stripe } from '@/lib/stripe'
 import { getMundialRetoPct } from '@/lib/espanias'
 import { z } from 'zod'
 
 const PRODUCTS = {
-  landing: { label: 'Landing Page', price: 297 },
-  mvp: { label: 'MVP Web App', price: 797 },
-  ecommerce: { label: 'E-commerce', price: 497 },
+  landing: { label: 'Landing Page' },
+  mvp: { label: 'MVP Web App' },
+  ecommerce: { label: 'E-commerce' },
 } as const
 
 type ProductKey = keyof typeof PRODUCTS
@@ -16,8 +15,6 @@ type ProductKey = keyof typeof PRODUCTS
 const schema = z.object({
   product: z.enum(['landing', 'mvp', 'ecommerce']),
 })
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://por2duros.com'
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -34,7 +31,7 @@ export async function POST(req: Request) {
   // Verify user is a reto participant
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { retoMundial: true, email: true },
+    select: { retoMundial: true },
   })
   if (!user?.retoMundial) {
     return NextResponse.json({ error: 'No estás inscrito en el Reto Mundial' }, { status: 403 })
@@ -50,14 +47,13 @@ export async function POST(req: Request) {
 
   const { product } = parsed.data
   const prod = PRODUCTS[product as ProductKey]
-  const discountedPrice = pct >= 100 ? 0 : Math.round(prod.price * (1 - pct / 100))
 
-  // Create project
+  // Create project — price is 0 until admin sets it after reviewing the briefing
   const project = await prisma.project.create({
     data: {
       name: `${prod.label} — Reto Mundial`,
-      description: `Proyecto del Reto Mundial 2026 (${pct}% descuento, ${retoStatus.wins} victorias de España)`,
-      price: discountedPrice,
+      description: `Reto Mundial 2026: ${pct}% de descuento (${retoStatus.wins} victorias de España). Precio pendiente de briefing.`,
+      price: 0,
       clientId: session.user.id,
       status: 'LEAD',
     },
@@ -69,35 +65,5 @@ export async function POST(req: Request) {
     data: { retoMundial: false },
   })
 
-  // Free project
-  if (discountedPrice === 0) {
-    await prisma.payment.create({
-      data: { projectId: project.id, amount: 0, status: 'PAID', paidAt: new Date() },
-    })
-    return NextResponse.json({ ok: true })
-  }
-
-  // Paid project — Stripe checkout
-  const checkoutSession = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    customer_email: user.email ?? undefined,
-    line_items: [
-      {
-        quantity: 1,
-        price_data: {
-          currency: 'eur',
-          unit_amount: discountedPrice * 100,
-          product_data: {
-            name: `${prod.label} — Por 2 Duros (Reto Mundial -${pct}%)`,
-            description: `Precio especial Reto Mundial 2026. Descuento ${pct}% aplicado.`,
-          },
-        },
-      },
-    ],
-    metadata: { projectId: project.id, clientId: session.user.id, type: 'project_payment' },
-    success_url: `${APP_URL}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${APP_URL}/dashboard`,
-  })
-
-  return NextResponse.json({ stripeUrl: checkoutSession.url })
+  return NextResponse.json({ ok: true, projectId: project.id })
 }
