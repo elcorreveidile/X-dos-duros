@@ -5,9 +5,9 @@ import { getMundialRetoPct } from '@/lib/espanias'
 import { z } from 'zod'
 
 const PRODUCTS = {
-  landing: { label: 'Landing Page' },
-  mvp: { label: 'MVP Web App' },
-  ecommerce: { label: 'E-commerce' },
+  landing: { label: 'Landing Page', price: 297 },
+  mvp: { label: 'MVP Web App', price: 797 },
+  ecommerce: { label: 'E-commerce', price: 497 },
 } as const
 
 type ProductKey = keyof typeof PRODUCTS
@@ -47,13 +47,15 @@ export async function POST(req: Request) {
 
   const { product } = parsed.data
   const prod = PRODUCTS[product as ProductKey]
+  const discountedPrice = pct >= 100 ? 0 : Math.round(prod.price * (1 - pct / 100))
 
-  // Create project — price is 0 until admin sets it after reviewing the briefing
+  // Create project with the discounted price stored.
+  // Payment is triggered later by the admin after reviewing the briefing.
   const project = await prisma.project.create({
     data: {
       name: `${prod.label} — Reto Mundial`,
-      description: `Reto Mundial 2026: ${pct}% de descuento (${retoStatus.wins} victorias de España). Precio pendiente de briefing.`,
-      price: 0,
+      description: `Reto Mundial 2026: ${pct}% de descuento (${retoStatus.wins} victorias de España). Precio con descuento: €${discountedPrice}.`,
+      price: discountedPrice,
       clientId: session.user.id,
       status: 'LEAD',
     },

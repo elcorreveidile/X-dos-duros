@@ -4,9 +4,9 @@ import { prisma } from '@/lib/db'
 import { z } from 'zod'
 
 const PRODUCTS = {
-  landing: { label: 'Landing Page' },
-  mvp: { label: 'MVP Web App' },
-  ecommerce: { label: 'E-commerce' },
+  landing: { label: 'Landing Page', price: 297 },
+  mvp: { label: 'MVP Web App', price: 797 },
+  ecommerce: { label: 'E-commerce', price: 497 },
 } as const
 
 type ProductKey = keyof typeof PRODUCTS
@@ -43,13 +43,15 @@ export async function POST(req: Request) {
   }
 
   const prod = PRODUCTS[product as ProductKey]
+  const discountedPrice = coupon.pct >= 100 ? 0 : Math.round(prod.price * (1 - coupon.pct / 100))
 
-  // Create project — price is 0 until admin sets it after reviewing the briefing
+  // Create project with the discounted price stored.
+  // Payment is triggered later by the admin after reviewing the briefing.
   const project = await prisma.project.create({
     data: {
       name: `${prod.label} — Mundial`,
-      description: `Premio Mundial 2026: ${coupon.pct}% de descuento (cupón ${couponCode}). Precio pendiente de briefing.`,
-      price: 0,
+      description: `Premio Mundial 2026: ${coupon.pct}% de descuento (cupón ${couponCode}). Precio con descuento: €${discountedPrice}.`,
+      price: discountedPrice,
       clientId: session.user.id,
       status: 'LEAD',
     },
