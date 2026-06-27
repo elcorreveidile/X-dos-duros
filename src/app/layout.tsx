@@ -3,6 +3,7 @@ import './globals.css'
 import { JsonLd } from '@/components/JsonLd'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
 import { ScrollToTop } from '@/components/ScrollToTop'
+import { Providers } from '@/components/Providers'
 
 export const metadata: Metadata = {
   title: 'Por 2 Duros — Tu web en 48 horas',
@@ -52,9 +53,11 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background text-foreground">
         <noscript dangerouslySetInnerHTML={{ __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MX4L7L77" height="0" width="0" style="display:none;visibility:hidden"></iframe>` }} />
-        {children}
-        <WhatsAppButton />
-        <ScrollToTop />
+        <Providers>
+          {children}
+          <WhatsAppButton />
+          <ScrollToTop />
+        </Providers>
       </body>
     </html>
   )
