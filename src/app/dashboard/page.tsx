@@ -65,11 +65,24 @@ export default async function DashboardPage({ searchParams }: Props) {
     } catch {}
   }
 
-  // Check for pending Mundial prize
-  const mundialCoupon = await prisma.mundialCoupon.findFirst({
+  // Check for pending Mundial prize — try by userId first, fall back to email
+  let mundialCoupon = await prisma.mundialCoupon.findFirst({
     where: { userId: session!.user!.id, redeemedAt: null },
     orderBy: { createdAt: 'desc' },
   })
+  if (!mundialCoupon && session!.user!.email) {
+    mundialCoupon = await prisma.mundialCoupon.findFirst({
+      where: { email: session!.user!.email, redeemedAt: null },
+      orderBy: { createdAt: 'desc' },
+    })
+    // Link userId retroactively so next query hits by userId
+    if (mundialCoupon) {
+      await prisma.mundialCoupon.update({
+        where: { id: mundialCoupon.id },
+        data: { userId: session!.user!.id },
+      })
+    }
+  }
 
   // Check for Reto Mundial participation
   const dbUser = await prisma.user.findUnique({
