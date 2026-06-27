@@ -51,6 +51,7 @@ model User {
   role          UserRole  @default(CLIENT)
   phone         String?
   company       String?
+  retoMundial   Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
