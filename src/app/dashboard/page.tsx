@@ -8,7 +8,7 @@ import { PayButton } from '@/components/dashboard/PayButton'
 import { FreeConfirmBlock } from '@/components/dashboard/FreeConfirmBlock'
 import { PaymentNotice } from '@/components/dashboard/PaymentNotice'
 import { Badge } from '@/components/ui/Badge'
-import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard, ArrowRight } from 'lucide-react'
+import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard, ArrowRight, User } from 'lucide-react'
 import Link from 'next/link'
 import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/lib/utils'
 import type { ProjectStatus } from '@/types'
@@ -223,11 +223,12 @@ export default async function DashboardPage({ searchParams }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { href: '/dashboard/briefing', icon: FileText, title: 'Briefing', description: 'Envía textos, logos y referencias', badge: 0 },
           { href: '/dashboard/tickets', icon: MessageSquare, title: 'Mensajes', description: 'Habla directamente con el equipo', badge: unreadCount },
           { href: '/dashboard/suscripcion', icon: Package, title: 'Suscripción', description: 'Gestiona tu plan de mantenimiento', badge: 0 },
+          { href: '/dashboard/perfil', icon: User, title: 'Mi perfil', description: 'Nombre, teléfono y empresa', badge: 0 },
         ].map((item) => {
           const Icon = item.icon
           return (
