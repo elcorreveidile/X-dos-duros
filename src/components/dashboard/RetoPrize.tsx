@@ -57,20 +57,46 @@ export function RetoPrize({ pct, wins, champion }: Props) {
 
   return (
     <div className="border border-orange-500/40 bg-orange-500/5 p-6 space-y-6">
-      <div className="flex items-center gap-3">
-        <Flame size={20} className="text-orange-400 flex-shrink-0" />
-        <div>
+      <div className="flex items-start gap-3">
+        <Flame size={20} className="text-orange-400 flex-shrink-0 mt-0.5" />
+        <div className="flex-1 min-w-0">
           <p className="text-xs uppercase tracking-widest text-orange-400 font-mono">Reto Mundial 2026</p>
           <p className="font-black uppercase tracking-tight">
             {isFree
               ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS'
-              : `Ahora mismo -${pct}% · sube con cada victoria`}
+              : `Ahora mismo -${pct}%`}
           </p>
-          {wins > 0 && !isFree && (
-            <p className="text-xs text-muted mt-0.5">{wins} {wins === 1 ? 'victoria' : 'victorias'} de España</p>
+          {!isFree && (
+            <p className="text-xs text-muted mt-0.5">
+              {wins > 0
+                ? `${wins} ${wins === 1 ? 'victoria' : 'victorias'} de España · el descuento sube con cada partido ganado`
+                : 'El descuento sube con cada victoria de España'}
+            </p>
           )}
         </div>
+        {!isFree && pct > 0 && (
+          <div className="flex-shrink-0 text-right">
+            <span className="text-3xl font-black font-mono text-orange-400">{pct}<span className="text-lg">%</span></span>
+          </div>
+        )}
       </div>
+
+      {/* Progress bar */}
+      {!isFree && (
+        <div className="space-y-1">
+          <div className="h-1.5 bg-border w-full">
+            <div
+              className="h-full bg-orange-500 transition-all"
+              style={{ width: `${Math.min(pct, 100)}%` }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-muted font-mono">
+            <span>0%</span>
+            <span className="text-orange-400 font-bold">{pct}% actual</span>
+            <span>100% gratis</span>
+          </div>
+        </div>
+      )}
 
       <p className="text-muted text-sm">
         {isFree
