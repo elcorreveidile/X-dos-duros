@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
-import { Flame, Trophy, Zap, Shield } from 'lucide-react'
+import { Flame, Trophy, Zap, Shield, CheckCircle, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 import { getMundialRetoPct } from '@/lib/espanias'
+import { auth } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 import { RetoClient } from './RetoClient'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
@@ -12,8 +15,21 @@ export const metadata: Metadata = {
 }
 
 export default async function RetoMundialPage() {
-  const reto = await getMundialRetoPct()
+  const [reto, session] = await Promise.all([getMundialRetoPct(), auth()])
   const isFree = reto.pct >= 100 || reto.champion
+
+  // Check logged-in user's reto status
+  let userRetoMundial = false
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { retoMundial: true },
+    })
+    userRetoMundial = user?.retoMundial ?? false
+  }
+
+  const isLoggedIn = !!session?.user
+  const isParticipant = isLoggedIn && userRetoMundial
 
   return (
     <>
@@ -33,8 +49,11 @@ export default async function RetoMundialPage() {
             de España
           </h1>
           <p className="text-muted text-lg leading-relaxed">
-            Apúntate ahora. Cuantos más partidos gane la Selección, mayor será tu descuento en una Landing Page, MVP o E-commerce.
-            {' '}<strong className="text-foreground">Si España gana el Mundial, tu web es completamente gratis.</strong>
+            {isParticipant
+              ? 'Ya estás dentro. Tu descuento se actualiza automáticamente con cada partido que gane la Selección.'
+              : <>Apúntate ahora. Cuantos más partidos gane la Selección, mayor será tu descuento en una Landing Page, MVP o E-commerce.
+                {' '}<strong className="text-foreground">Si España gana el Mundial, tu web es completamente gratis.</strong></>
+            }
           </p>
         </div>
 
@@ -113,14 +132,39 @@ export default async function RetoMundialPage() {
           <p>El descuento se calcula en tiempo real en el servidor. No puede manipularse desde el navegador.</p>
         </div>
 
-        {/* Signup form */}
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-2xl font-black uppercase tracking-tight">Apúntate ahora</h2>
-            <p className="text-muted text-sm mt-2">Gratis. Sin tarjeta. Sin compromiso. El descuento te espera.</p>
+        {/* Bottom CTA — depends on auth state */}
+        {isParticipant ? (
+          <div className="border border-orange-500/40 bg-orange-500/5 p-8 text-center space-y-4">
+            <CheckCircle size={36} className="text-orange-400 mx-auto" />
+            <p className="font-black text-lg uppercase tracking-tight">Ya estás en el Reto</p>
+            <p className="text-muted text-sm max-w-sm mx-auto">
+              Tu descuento actual es <strong className="text-orange-400">{isFree ? '100% GRATIS' : `-${reto.pct}%`}</strong>. Entra en tu área para activarlo cuando quieras.
+            </p>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-black text-xs uppercase tracking-widest hover:bg-orange-400 transition-colors"
+            >
+              Ir a mi área
+              <ArrowRight size={14} />
+            </Link>
           </div>
-          <RetoClient />
-        </div>
+        ) : isLoggedIn ? (
+          <div className="border border-border p-8 text-center space-y-4">
+            <p className="font-black text-lg uppercase tracking-tight">Ya tienes cuenta</p>
+            <p className="text-muted text-sm max-w-sm mx-auto">
+              Tienes una cuenta en Por 2 Duros pero aún no estás en el Reto Mundial. ¿Quieres apuntarte?
+            </p>
+            <RetoClient />
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-black uppercase tracking-tight">Apúntate ahora</h2>
+              <p className="text-muted text-sm mt-2">Gratis. Sin tarjeta. Sin compromiso. El descuento te espera.</p>
+            </div>
+            <RetoClient />
+          </div>
+        )}
 
       </div>
     </main>
