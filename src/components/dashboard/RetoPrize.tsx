@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Flame, Globe, Rocket, ShoppingBag, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Flame, Globe, Rocket, ShoppingBag, Loader2, X } from 'lucide-react'
 
 const PRODUCTS = [
   { key: 'landing', icon: Globe, label: 'Landing Page', basePrice: 297, delivery: '24h' },
@@ -19,8 +19,18 @@ export function RetoPrize({ pct, wins, champion }: Props) {
   const [selected, setSelected] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [dismissed, setDismissed] = useState(false)
 
   const isFree = pct >= 100 || champion
+
+  useEffect(() => {
+    if (localStorage.getItem('dismissed_reto_mundial') === '1') setDismissed(true)
+  }, [])
+
+  function handleDismiss() {
+    localStorage.setItem('dismissed_reto_mundial', '1')
+    setDismissed(true)
+  }
 
   function discountedPrice(base: number) {
     if (isFree) return 0
@@ -51,28 +61,37 @@ export function RetoPrize({ pct, wins, champion }: Props) {
     }
   }
 
+  if (dismissed) return null
+
   return (
     <div className="border border-orange-500/40 bg-orange-500/5 p-6 space-y-6">
-      <div className="flex items-start gap-3">
-        <Flame size={20} className="text-orange-400 flex-shrink-0 mt-0.5" />
-        <div className="flex-1 min-w-0">
-          <p className="text-xs uppercase tracking-widest text-orange-400 font-mono">Reto Mundial 2026</p>
-          <p className="font-black uppercase tracking-tight">
-            {isFree ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS' : `Ahora mismo -${pct}%`}
-          </p>
-          {!isFree && (
-            <p className="text-xs text-muted mt-0.5">
-              {wins > 0
-                ? `${wins} ${wins === 1 ? 'victoria' : 'victorias'} de España · el descuento sube con cada partido ganado`
-                : 'El descuento sube con cada victoria de España'}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <Flame size={20} className="text-orange-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs uppercase tracking-widest text-orange-400 font-mono">Reto Mundial 2026</p>
+            <p className="font-black uppercase tracking-tight">
+              {isFree ? '🏆 ESPAÑA CAMPEONA — WEB GRATIS' : `Ahora mismo -${pct}%`}
             </p>
+            {!isFree && (
+              <p className="text-xs text-muted mt-0.5">
+                {wins > 0
+                  ? `${wins} ${wins === 1 ? 'victoria' : 'victorias'} de España · el descuento sube con cada partido ganado`
+                  : 'El descuento sube con cada victoria de España'}
+              </p>
+            )}
+          </div>
+          {!isFree && pct > 0 && (
+            <span className="text-3xl font-black font-mono text-orange-400 flex-shrink-0">{pct}<span className="text-lg">%</span></span>
           )}
         </div>
-        {!isFree && pct > 0 && (
-          <div className="flex-shrink-0 text-right">
-            <span className="text-3xl font-black font-mono text-orange-400">{pct}<span className="text-lg">%</span></span>
-          </div>
-        )}
+        <button
+          onClick={handleDismiss}
+          className="text-muted hover:text-foreground transition-colors flex-shrink-0 p-1"
+          title="Descartar oferta"
+        >
+          <X size={16} />
+        </button>
       </div>
 
       {/* Progress bar */}
