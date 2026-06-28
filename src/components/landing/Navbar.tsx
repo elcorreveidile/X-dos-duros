@@ -66,7 +66,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/#servicios" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Servicios
             </Link>
-            <Link href="/#precio" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/calculadora" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Calculadora
             </Link>
             <Link href="/#proceso" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
@@ -106,7 +106,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/#servicios" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Servicios
             </Link>
-            <Link href="/#precio" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/calculadora" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Calculadora
             </Link>
             <Link href="/#proceso" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
