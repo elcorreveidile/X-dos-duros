@@ -83,7 +83,10 @@ export async function PortfolioSection() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 text-center space-y-4">
+          <p className="text-muted text-sm">
+            ¿Quieres ver todo lo que hemos construido?
+          </p>
           <a
             href="https://www.espanias.com/catalogo"
             target="_blank"
