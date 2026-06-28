@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/Button'
-import { Send, CheckCircle, Mail, ArrowLeft } from 'lucide-react'
+import { Send, CheckCircle, Mail, ArrowLeft, LayoutDashboard } from 'lucide-react'
+import Link from 'next/link'
 
 type Step = 'form' | 'verify' | 'done'
 
 export function ContactSection() {
   const searchParams = useSearchParams()
+  const { data: session } = useSession()
 
   const [form, setForm] = useState({
     name: '',
@@ -112,7 +115,22 @@ export function ContactSection() {
           </p>
         </div>
 
-        {step === 'done' && (
+        {session && (
+          <div className="border border-neon/40 bg-neon/5 p-8 flex flex-col items-center gap-4 text-center">
+            <LayoutDashboard size={32} className="text-neon" />
+            <div>
+              <p className="font-black uppercase tracking-tight text-lg">Ya tienes cuenta</p>
+              <p className="text-muted text-sm mt-1">
+                Accede a tu área para gestionar tu proyecto o solicitar uno nuevo.
+              </p>
+            </div>
+            <Link href="/dashboard">
+              <Button variant="primary" size="lg">Ir a mi área</Button>
+            </Link>
+          </div>
+        )}
+
+        {!session && step === 'done' && (
           <div className="border border-neon bg-neon/5 p-12 flex flex-col items-center gap-4 text-center animate-fade-in">
             <CheckCircle size={40} className="text-neon" />
             <h3 className="text-2xl font-bold uppercase">¡Recibido!</h3>
@@ -122,7 +140,7 @@ export function ContactSection() {
           </div>
         )}
 
-        {step === 'verify' && (
+        {!session && step === 'verify' && (
           <div className="space-y-6">
             <div className="border border-[#39FF14]/30 bg-[#39FF14]/5 p-6 flex items-start gap-4">
               <Mail size={20} className="text-neon shrink-0 mt-0.5" />
@@ -170,7 +188,7 @@ export function ContactSection() {
           </div>
         )}
 
-        {step === 'form' && (
+        {!session && step === 'form' && (
           <form onSubmit={handleSendCode} className="space-y-6">
             {error && (
               <div className="border border-red-400/40 bg-red-400/5 p-3 text-red-400 text-sm">{error}</div>

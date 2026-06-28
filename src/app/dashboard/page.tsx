@@ -8,11 +8,14 @@ import { PayButton } from '@/components/dashboard/PayButton'
 import { FreeConfirmBlock } from '@/components/dashboard/FreeConfirmBlock'
 import { PaymentNotice } from '@/components/dashboard/PaymentNotice'
 import { Badge } from '@/components/ui/Badge'
-import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard, ArrowRight } from 'lucide-react'
+import { ExternalLink, FileText, MessageSquare, Package, Inbox, CreditCard, ArrowRight, User } from 'lucide-react'
 import Link from 'next/link'
 import { getProjectStatusLabel, getProjectStatusColor, formatCurrency } from '@/lib/utils'
 import type { ProjectStatus } from '@/types'
 import { Suspense } from 'react'
+import { MundialPrize } from '@/components/dashboard/MundialPrize'
+import { RetoPrize } from '@/components/dashboard/RetoPrize'
+import { getMundialRetoPct } from '@/lib/espanias'
 
 const STATUS_STEPS: { status: ProjectStatus; label: string }[] = [
   { status: 'LEAD', label: 'Solicitud recibida' },
@@ -62,6 +65,32 @@ export default async function DashboardPage({ searchParams }: Props) {
     } catch {}
   }
 
+  // Check for pending Mundial prize — try by userId first, fall back to email
+  let mundialCoupon = await prisma.mundialCoupon.findFirst({
+    where: { userId: session!.user!.id, redeemedAt: null },
+    orderBy: { createdAt: 'desc' },
+  })
+  if (!mundialCoupon && session!.user!.email) {
+    mundialCoupon = await prisma.mundialCoupon.findFirst({
+      where: { email: session!.user!.email, redeemedAt: null },
+      orderBy: { createdAt: 'desc' },
+    })
+    // Link userId retroactively so next query hits by userId
+    if (mundialCoupon) {
+      await prisma.mundialCoupon.update({
+        where: { id: mundialCoupon.id },
+        data: { userId: session!.user!.id },
+      })
+    }
+  }
+
+  // Check for Reto Mundial participation
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session!.user!.id },
+    select: { retoMundial: true },
+  })
+  const retoStatus = dbUser?.retoMundial ? await getMundialRetoPct() : null
+
   const project = await prisma.project.findFirst({
     where: { clientId: session!.user!.id },
     orderBy: { createdAt: 'desc' },
@@ -79,20 +108,32 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   if (!project) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
-        <Inbox size={48} className="text-muted" />
-        <div>
-          <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
-          <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
-            Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.
-          </p>
+      <div className="space-y-8">
+        {mundialCoupon && (
+          <MundialPrize couponCode={mundialCoupon.code} pct={mundialCoupon.pct} />
+        )}
+        {retoStatus && (
+          <RetoPrize pct={retoStatus.pct} wins={retoStatus.wins} champion={retoStatus.champion} />
+        )}
+        <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
+          <Inbox size={48} className="text-muted" />
+          <div>
+            <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
+            <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
+              {mundialCoupon || retoStatus
+                ? 'Elige tu producto arriba para activar tu descuento y empezar tu proyecto.'
+                : 'Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.'}
+            </p>
+          </div>
+          {!mundialCoupon && !retoStatus && (
+            <a
+              href="/#contacto"
+              className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
+            >
+              Solicitar un proyecto
+            </a>
+          )}
         </div>
-        <a
-          href="/#contacto"
-          className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
-        >
-          Solicitar un proyecto
-        </a>
       </div>
     )
   }
@@ -112,6 +153,13 @@ export default async function DashboardPage({ searchParams }: Props) {
       <Suspense fallback={null}>
         <PaymentNotice />
       </Suspense>
+
+      {mundialCoupon && (
+        <MundialPrize couponCode={mundialCoupon.code} pct={mundialCoupon.pct} />
+      )}
+      {retoStatus && (
+        <RetoPrize pct={retoStatus.pct} wins={retoStatus.wins} champion={retoStatus.champion} />
+      )}
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -203,11 +251,12 @@ export default async function DashboardPage({ searchParams }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { href: '/dashboard/briefing', icon: FileText, title: 'Briefing', description: 'Envía textos, logos y referencias', badge: 0 },
           { href: '/dashboard/tickets', icon: MessageSquare, title: 'Mensajes', description: 'Habla directamente con el equipo', badge: unreadCount },
           { href: '/dashboard/suscripcion', icon: Package, title: 'Suscripción', description: 'Gestiona tu plan de mantenimiento', badge: 0 },
+          { href: '/dashboard/perfil', icon: User, title: 'Mi perfil', description: 'Nombre, teléfono y empresa', badge: 0 },
         ].map((item) => {
           const Icon = item.icon
           return (

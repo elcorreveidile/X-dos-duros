@@ -30,6 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/mvp`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE_URL}/ecommerce`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE_URL}/concurso-mundial-2026`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     ...blogEntries,
     { url: `${BASE_URL}/agencia-web-malaga`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE_URL}/agencia-web-marbella`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },

@@ -55,13 +55,17 @@ model User {
   image         String?
   password      String?
   role          UserRole  @default(CLIENT)
+  phone         String?
+  company       String?
+  retoMundial   Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  projects      Project[]
-  subscriptions Subscription[]
+  accounts       Account[]
+  sessions       Session[]
+  projects       Project[]
+  subscriptions  Subscription[]
+  mundialCoupons MundialCoupon[]
 
   @@map("users")
 }
@@ -229,6 +233,21 @@ model BlogPost {
   updatedAt      DateTime  @updatedAt
 
   @@map("blog_posts")
+}
+
+model MundialCoupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  pct         Int
+  email       String?
+  userId      String?
+  redeemedAt  DateTime?
+  projectId   String?
+  createdAt   DateTime  @default(now())
+
+  user        User?     @relation(fields: [userId], references: [id])
+
+  @@map("mundial_coupons")
 }
 
 model Subscription {

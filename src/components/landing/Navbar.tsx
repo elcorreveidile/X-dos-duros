@@ -4,12 +4,14 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { useSession } from 'next-auth/react'
 
 const LAUNCH_TOTAL = 20
 
 export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
   const [open, setOpen] = useState(false)
   const [bannerDismissed, setBannerDismissed] = useState(false)
+  const { data: session } = useSession()
 
   const showBanner =
     !bannerDismissed &&
@@ -76,12 +78,20 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/#ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               ♻ ECR
             </Link>
-            <Link href="/login">
-              <Button variant="outline" size="sm">Acceder</Button>
-            </Link>
-            <Link href="/#contacto">
-              <Button variant="primary" size="sm">Empezar Ya</Button>
-            </Link>
+            {session ? (
+              <Link href="/dashboard">
+                <Button variant="primary" size="sm">Mi Área</Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline" size="sm">Acceder</Button>
+                </Link>
+                <Link href="/#contacto">
+                  <Button variant="primary" size="sm">Empezar Ya</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <button className="md:hidden text-muted hover:text-neon" onClick={() => setOpen(!open)}>
@@ -108,12 +118,20 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/#ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               ♻ ECR
             </Link>
-            <Link href="/login" onClick={() => setOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full">Acceder</Button>
-            </Link>
-            <Link href="/#contacto" onClick={() => setOpen(false)}>
-              <Button variant="primary" size="sm" className="w-full">Empezar Ya</Button>
-            </Link>
+            {session ? (
+              <Link href="/dashboard" onClick={() => setOpen(false)}>
+                <Button variant="primary" size="sm" className="w-full">Mi Área</Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Acceder</Button>
+                </Link>
+                <Link href="/#contacto" onClick={() => setOpen(false)}>
+                  <Button variant="primary" size="sm" className="w-full">Empezar Ya</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

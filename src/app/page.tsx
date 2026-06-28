@@ -11,6 +11,7 @@ import { ProcessSection } from '@/components/landing/ProcessSection'
 import { ECRSection } from '@/components/landing/ECRSection'
 import { FaqSection } from '@/components/landing/FaqSection'
 import { CitiesSection } from '@/components/landing/CitiesSection'
+import { MundialSection } from '@/components/landing/MundialSection'
 import { ContactSection } from '@/components/landing/ContactSection'
 import { Footer } from '@/components/landing/Footer'
 import { Suspense } from 'react'
@@ -22,6 +23,7 @@ export default function HomePage() {
         <NavbarWrapper />
       </Suspense>
       <main>
+        <MundialSection />
         <HeroSection />
         <ServicesSection />
         <Suspense fallback={null}>

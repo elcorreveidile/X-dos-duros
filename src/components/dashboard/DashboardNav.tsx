@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, MessageSquare, CreditCard, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, FileText, MessageSquare, CreditCard, LogOut, Menu, X, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { signOut } from 'next-auth/react'
 import { useState } from 'react'
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/dashboard/briefing', label: 'Briefing', icon: FileText },
   { href: '/dashboard/tickets', label: 'Soporte', icon: MessageSquare },
   { href: '/dashboard/suscripcion', label: 'Suscripción', icon: CreditCard },
+  { href: '/dashboard/perfil', label: 'Perfil', icon: User },
 ]
 
 export function DashboardNav() {
