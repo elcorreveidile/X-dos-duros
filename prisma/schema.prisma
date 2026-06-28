@@ -41,6 +41,12 @@ enum SubscriptionStatus {
   PAST_DUE
 }
 
+enum MetodoPago {
+  CONTADO
+  PLAZOS
+  QPQ
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -115,6 +121,9 @@ model Project {
   timerDeadline   DateTime?
   demoUrl         String?
   finalFiles      String[]      @default([])
+  metodoPago      MetodoPago?
+  qpqBonos        Int?
+  qpqEur          Int?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 

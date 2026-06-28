@@ -1,0 +1,8 @@
+DO $$ BEGIN
+  CREATE TYPE "MetodoPago" AS ENUM ('CONTADO', 'PLAZOS', 'QPQ');
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "metodoPago" "MetodoPago";
+ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "qpqBonos" INTEGER;
+ALTER TABLE "projects" ADD COLUMN IF NOT EXISTS "qpqEur" INTEGER;

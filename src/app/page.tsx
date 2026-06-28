@@ -8,6 +8,7 @@ import { PortfolioSection } from '@/components/landing/PortfolioSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { PricingCalculator } from '@/components/landing/PricingCalculator'
 import { ProcessSection } from '@/components/landing/ProcessSection'
+import { ECRSection } from '@/components/landing/ECRSection'
 import { FaqSection } from '@/components/landing/FaqSection'
 import { CitiesSection } from '@/components/landing/CitiesSection'
 import { MundialSection } from '@/components/landing/MundialSection'
@@ -30,6 +31,7 @@ export default function HomePage() {
         </Suspense>
         <TestimonialsSection />
         <PricingCalculator />
+        <ECRSection />
         <ProcessSection />
         <FaqSection />
         <CitiesSection />
