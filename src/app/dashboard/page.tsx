@@ -159,6 +159,13 @@ export default async function DashboardPage({ searchParams }: Props) {
                 Tu solicitud ha sido recibida. El equipo la revisará en breve y activará tu proyecto.
                 Mientras tanto, puedes adelantar la información de branding en el briefing.
               </p>
+              <div className="border border-border bg-background/60 px-4 py-3 flex items-start gap-3 mt-2">
+                <span className="text-base flex-shrink-0">🔒</span>
+                <p className="text-xs text-muted leading-relaxed">
+                  <strong className="text-foreground">Sin cargo hasta que tú lo apruebes.</strong>{' '}
+                  No implementamos ningún cobro hasta que el briefing esté entregado y hayamos acordado contigo el precio final.
+                </p>
+              </div>
             </div>
 
             <div className="border border-yellow-400/40 bg-yellow-400/5 p-5 flex items-start gap-4">

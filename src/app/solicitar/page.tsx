@@ -128,6 +128,18 @@ function SolicitarForm() {
         ))}
       </div>
 
+      {/* Sin cargo hasta acuerdo */}
+      <div className="border border-border bg-card px-5 py-4 flex items-start gap-3">
+        <span className="text-lg flex-shrink-0">🔒</span>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider">Sin cargo hasta que tú lo apruebes</p>
+          <p className="text-xs text-muted mt-1 leading-relaxed">
+            No implementamos ningún cobro hasta que el briefing esté entregado y hayamos acordado contigo el precio final.
+            El presupuesto de la calculadora es orientativo — el definitivo lo cerramos juntos.
+          </p>
+        </div>
+      </div>
+
       {/* Email form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
