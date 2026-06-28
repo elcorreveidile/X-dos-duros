@@ -73,7 +73,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/blog" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Blog
             </Link>
-            <Link href="/ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/#ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               ♻ ECR
             </Link>
             <Link href="/login">
@@ -105,7 +105,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/blog" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Blog
             </Link>
-            <Link href="/ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/#ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               ♻ ECR
             </Link>
             <Link href="/login" onClick={() => setOpen(false)}>
