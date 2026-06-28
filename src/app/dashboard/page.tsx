@@ -29,15 +29,31 @@ const STATUS_ORDER: ProjectStatus[] = ['LEAD', 'BRIEFING', 'DEVELOPMENT', 'REVIE
 
 const PAYMENT_STATUSES: ProjectStatus[] = ['BRIEFING', 'DEVELOPMENT', 'REVIEW', 'DELIVERED']
 
+const PROJECT_LABELS: Record<string, string> = {
+  LANDING: 'Landing Page',
+  ECOMMERCE: 'E-commerce',
+  MVP: 'MVP Web App',
+  CUSTOM: 'App a medida',
+}
+
+const ADDON_LABELS: Record<string, string> = {
+  seo: 'SEO avanzado',
+  blog: 'Blog',
+  analytics: 'Analítica',
+  multilang: 'Multiidioma',
+  crm: 'Integración CRM',
+  payments: 'Pagos online',
+}
+
 interface Props {
-  searchParams: Promise<{ payment?: string; session_id?: string }>
+  searchParams: Promise<{ payment?: string; session_id?: string; newProject?: string; projectType?: string; addons?: string; price?: string }>
 }
 
 export default async function DashboardPage({ searchParams }: Props) {
   const session = await auth()
 
   // Verify payment with Stripe directly on success redirect (before webhook arrives)
-  const { payment, session_id } = await searchParams
+  const { payment, session_id, newProject, projectType, addons: addonsRaw, price } = await searchParams
   if (payment === 'success' && session_id) {
     try {
       const stripeSession = await stripe.checkout.sessions.retrieve(session_id)
@@ -107,6 +123,9 @@ export default async function DashboardPage({ searchParams }: Props) {
   })
 
   if (!project) {
+    const isNewRequest = newProject === '1' && projectType
+    const addons = addonsRaw ? addonsRaw.split(',').filter(Boolean) : []
+
     return (
       <div className="space-y-8">
         {mundialCoupon && (
@@ -115,25 +134,67 @@ export default async function DashboardPage({ searchParams }: Props) {
         {retoStatus && (
           <RetoPrize pct={retoStatus.pct} wins={retoStatus.wins} champion={retoStatus.champion} />
         )}
-        <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
-          <Inbox size={48} className="text-muted" />
-          <div>
-            <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
-            <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
-              {mundialCoupon || retoStatus
-                ? 'Elige tu producto arriba para activar tu descuento y empezar tu proyecto.'
-                : 'Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.'}
-            </p>
+
+        {isNewRequest ? (
+          <div className="space-y-6">
+            <div className="border border-neon/40 bg-neon/5 p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-neon animate-pulse" />
+                <p className="text-xs uppercase tracking-widest text-neon font-mono">Solicitud recibida</p>
+              </div>
+              <h1 className="text-2xl font-black uppercase tracking-tight">
+                {PROJECT_LABELS[projectType!] ?? projectType}
+                {price && <span className="text-neon"> · €{price}</span>}
+              </h1>
+              {addons.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {addons.map((a) => (
+                    <span key={a} className="text-xs border border-border text-muted px-2 py-0.5 font-mono">
+                      {ADDON_LABELS[a] ?? a}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="text-muted text-sm">
+                Tu solicitud ha sido recibida. El equipo la revisará en breve y activará tu proyecto.
+                Mientras tanto, puedes adelantar la información de branding en el briefing.
+              </p>
+            </div>
+
+            <div className="border border-yellow-400/40 bg-yellow-400/5 p-5 flex items-start gap-4">
+              <FileText size={20} className="text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-bold uppercase tracking-tight">Prepara tu branding ahora</p>
+                <p className="text-muted text-sm mt-1">
+                  Sube tu logo, colores, referencias de diseño y textos. Cuanto antes lo tengamos, antes empezamos el contador de 48h.
+                </p>
+                <Link href="/dashboard/briefing" className="inline-flex items-center gap-2 mt-3 text-yellow-400 text-xs font-bold uppercase tracking-widest hover:underline">
+                  Ir al briefing <ArrowRight size={12} />
+                </Link>
+              </div>
+            </div>
           </div>
-          {!mundialCoupon && !retoStatus && (
-            <a
-              href="/#contacto"
-              className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
-            >
-              Solicitar un proyecto
-            </a>
-          )}
-        </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-24 gap-6 text-center">
+            <Inbox size={48} className="text-muted" />
+            <div>
+              <h1 className="text-2xl font-black uppercase tracking-tight">Sin proyectos activos</h1>
+              <p className="text-muted text-sm mt-2 max-w-sm mx-auto">
+                {mundialCoupon || retoStatus
+                  ? 'Elige tu producto arriba para activar tu descuento y empezar tu proyecto.'
+                  : 'Cuando contrates un proyecto, aparecerá aquí y podrás seguir su progreso en tiempo real.'}
+              </p>
+            </div>
+            {!mundialCoupon && !retoStatus && (
+              <a
+                href="/calculadora"
+                className="px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/90 transition-colors"
+              >
+                Solicitar un proyecto
+              </a>
+            )}
+          </div>
+        )}
       </div>
     )
   }
