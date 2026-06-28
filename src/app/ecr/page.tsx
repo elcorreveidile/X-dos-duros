@@ -162,10 +162,10 @@ export default function ECRPage() {
               Run a business in the Realejo? Get in touch and we&apos;ll build your site.
             </p>
             <Link
-              href="/#contacto"
+              href="/#precio"
               className="inline-flex items-center gap-2 px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/80 transition-colors"
             >
-              Contactar ahora
+              Ver precios y formas de pago
             </Link>
           </div>
 
