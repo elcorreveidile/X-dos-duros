@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 }
 
 const BARRIOS = [
-  { codigo: 'ECR', barrio: 'REALEJO', nombre: 'El Realejo', desc: 'El barrio judío de Granada, a los pies de la Alhambra.' },
-  { codigo: 'ECA', barrio: 'ALBAICÍN', nombre: 'El Albaicín', desc: 'Patrimonio de la Humanidad, con 3 millones de visitas anuales.' },
-  { codigo: 'ECZ', barrio: 'ZAIDÍN', nombre: 'El Zaidín', desc: 'El barrio más poblado de Granada, con una economía de proximidad fuerte.' },
-  { codigo: 'ECS', barrio: 'SACROMONTE', nombre: 'El Sacromonte', desc: 'El barrio del flamenco y las cuevas. Cultura e historia viva.' },
-  { codigo: 'ECC', barrio: 'CENTRO', nombre: 'El Centro', desc: 'Calle Real, Gran Vía, Reyes Católicos. El corazón comercial de Granada.' },
-  { codigo: 'ECCH', barrio: 'LA CHANA', nombre: 'La Chana', desc: 'Barrio obrero al noroeste de Granada, con fuerte tejido comercial de proximidad.' },
+  { codigo: 'ECR', barrio: 'REALEJO', nombre: 'El Realejo', slug: 'realejo', desc: 'El barrio judío de Granada, a los pies de la Alhambra.' },
+  { codigo: 'ECA', barrio: 'ALBAICÍN', nombre: 'El Albaicín', slug: 'albaicin', desc: 'Patrimonio de la Humanidad, con 3 millones de visitas anuales.' },
+  { codigo: 'ECZ', barrio: 'ZAIDÍN', nombre: 'El Zaidín', slug: 'zaidin', desc: 'El barrio más poblado de Granada, con una economía de proximidad fuerte.' },
+  { codigo: 'ECS', barrio: 'SACROMONTE', nombre: 'El Sacromonte', slug: 'sacromonte', desc: 'El barrio del flamenco y las cuevas. Cultura e historia viva.' },
+  { codigo: 'ECC', barrio: 'CENTRO', nombre: 'El Centro', slug: 'centro', desc: 'Calle Real, Gran Vía, Reyes Católicos. El corazón comercial de Granada.' },
+  { codigo: 'ECCH', barrio: 'LA CHANA', nombre: 'La Chana', slug: 'chana', desc: 'Barrio obrero al noroeste de Granada, con fuerte tejido comercial de proximidad.' },
 ]
 
 const PAYMENT_ROWS = [
@@ -116,7 +116,11 @@ export default function ECRGranadaPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border">
               {BARRIOS.map((b) => (
-                <div key={b.codigo} className="bg-background p-5 flex gap-4 items-start">
+                <Link
+                  key={b.codigo}
+                  href={`/agencia-web-granada/ecr/${b.slug}`}
+                  className="bg-background p-5 flex gap-4 items-start hover:bg-card transition-colors group"
+                >
                   <SelloECR
                     size={52}
                     codigo={b.codigo}
@@ -125,11 +129,11 @@ export default function ECRGranadaPage() {
                     className="text-foreground flex-shrink-0"
                   />
                   <div>
-                    <p className="font-bold text-sm uppercase tracking-tight">{b.nombre}</p>
+                    <p className="font-bold text-sm uppercase tracking-tight group-hover:text-neon transition-colors">{b.nombre}</p>
                     <p className="text-xs font-mono text-neon">{b.codigo}</p>
                     <p className="text-muted text-xs mt-1 leading-relaxed">{b.desc}</p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
