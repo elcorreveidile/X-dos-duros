@@ -63,7 +63,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/#servicios" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/servicios" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Servicios
             </Link>
             <Link href="/calculadora" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
@@ -103,7 +103,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
       {open && (
         <div className="md:hidden border-t border-border bg-background animate-fade-in">
           <div className="px-4 py-4 flex flex-col gap-4">
-            <Link href="/#servicios" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/servicios" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Servicios
             </Link>
             <Link href="/calculadora" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
