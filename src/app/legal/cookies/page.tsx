@@ -1,4 +1,8 @@
-export const metadata = { title: 'Política de Cookies — Por 2 Duros' }
+export const metadata = {
+  title: 'Política de Cookies — Por 2 Duros',
+  description: 'Política de cookies de Por 2 Duros. Qué cookies usamos, para qué y cómo puedes gestionarlas.',
+  alternates: { canonical: 'https://por2duros.com/legal/cookies' },
+}
 
 export default function CookiesPage() {
   return (

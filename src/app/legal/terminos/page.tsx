@@ -1,4 +1,8 @@
-export const metadata = { title: 'Términos y Condiciones — Por 2 Duros' }
+export const metadata = {
+  title: 'Términos y Condiciones — Por 2 Duros',
+  description: 'Términos y condiciones de contratación de Por 2 Duros. Condiciones de uso del servicio, entregas, garantías y devoluciones.',
+  alternates: { canonical: 'https://por2duros.com/legal/terminos' },
+}
 
 export default function TerminosPage() {
   return (
