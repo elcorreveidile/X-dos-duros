@@ -1,4 +1,8 @@
-export const metadata = { title: 'Política de Privacidad — Por 2 Duros' }
+export const metadata = {
+  title: 'Política de Privacidad — Por 2 Duros',
+  description: 'Política de privacidad de Por 2 Duros. Cómo recogemos, usamos y protegemos tus datos personales de acuerdo con el RGPD.',
+  alternates: { canonical: 'https://por2duros.com/legal/privacidad' },
+}
 
 export default function PrivacidadPage() {
   return (
