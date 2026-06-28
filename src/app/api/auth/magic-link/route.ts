@@ -9,7 +9,7 @@ const FROM = process.env.EMAIL_FROM ?? 'Por 2 Duros <hola@por2duros.com>'
 
 export async function POST(req: Request) {
   try {
-    const { email } = await req.json()
+    const { email, callbackUrl } = await req.json()
     if (!email) return NextResponse.json({ error: 'Email requerido' }, { status: 400 })
 
     const user = await prisma.user.findUnique({ where: { email } })
@@ -22,7 +22,9 @@ export async function POST(req: Request) {
     await prisma.verificationToken.deleteMany({ where: { identifier: email } })
     await prisma.verificationToken.create({ data: { identifier: email, token, expires } })
 
-    const link = `${APP_URL}/login/verify?token=${token}&email=${encodeURIComponent(email)}`
+    const safeCallback = typeof callbackUrl === 'string' && /^\/dashboard/.test(callbackUrl) ? callbackUrl : null
+    const callbackParam = safeCallback ? `&callbackUrl=${encodeURIComponent(safeCallback)}` : ''
+    const link = `${APP_URL}/login/verify?token=${token}&email=${encodeURIComponent(email)}${callbackParam}`
 
     const { error: resendError } = await resend.emails.send({
       from: FROM,

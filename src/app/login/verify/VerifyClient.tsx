@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { verifyMagicLink } from './actions'
 
-export default function VerifyClient({ token, email }: { token: string; email: string }) {
+export default function VerifyClient({ token, email, callbackUrl }: { token: string; email: string; callbackUrl?: string }) {
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
@@ -15,6 +15,7 @@ export default function VerifyClient({ token, email }: { token: string; email: s
       <form ref={formRef} action={verifyMagicLink}>
         <input type="hidden" name="token" value={token} />
         <input type="hidden" name="email" value={email} />
+        {callbackUrl && <input type="hidden" name="callbackUrl" value={callbackUrl} />}
         <p className="text-muted text-sm uppercase tracking-widest animate-pulse">Verificando enlace…</p>
       </form>
     </div>
