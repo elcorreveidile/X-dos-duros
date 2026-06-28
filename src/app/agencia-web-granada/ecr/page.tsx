@@ -21,6 +21,7 @@ const BARRIOS = [
   { codigo: 'ECZ', barrio: 'ZAIDÍN', nombre: 'El Zaidín', desc: 'El barrio más poblado de Granada, con una economía de proximidad fuerte.' },
   { codigo: 'ECS', barrio: 'SACROMONTE', nombre: 'El Sacromonte', desc: 'El barrio del flamenco y las cuevas. Cultura e historia viva.' },
   { codigo: 'ECC', barrio: 'CENTRO', nombre: 'El Centro', desc: 'Calle Real, Gran Vía, Reyes Católicos. El corazón comercial de Granada.' },
+  { codigo: 'ECCH', barrio: 'LA CHANA', nombre: 'La Chana', desc: 'Barrio obrero al noroeste de Granada, con fuerte tejido comercial de proximidad.' },
 ]
 
 const PAYMENT_ROWS = [
