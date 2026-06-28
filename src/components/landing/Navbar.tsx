@@ -78,7 +78,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/andalucia" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Andalucía
             </Link>
-            <Link href="/#ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/agencia-web-granada/ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               ♻ ECR
             </Link>
             {session ? (
@@ -121,7 +121,7 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/andalucia" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Andalucía
             </Link>
-            <Link href="/#ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/agencia-web-granada/ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               ♻ ECR
             </Link>
             {session ? (
