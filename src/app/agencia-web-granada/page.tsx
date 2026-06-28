@@ -265,7 +265,7 @@ export default function AgenciaWebGranadaPage() {
                   <Link href="/agencia-web-granada/ecr" className="inline-flex items-center gap-2 px-5 py-2.5 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/80 transition-colors">
                     ECR Granada →
                   </Link>
-                  <Link href="/ecr" className="inline-flex items-center gap-2 px-5 py-2.5 border border-neon/40 text-neon font-black text-xs uppercase tracking-widest hover:border-neon transition-colors">
+                  <Link href="/agencia-web-granada/ecr" className="inline-flex items-center gap-2 px-5 py-2.5 border border-neon/40 text-neon font-black text-xs uppercase tracking-widest hover:border-neon transition-colors">
                     Qué es el ECR
                   </Link>
                 </div>

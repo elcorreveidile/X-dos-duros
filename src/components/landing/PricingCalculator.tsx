@@ -202,7 +202,7 @@ export function PricingCalculator() {
             <p className="text-sm font-bold uppercase tracking-tight">¿Prefieres no pagar todo de golpe?</p>
             <p className="text-xs text-muted mt-1 leading-relaxed">
               Al contado (−10%), a plazos sin interés (4×), o con QPQ — la moneda circular del Realejo. Pagas con lo que sabes hacer.{' '}
-              <Link href="/ecr" className="text-neon hover:underline">Más sobre el ECR y el QPQ →</Link>
+              <Link href="/agencia-web-granada/ecr" className="text-neon hover:underline">Más sobre el ECR y el QPQ →</Link>
             </p>
           </div>
         </div>
