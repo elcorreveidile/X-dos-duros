@@ -3,7 +3,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
-import { CheckCircle, ArrowRight, MapPin } from 'lucide-react'
+import { CheckCircle, ArrowRight, MapPin, RefreshCw } from 'lucide-react'
+import SelloECR from '@/components/marca/SelloECR'
 
 export const metadata: Metadata = {
   title: 'Agencia Web en Granada — 3 millones de turistas te buscan | Por 2 Duros',
@@ -223,6 +224,55 @@ export default function AgenciaWebGranadaPage() {
                   <p className="text-muted text-sm leading-relaxed">{faq.acceptedAnswer.text}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ECR */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-border">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <RefreshCw size={18} className="text-neon" />
+                  <span className="text-xs uppercase tracking-widest font-mono text-muted">Economía Circular Granada</span>
+                </div>
+                <h2 className="text-3xl font-black uppercase tracking-tighter leading-none">
+                  Paga tu web<br />
+                  <span className="neon-text">con lo que haces.</span>
+                </h2>
+                <p className="text-muted text-sm leading-relaxed">
+                  Si tienes un negocio en el Realejo, el Albaicín, el Zaidín, el Sacromonte o el Centro,
+                  puedes pagar parte de tu web con <strong className="text-foreground">bonos QPQ</strong>{' '}
+                  de tu propio negocio. 1 QPQ = 30 €. Al portador, sin caducidad.
+                </p>
+                <div className="space-y-3 text-sm">
+                  {[
+                    { icon: '💶', label: 'Al contado', detail: '−10% sobre el precio normal' },
+                    { icon: '🗓️', label: 'A plazos sin interés', detail: '4 cuotas iguales' },
+                    { icon: '♻️', label: 'Con QPQ', detail: 'Pagas parte con tu propio producto' },
+                  ].map((m) => (
+                    <div key={m.label} className="flex items-start gap-3 border border-border bg-card p-3">
+                      <span className="text-xl flex-shrink-0">{m.icon}</span>
+                      <div>
+                        <p className="font-bold text-xs uppercase tracking-tight">{m.label}</p>
+                        <p className="text-muted text-xs">{m.detail}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-4 flex-wrap">
+                  <Link href="/agencia-web-granada/ecr" className="inline-flex items-center gap-2 px-5 py-2.5 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/80 transition-colors">
+                    ECR Granada →
+                  </Link>
+                  <Link href="/ecr" className="inline-flex items-center gap-2 px-5 py-2.5 border border-neon/40 text-neon font-black text-xs uppercase tracking-widest hover:border-neon transition-colors">
+                    Qué es el ECR
+                  </Link>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <SelloECR size={200} color="currentColor" className="text-foreground opacity-80" />
+              </div>
             </div>
           </div>
         </section>

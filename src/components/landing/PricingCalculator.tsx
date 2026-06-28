@@ -196,6 +196,17 @@ export function PricingCalculator() {
           </div>
         </div>
 
+        <div className="mt-8 border border-neon/20 bg-neon/3 p-5 flex items-start gap-4">
+          <span className="text-2xl flex-shrink-0">♻️</span>
+          <div>
+            <p className="text-sm font-bold uppercase tracking-tight">¿Prefieres no pagar todo de golpe?</p>
+            <p className="text-xs text-muted mt-1 leading-relaxed">
+              Al contado (−10%), a plazos sin interés (4×), o con QPQ — la moneda circular del Realejo. Pagas con lo que sabes hacer.{' '}
+              <Link href="/ecr" className="text-neon hover:underline">Más sobre el ECR y el QPQ →</Link>
+            </p>
+          </div>
+        </div>
+
         <div className="mt-8 border border-dashed border-border p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-sm font-bold uppercase tracking-tight">¿Proyecto más complejo?</p>

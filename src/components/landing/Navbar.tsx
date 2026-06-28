@@ -75,6 +75,9 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             <Link href="/blog" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Blog
             </Link>
+            <Link href="/#ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+              ♻ ECR
+            </Link>
             {session ? (
               <Link href="/dashboard">
                 <Button variant="primary" size="sm">Mi Área</Button>
@@ -111,6 +114,9 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
             </Link>
             <Link href="/blog" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Blog
+            </Link>
+            <Link href="/#ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+              ♻ ECR
             </Link>
             {session ? (
               <Link href="/dashboard" onClick={() => setOpen(false)}>
