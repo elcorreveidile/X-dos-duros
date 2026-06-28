@@ -73,7 +73,7 @@ export function ECRSection() {
             </p>
 
             <Link
-              href="/ecr"
+              href="/agencia-web-granada/ecr"
               className="inline-flex items-center gap-2 px-6 py-3 border border-neon text-neon font-black text-xs uppercase tracking-widest hover:bg-neon hover:text-background transition-colors"
             >
               Más sobre el ECR y el QPQ →
