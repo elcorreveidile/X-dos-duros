@@ -171,7 +171,7 @@ export default async function ECRBarrioPage({ params }: { params: Promise<{ barr
               y qué web te corresponde.
             </p>
             <Link
-              href="/#precio"
+              href="/calculadora"
               className="inline-flex items-center gap-2 px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/80 transition-colors"
             >
               Ver precios <ArrowRight size={14} />

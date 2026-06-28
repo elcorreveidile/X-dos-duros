@@ -165,7 +165,7 @@ export default function ECRGranadaPage() {
               y cuántos necesitas para tu web.
             </p>
             <Link
-              href="/#precio"
+              href="/calculadora"
               className="inline-flex items-center gap-2 px-6 py-3 bg-neon text-background font-black text-xs uppercase tracking-widest hover:bg-neon/80 transition-colors"
             >
               Ver precios y formas de pago
