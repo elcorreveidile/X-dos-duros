@@ -63,17 +63,20 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/#servicios" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/servicios" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Servicios
             </Link>
-            <Link href="/#precio" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/calculadora" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Calculadora
             </Link>
-            <Link href="/#proceso" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+            <Link href="/proceso" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Proceso
             </Link>
             <Link href="/blog" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               Blog
+            </Link>
+            <Link href="/andalucia" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
+              Andalucía
             </Link>
             <Link href="/#ecr" className="text-muted hover:text-neon transition-colors text-sm uppercase tracking-wider">
               ♻ ECR
@@ -103,17 +106,20 @@ export function Navbar({ remainingSlots }: { remainingSlots?: number }) {
       {open && (
         <div className="md:hidden border-t border-border bg-background animate-fade-in">
           <div className="px-4 py-4 flex flex-col gap-4">
-            <Link href="/#servicios" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/servicios" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Servicios
             </Link>
-            <Link href="/#precio" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/calculadora" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Calculadora
             </Link>
-            <Link href="/#proceso" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+            <Link href="/proceso" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Proceso
             </Link>
             <Link href="/blog" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               Blog
+            </Link>
+            <Link href="/andalucia" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
+              Andalucía
             </Link>
             <Link href="/#ecr" className="text-muted hover:text-neon text-sm uppercase tracking-wider" onClick={() => setOpen(false)}>
               ♻ ECR

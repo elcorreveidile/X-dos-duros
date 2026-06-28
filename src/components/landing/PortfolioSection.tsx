@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -81,6 +81,20 @@ export async function PortfolioSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 text-center space-y-4">
+          <p className="text-muted text-sm">
+            Échale un ojo a todo lo que hemos desarrollado.
+          </p>
+          <a
+            href="https://www.espanias.com/catalogo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-neon text-neon font-black text-xs uppercase tracking-widest hover:bg-neon hover:text-background transition-colors"
+          >
+            Ver catálogo completo <ArrowRight size={14} />
+          </a>
         </div>
       </div>
     </section>
