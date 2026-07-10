@@ -2,10 +2,15 @@ import { NextResponse } from 'next/server'
 import { randomBytes } from 'crypto'
 import { prisma } from '@/lib/db'
 import { sendRetoMundialMagicLink } from '@/lib/email'
+import { getMundialRetoPct } from '@/lib/espanias'
 import { z } from 'zod'
 
 const schema = z.object({
   email: z.string().email(),
+  name: z.string().min(1).max(200),
+  phone: z.string().max(50).optional(),
+  company: z.string().max(200).optional(),
+  preference: z.enum(['secure', 'risk']),
 })
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://por2duros.com'
@@ -14,15 +19,30 @@ export async function POST(req: Request) {
   const body = await req.json()
   const parsed = schema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: 'Email inválido' }, { status: 400 })
+    return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
   }
 
-  const { email } = parsed.data
+  const { email, name, phone, company, preference } = parsed.data
+
+  // Get current pct to record at join time
+  let pctAtJoin = 0
+  try {
+    const reto = await getMundialRetoPct()
+    pctAtJoin = reto.pct
+  } catch {
+    // non-fatal: record 0 if API is unavailable
+  }
+
+  // Save lead with timestamp
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (prisma as any).retoMundialLead.create({
+    data: { email, name, phone, company, preference, pctAtJoin },
+  })
 
   // Upsert user and mark as reto participant
   await prisma.user.upsert({
     where: { email },
-    create: { name: email.split('@')[0], email, role: 'CLIENT', retoMundial: true },
+    create: { name, email, phone, company, role: 'CLIENT', retoMundial: true },
     update: { retoMundial: true },
   })
 
