@@ -266,3 +266,16 @@ model Subscription {
 
   @@map("subscriptions")
 }
+
+model RetoMundialLead {
+  id         String   @id @default(cuid())
+  email      String
+  name       String
+  phone      String?
+  company    String?
+  preference String   // 'secure' | 'risk'
+  pctAtJoin  Int      @default(0)
+  joinedAt   DateTime @default(now())
+
+  @@map("reto_mundial_leads")
+}
