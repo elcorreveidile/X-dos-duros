@@ -112,7 +112,9 @@ export function RetoPrize({ pct, wins, champion }: Props) {
       )}
 
       <p className="text-muted text-sm">
-        Elige el tipo de proyecto. Rellena el briefing y te enviaremos el enlace de pago con tu descuento aplicado.
+        {isFree
+          ? 'El Mundial ha terminado. 🇪🇸 España campeona. Elige tu proyecto, rellena el briefing y ponemos en marcha tu web gratis.'
+          : 'Elige el tipo de proyecto. Rellena el briefing y te enviaremos el enlace de pago con tu descuento aplicado.'}
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border">
