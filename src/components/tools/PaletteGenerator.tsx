@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Copy, Check, RefreshCw } from 'lucide-react'
 
 interface Color {
@@ -71,7 +71,7 @@ export function PaletteGenerator() {
     const compHsl = hsl.replace(/\d+/, compHue.toString())
     colors.push({
       hex: rgbToHex(...hslToRgb(compHsl)),
-      rgb: `rgb(${...hslToRgb(compHsl)})`,
+      rgb: `rgb(${hslToRgb(compHsl).join(', ')})`,
       hsl: compHsl
     })
 
@@ -80,7 +80,7 @@ export function PaletteGenerator() {
     const ana1Hsl = hsl.replace(/\d+/, ana1Hue.toString())
     colors.push({
       hex: rgbToHex(...hslToRgb(ana1Hsl)),
-      rgb: `rgb(${...hslToRgb(ana1Hsl)})`,
+      rgb: `rgb(${hslToRgb(ana1Hsl).join(', ')})`,
       hsl: ana1Hsl
     })
 
@@ -89,7 +89,7 @@ export function PaletteGenerator() {
     const ana2Hsl = hsl.replace(/\d+/, ana2Hue.toString())
     colors.push({
       hex: rgbToHex(...hslToRgb(ana2Hsl)),
-      rgb: `rgb(${...hslToRgb(ana2Hsl)})`,
+      rgb: `rgb(${hslToRgb(ana2Hsl).join(', ')})`,
       hsl: ana2Hsl
     })
 
@@ -98,7 +98,7 @@ export function PaletteGenerator() {
     const triHsl = hsl.replace(/\d+/, triHue.toString())
     colors.push({
       hex: rgbToHex(...hslToRgb(triHsl)),
-      rgb: `rgb(${...hslToRgb(triHsl)})`,
+      rgb: `rgb(${hslToRgb(triHsl).join(', ')})`,
       hsl: triHsl
     })
 

@@ -69,7 +69,7 @@ export function Beautifier() {
     let indent = 0
     const tab = '  '
 
-    html = html.replace(/\s+</g, '<').replace(>\s+/g, '>')
+    html = html.replace(/\s+</g, '<').replace(/>\s+/g, '>')
 
     for (let i = 0; i < html.length; i++) {
       const char = html[i]
