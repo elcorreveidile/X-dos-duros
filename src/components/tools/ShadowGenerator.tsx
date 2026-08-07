@@ -38,10 +38,10 @@ export function ShadowGenerator() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const updateShadow = (index: number, key: keyof ShadowConfig, value: any) => {
-    const newShadows = [...shadows]
-    newShadows[index][key] = value
-    setShadows(newShadows)
+  const updateShadow = (index: number, key: keyof ShadowConfig, value: ShadowConfig[keyof ShadowConfig]) => {
+    setShadows(prev => prev.map((shadow, i) =>
+      i === index ? { ...shadow, [key]: value } : shadow
+    ))
   }
 
   const addShadow = () => {
