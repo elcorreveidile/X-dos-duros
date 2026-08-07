@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import Link from 'next/link'
-import { ImageIcon, FileText, Globe, Fingerprint, Code, Paintbrush, Calculator, QrCode, Zap, Palette, Ruler } from 'lucide-react'
+import { ImageIcon, FileText, Globe, Fingerprint, Code, Paintbrush, Calculator, QrCode, Zap, Palette, Ruler, Copy, Minimize2, Wand2, Download, BarChart, CheckCircle, Shield, FileSearch, Type, RefreshCw, Play, Link, TrendingUp, FileText as FileBrief, ListChecks } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Herramientas gratuitas para web — Por 2 Duros',
@@ -14,90 +14,35 @@ export const metadata: Metadata = {
 }
 
 const TOOLS = [
-  {
-    icon: ImageIcon,
-    title: 'Optimizar imagen para web',
-    desc: 'Convierte a WebP, JPEG o PNG y reduce el peso de tus fotos. Sin subir nada a ningún servidor.',
-    href: '/herramientas/optimizar-imagen',
-    tag: 'WebP · JPEG · PNG',
-  },
-  {
-    icon: FileText,
-    title: 'Contador de palabras',
-    desc: 'Cuenta palabras, caracteres, frases, párrafos y tiempo de lectura. Ideal para redactores SEO.',
-    href: '/herramientas/contador-palabras',
-    tag: 'SEO · Contenido',
-  },
-  {
-    icon: Globe,
-    title: 'Analizador de meta tags',
-    desc: 'Analiza title, description, OG, canonical y más de cualquier URL. Optimiza tu SEO técnico.',
-    href: '/herramientas/analizador-meta',
-    tag: 'SEO · Técnico',
-  },
-  {
-    icon: Fingerprint,
-    title: 'Comprobar mobile-friendly',
-    desc: 'Vea cómo se ve tu web en móvil vs escritorio. Comprueba la responsividad de tu diseño.',
-    href: '/herramientas/mobile-friendly',
-    tag: 'Diseño · Responsive',
-  },
-  {
-    icon: Code,
-    title: 'Generador de robots.txt',
-    desc: 'Genera un archivo robots.txt válido para tu sitio. Copia y pega, sin complicaciones.',
-    href: '/herramientas/robots-txt',
-    tag: 'SEO · Crawlers',
-  },
-  {
-    icon: Palette,
-    title: 'Generador de gradientes CSS',
-    desc: 'Crea gradientes CSS con un visual picker. Copia el código y listo para usar.',
-    href: '/herramientas/generador-gradientes',
-    tag: 'CSS · Diseño',
-  },
-  {
-    icon: Calculator,
-    title: 'Calculadora de fuentes responsive',
-    desc: 'Genera fórmulas clamp() para tipografía fluida. Desktop a móvil sin media queries.',
-    href: '/herramientas/calculadora-fuentes',
-    tag: 'CSS · Tipografía',
-  },
-  {
-    icon: Code,
-    title: 'Validador de JSON-LD',
-    desc: 'Valida la sintaxis y estructura de tus datos estructurados. Encuentra errores antes que Google.',
-    href: '/herramientas/validador-jsonld',
-    tag: 'Schema.org · SEO',
-  },
-  {
-    icon: QrCode,
-    title: 'Generador de código QR',
-    desc: 'Crea códigos QR descargables desde cualquier URL. Sin límites, sin marcas de agua.',
-    href: '/herramientas/generador-qr',
-    tag: 'Marketing · Offline',
-  },
-  {
-    icon: Zap,
-    title: 'Test de velocidad básico',
-    desc: 'Mide el tiempo de carga de cualquier URL. Primer filtro para detectar problemas de rendimiento.',
-    href: '/herramientas/test-velocidad',
-    tag: 'Performance',
-  },
-  {
-    icon: Palette,
-    title: 'Generador de paletas de colores',
-    desc: 'Crea paletas de colores armoniosas a partir de un color base. Para diseño web y branding.',
-    href: '/herramientas/generador-paletas',
-    tag: 'Diseño · Colores',
-  },
-  {
-    icon: Ruler,
-    title: 'Convertidor de unidades CSS',
-    desc: 'Convierte entre px, rem, vw, vh y más. Ideal para diseño responsive y moderno.',
-    href: '/herramientas/convertidor-unidades',
-    tag: 'CSS · Responsive',
-  },
+  { icon: ImageIcon, title: 'Optimizar imagen para web', desc: 'Convierte a WebP, JPEG o PNG y reduce el peso de tus fotos.', href: '/herramientas/optimizar-imagen', tag: 'WebP · JPEG · PNG' },
+  { icon: FileText, title: 'Contador de palabras', desc: 'Cuenta palabras, caracteres, frases y tiempo de lectura.', href: '/herramientas/contador-palabras', tag: 'SEO · Contenido' },
+  { icon: Globe, title: 'Analizador de meta tags', desc: 'Analiza title, description, OG y canonical de cualquier URL.', href: '/herramientas/analizador-meta', tag: 'SEO · Técnico' },
+  { icon: Fingerprint, title: 'Comprobar mobile-friendly', desc: 'Vea cómo se ve tu web en móvil vs escritorio.', href: '/herramientas/mobile-friendly', tag: 'Diseño · Responsive' },
+  { icon: Code, title: 'Generador de robots.txt', desc: 'Genera un archivo robots.txt válido para tu sitio.', href: '/herramientas/robots-txt', tag: 'SEO · Crawlers' },
+  { icon: Palette, title: 'Generador de gradientes CSS', desc: 'Crea gradientes CSS con un visual picker.', href: '/herramientas/generador-gradientes', tag: 'CSS · Diseño' },
+  { icon: Calculator, title: 'Calculadora de fuentes responsive', desc: 'Genera fórmulas clamp() para tipografía fluida.', href: '/herramientas/calculadora-fuentes', tag: 'CSS · Tipografía' },
+  { icon: Code, title: 'Validador de JSON-LD', desc: 'Valida la sintaxis y estructura de tus datos estructurados.', href: '/herramientas/validador-jsonld', tag: 'Schema.org · SEO' },
+  { icon: QrCode, title: 'Generador de código QR', desc: 'Crea códigos QR descargables desde cualquier URL.', href: '/herramientas/generador-qr', tag: 'Marketing · Offline' },
+  { icon: Zap, title: 'Test de velocidad básico', desc: 'Mide el tiempo de carga de cualquier URL.', href: '/herramientas/test-velocidad', tag: 'Performance' },
+  { icon: Palette, title: 'Generador de paletas de colores', desc: 'Crea paletas de colores armoniosas desde un color base.', href: '/herramientas/generador-paletas', tag: 'Diseño · Colores' },
+  { icon: Ruler, title: 'Convertidor de unidades CSS', desc: 'Convierte entre px, rem, vw, vh y más.', href: '/herramientas/convertidor-unidades', tag: 'CSS · Responsive' },
+  { icon: Ruler, title: 'Generador de border-radius', desc: 'Crea esquinas redondeadas CSS con presets rápidos.', href: '/herramientas/generador-bordes', tag: 'CSS · UI' },
+  { icon: Ruler, title: 'Generador de sombras CSS', desc: 'Crea sombras box-shadow con múltiples capas.', href: '/herramientas/generador-sombras', tag: 'CSS · UI' },
+  { icon: RefreshCw, title: 'Generador de Lorem Ipsum', desc: 'Genera texto placeholder en español y latín.', href: '/herramientas/generador-lorem', tag: 'Contenido · Wireframe' },
+  { icon: Minimize2, title: 'Minificador de CSS/JS', desc: 'Reduce el tamaño de archivos CSS y JavaScript.', href: '/herramientas/minificador', tag: 'Performance' },
+  { icon: Wand2, title: 'Beautifier de código', desc: 'Formatea y embellece CSS, JavaScript y HTML.', href: '/herramientas/beautifier', tag: 'Código' },
+  { icon: Download, title: 'Convertidor a Base64', desc: 'Convierte imágenes a Base64 para embedding.', href: '/herramientas/base64', tag: 'Imágenes · CSS' },
+  { icon: Copy, title: 'Generador de meta tags', desc: 'Genera title, description, OG y Twitter Cards.', href: '/herramientas/generador-metatags', tag: 'SEO · Social' },
+  { icon: BarChart, title: 'Analizador de densidad de palabras', desc: 'Analiza frecuencia de palabras clave en tu texto.', href: '/herramientas/densidad-palabras', tag: 'SEO · Contenido' },
+  { icon: Shield, title: 'Validador de HTML', desc: 'Valida código HTML y detecta errores básicos.', href: '/herramientas/validador-html', tag: 'HTML · Calidad' },
+  { icon: Code, title: 'Generador de Schema.org', desc: 'Genera JSON-LD para WebSite, Organization, Article y más.', href: '/herramientas/generador-schema', tag: 'Schema.org · SEO' },
+  { icon: FileText, title: 'Calculadora de lectura', desc: 'Analiza legibilidad con índice Flesch Reading Ease.', href: '/herramientas/calculadora-lectura', tag: 'Contenido · Readability' },
+  { icon: TrendingUp, title: 'Calculadora de ROI SEO', desc: 'Calcula retorno de inversión de proyectos SEO.', href: '/herramientas/calculadora-roi-seo', tag: 'SEO · Negocio' },
+  { icon: FileBrief, title: 'Generador de brief web', desc: 'Genera documentos de brief para proyectos web.', href: '/herramientas/generador-brief', tag: 'Negocio · Documentación' },
+  { icon: ListChecks, title: 'Checklist de launch', desc: 'Lista de verificación para lanzar sitios web.', href: '/herramientas/checklist-launch', tag: 'Launch · SEO' },
+  { icon: Type, title: 'Preview de fuentes web', desc: 'Compara Google Fonts con tu propio texto.', href: '/herramientas/preview-fuentes', tag: 'Tipografía · Diseño' },
+  { icon: Play, title: 'Generador de animaciones CSS', desc: 'Crea animaciones @keyframes con visual picker.', href: '/herramientas/generador-animaciones', tag: 'CSS · Animaciones' },
+  { icon: FileSearch, title: 'Comprobar enlaces rotos', desc: 'Detecta enlaces 404 y errores en una página.', href: '/herramientas/comprobar-enlaces', tag: 'SEO · Mantenimiento' },
 ]
 
 export default function HerramientasPage() {
