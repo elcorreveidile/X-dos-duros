@@ -105,7 +105,7 @@ export function PaletteGenerator() {
     setPalette(colors)
   }
 
-  const hslToRgb = (hslStr: string) => {
+  const hslToRgb = (hslStr: string): [number, number, number] => {
     const match = hslStr.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/)
     if (!match) return [0, 0, 0]
 
@@ -134,7 +134,7 @@ export function PaletteGenerator() {
       b = hue2rgb(p, q, h - 1/3)
     }
 
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)] as [number, number, number]
   }
 
   const randomColor = () => {
