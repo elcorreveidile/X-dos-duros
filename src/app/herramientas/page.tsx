@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import Link from 'next/link'
-import { ImageIcon } from 'lucide-react'
+import { ImageIcon, FileText, Globe, Fingerprint, Code, Paintbrush, Calculator, QrCode, Zap, Palette, Ruler } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Herramientas gratuitas para web — Por 2 Duros',
@@ -20,6 +20,83 @@ const TOOLS = [
     desc: 'Convierte a WebP, JPEG o PNG y reduce el peso de tus fotos. Sin subir nada a ningún servidor.',
     href: '/herramientas/optimizar-imagen',
     tag: 'WebP · JPEG · PNG',
+  },
+  {
+    icon: FileText,
+    title: 'Contador de palabras',
+    desc: 'Cuenta palabras, caracteres, frases, párrafos y tiempo de lectura. Ideal para redactores SEO.',
+    href: '/herramientas/contador-palabras',
+    tag: 'SEO · Contenido',
+  },
+  {
+    icon: Globe,
+    title: 'Analizador de meta tags',
+    desc: 'Analiza title, description, OG, canonical y más de cualquier URL. Optimiza tu SEO técnico.',
+    href: '/herramientas/analizador-meta',
+    tag: 'SEO · Técnico',
+  },
+  {
+    icon: Fingerprint,
+    title: 'Comprobar mobile-friendly',
+    desc: 'Vea cómo se ve tu web en móvil vs escritorio. Comprueba la responsividad de tu diseño.',
+    href: '/herramientas/mobile-friendly',
+    tag: 'Diseño · Responsive',
+  },
+  {
+    icon: Code,
+    title: 'Generador de robots.txt',
+    desc: 'Genera un archivo robots.txt válido para tu sitio. Copia y pega, sin complicaciones.',
+    href: '/herramientas/robots-txt',
+    tag: 'SEO · Crawlers',
+  },
+  {
+    icon: Palette,
+    title: 'Generador de gradientes CSS',
+    desc: 'Crea gradientes CSS con un visual picker. Copia el código y listo para usar.',
+    href: '/herramientas/generador-gradientes',
+    tag: 'CSS · Diseño',
+  },
+  {
+    icon: Calculator,
+    title: 'Calculadora de fuentes responsive',
+    desc: 'Genera fórmulas clamp() para tipografía fluida. Desktop a móvil sin media queries.',
+    href: '/herramientas/calculadora-fuentes',
+    tag: 'CSS · Tipografía',
+  },
+  {
+    icon: Code,
+    title: 'Validador de JSON-LD',
+    desc: 'Valida la sintaxis y estructura de tus datos estructurados. Encuentra errores antes que Google.',
+    href: '/herramientas/validador-jsonld',
+    tag: 'Schema.org · SEO',
+  },
+  {
+    icon: QrCode,
+    title: 'Generador de código QR',
+    desc: 'Crea códigos QR descargables desde cualquier URL. Sin límites, sin marcas de agua.',
+    href: '/herramientas/generador-qr',
+    tag: 'Marketing · Offline',
+  },
+  {
+    icon: Zap,
+    title: 'Test de velocidad básico',
+    desc: 'Mide el tiempo de carga de cualquier URL. Primer filtro para detectar problemas de rendimiento.',
+    href: '/herramientas/test-velocidad',
+    tag: 'Performance',
+  },
+  {
+    icon: Palette,
+    title: 'Generador de paletas de colores',
+    desc: 'Crea paletas de colores armoniosas a partir de un color base. Para diseño web y branding.',
+    href: '/herramientas/generador-paletas',
+    tag: 'Diseño · Colores',
+  },
+  {
+    icon: Ruler,
+    title: 'Convertidor de unidades CSS',
+    desc: 'Convierte entre px, rem, vw, vh y más. Ideal para diseño responsive y moderno.',
+    href: '/herramientas/convertidor-unidades',
+    tag: 'CSS · Responsive',
   },
 ]
 
