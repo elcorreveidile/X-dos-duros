@@ -122,13 +122,13 @@ export function MetaAnalyzer() {
               <MetaItem
                 label="Title"
                 value={data.title}
-                valid={data.title && data.title.length >= 30 && data.title.length <= 60}
+                valid={!!data.title && data.title.length >= 30 && data.title.length <= 60}
                 recommended="30-60 caracteres"
               />
               <MetaItem
                 label="Description"
                 value={data.description}
-                valid={data.description && data.description.length >= 120 && data.description.length <= 160}
+                valid={!!data.description && data.description.length >= 120 && data.description.length <= 160}
                 recommended="120-160 caracteres"
               />
               <MetaItem
