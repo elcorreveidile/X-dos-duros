@@ -11,6 +11,14 @@ interface ReadabilityScore {
 export function ReadabilityCalculator() {
   const [text, setText] = useState('')
 
+  const countSyllables = (word: string) => {
+    word = word.toLowerCase().replace(/[^a-záéíóúñü]/g, '')
+    if (word.length <= 2) return 1
+    word = word.replace(/([aeiouáéíóú])([aeiouáéíóú])/g, '$1-$2')
+    const syllables = word.split(/[-]/).filter(s => /[aeiouáéíóú]/.test(s))
+    return Math.max(1, syllables.length)
+  }
+
   const stats = useMemo(() => {
     if (!text.trim()) return null
 
@@ -41,14 +49,6 @@ export function ReadabilityCalculator() {
       grade: grade.toFixed(1)
     }
   }, [text])
-
-  const countSyllables = (word: string) => {
-    word = word.toLowerCase().replace(/[^a-záéíóúñü]/g, '')
-    if (word.length <= 2) return 1
-    word = word.replace(/([aeiouáéíóú])([aeiouáéíóú])/g, '$1-$2')
-    const syllables = word.split(/[-]/).filter(s => /[aeiouáéíóú]/.test(s))
-    return Math.max(1, syllables.length)
-  }
 
   const getScore = (flesch: string): ReadabilityScore => {
     const score = parseFloat(flesch)
@@ -123,7 +123,7 @@ export function ReadabilityCalculator() {
               <div>60-70: Estándar (8º-9º)</div>
               <div>50-60: Bastante difícil (10º-12º)</div>
               <div>30-50: Difícil (Universidad)</div>
-              <div colSpan={2}>0-30: Muy difícil (Experto)</div>
+              <div className="col-span-2">0-30: Muy difícil (Experto)</div>
             </div>
           </div>
         </div>
