@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { ImageIcon, FileText, Globe, Code, Paintbrush, Calculator, QrCode, Zap, Palette, Ruler, Copy, Minimize2, Wand2, Download, BarChart, Shield, FileSearch, Type, RefreshCw, Play, TrendingUp, FileBrief, ListChecks, Fingerprint, ChevronDown, ChevronRight } from 'lucide-react'
+import { ImageIcon, FileText, Globe, Code, Paintbrush, Calculator, QrCode, Zap, Palette, Ruler, Copy, Minimize2, Wand2, Download, BarChart, Shield, FileSearch, Type, RefreshCw, Play, TrendingUp, ListChecks, Fingerprint, ChevronDown, ChevronRight } from 'lucide-react'
 
 const CATEGORIES = {
   seo: {
@@ -66,7 +66,7 @@ const CATEGORIES = {
     name: 'Negocio y Gestión',
     icon: TrendingUp,
     tools: [
-      { icon: FileBrief, title: 'Generador de brief web', desc: 'Genera documentos de brief para proyectos web.', href: '/herramientas/generador-brief', tag: 'Negocio · Documentación' },
+      { icon: FileText, title: 'Generador de brief web', desc: 'Genera documentos de brief para proyectos web.', href: '/herramientas/generador-brief', tag: 'Negocio · Documentación' },
       { icon: ListChecks, title: 'Checklist de launch', desc: 'Lista de verificación para lanzar sitios web.', href: '/herramientas/checklist-launch', tag: 'Launch · SEO' },
       { icon: Fingerprint, title: 'Comprobar mobile-friendly', desc: 'Vea cómo se ve tu web en móvil vs escritorio.', href: '/herramientas/mobile-friendly', tag: 'Diseño · Responsive' },
     ]
