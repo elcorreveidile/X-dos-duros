@@ -49,7 +49,9 @@ export interface MesaEstado {
 }
 
 export function laBandaConfigurada(): boolean {
-  return Boolean(process.env.LA_BANDA_URL && process.env.LA_BANDA_API_KEY)
+  const ok = Boolean(process.env.LA_BANDA_URL && process.env.LA_BANDA_API_KEY)
+  if (!ok) console.error('[la-banda] faltan LA_BANDA_URL o LA_BANDA_API_KEY en este despliegue')
+  return ok
 }
 
 /** Estado de la mesa; null si La Banda no está configurada o no responde. Caché de 5 minutos. */
@@ -60,9 +62,13 @@ export async function getMesaEstado(): Promise<MesaEstado | null> {
       headers: { authorization: `Bearer ${process.env.LA_BANDA_API_KEY}` },
       next: { revalidate: 300 },
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      console.error('[la-banda] /api/v1/trading respondió', res.status)
+      return null
+    }
     return (await res.json()) as MesaEstado
-  } catch {
+  } catch (err) {
+    console.error('[la-banda] no se pudo consultar La Banda', err instanceof Error ? err.message : err)
     return null
   }
 }
