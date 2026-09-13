@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="color:#39FF14" role="img" aria-label="Estocolmo">
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M22 16 H98 V70 C98 98 74 108 60 110 C46 108 22 98 22 70 Z"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 52 H50 M70 52 H86"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 94 v-8 M43 92 v-5 M52 94 v-8 M61 92 v-5 M70 94 v-8 M79 92 v-5 M88 91 v-5"/>
+</svg>

@@ -5,6 +5,7 @@ import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { getMesaEstado, type MesaSession } from '@/lib/la-banda'
 import { cn } from '@/lib/utils'
+import { AgentAvatar } from '@/components/AgentAvatar'
 
 export const revalidate = 300
 
@@ -193,8 +194,11 @@ export default async function MesaPage() {
             <h2 className="text-xs uppercase tracking-widest text-muted">Quién hace qué</h2>
             <ul className="grid sm:grid-cols-2 gap-px bg-border border border-border">
               {AGENTES.map(([nombre, trabajo]) => (
-                <li key={nombre} className="bg-background px-4 py-3 text-sm">
-                  <span className="font-black text-neon">{nombre}</span> <span className="text-muted">{trabajo}</span>
+                <li key={nombre} className="bg-background px-4 py-3 text-sm flex items-center gap-3">
+                  <AgentAvatar codename={nombre} className="h-10 w-10 shrink-0" />
+                  <span>
+                    <span className="font-black text-neon">{nombre}</span> <span className="text-muted">{trabajo}</span>
+                  </span>
                 </li>
               ))}
             </ul>

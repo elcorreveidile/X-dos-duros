@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="color:#39FF14" role="img" aria-label="Río">
+    <ellipse fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="60" cy="60" rx="38" ry="46"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 60 H50 M70 60 H86"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M10 30 H110 M10 90 H110"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M104 24 l6 6 -6 6 M16 84 l-6 6 6 6"/>
+</svg>
