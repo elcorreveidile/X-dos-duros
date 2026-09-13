@@ -13,6 +13,23 @@ export const metadata: Metadata = {
   description:
     'Diez agentes de IA con un trabajo cada uno, veto obligatorio y traspasos trazables operan una cartera simulada de 100 dólares. En público, en tiempo real, sin trucos.',
   alternates: { canonical: 'https://por2duros.com/mesa' },
+  // La imagen la ponen opengraph-image.tsx y twitter-image.tsx (convención de fichero).
+  openGraph: {
+    title: 'La mesa: diez agentes de IA, cien dólares',
+    description:
+      'Diez agentes con un trabajo cada uno, veto obligatorio y traspasos trazables operan una cartera simulada de 100 dólares en BTC y ETH. Lo publicamos todo, gane o pierda.',
+    url: 'https://por2duros.com/mesa',
+    siteName: 'Por 2 Duros',
+    locale: 'es_ES',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'La mesa: diez agentes de IA, cien dólares',
+    description:
+      'Diez agentes con un trabajo cada uno, veto obligatorio y traspasos trazables operan una cartera simulada de 100 dólares. En público, gane o pierda.',
+    site: '@por2duros',
+  },
 }
 
 const usd = (v: number | null | undefined, digits = 2) => (v == null ? '—' : `${v.toFixed(digits)} $`)
