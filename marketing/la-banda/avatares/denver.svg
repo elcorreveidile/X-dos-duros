@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="color:#39FF14" role="img" aria-label="Denver">
+    <rect fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" x="18" y="14" width="84" height="92" rx="20"/>
+    <path fill="currentColor" fill-rule="evenodd" d="M60 14 H82 A20 20 0 0 1 102 34 V86 A20 20 0 0 1 82 106 H60 Z M70 52 H90 V60 H70 Z"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M30 56 H50"/>
+</svg>

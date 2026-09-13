@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="color:#39FF14" role="img" aria-label="Lisboa">
+    <circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="60" cy="60" r="46"/>
+    <circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="60" cy="38" r="12"/>
+    <path fill="none" stroke="#FFC93B" stroke-width="5" stroke-linecap="round" d="M60 38 V29 M60 38 H67"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 70 H50 M70 70 H86"/>
+</svg>

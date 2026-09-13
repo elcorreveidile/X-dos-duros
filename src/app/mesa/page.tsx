@@ -5,6 +5,7 @@ import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { getMesaEstado, type MesaSession } from '@/lib/la-banda'
 import { cn } from '@/lib/utils'
+import { AgentAvatar } from '@/components/AgentAvatar'
 
 export const revalidate = 300
 
@@ -13,6 +14,23 @@ export const metadata: Metadata = {
   description:
     'Diez agentes de IA con un trabajo cada uno, veto obligatorio y traspasos trazables operan una cartera simulada de 100 dólares. En público, en tiempo real, sin trucos.',
   alternates: { canonical: 'https://por2duros.com/mesa' },
+  // La imagen la ponen opengraph-image.tsx y twitter-image.tsx (convención de fichero).
+  openGraph: {
+    title: 'La mesa: diez agentes de IA, cien dólares',
+    description:
+      'Diez agentes con un trabajo cada uno, veto obligatorio y traspasos trazables operan una cartera simulada de 100 dólares en BTC y ETH. Lo publicamos todo, gane o pierda.',
+    url: 'https://por2duros.com/mesa',
+    siteName: 'Por 2 Duros',
+    locale: 'es_ES',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'La mesa: diez agentes de IA, cien dólares',
+    description:
+      'Diez agentes con un trabajo cada uno, veto obligatorio y traspasos trazables operan una cartera simulada de 100 dólares. En público, gane o pierda.',
+    site: '@por2duros',
+  },
 }
 
 const usd = (v: number | null | undefined, digits = 2) => (v == null ? '—' : `${v.toFixed(digits)} $`)
@@ -176,8 +194,11 @@ export default async function MesaPage() {
             <h2 className="text-xs uppercase tracking-widest text-muted">Quién hace qué</h2>
             <ul className="grid sm:grid-cols-2 gap-px bg-border border border-border">
               {AGENTES.map(([nombre, trabajo]) => (
-                <li key={nombre} className="bg-background px-4 py-3 text-sm">
-                  <span className="font-black text-neon">{nombre}</span> <span className="text-muted">{trabajo}</span>
+                <li key={nombre} className="bg-background px-4 py-3 text-sm flex items-center gap-3">
+                  <AgentAvatar codename={nombre} className="h-10 w-10 shrink-0" />
+                  <span>
+                    <span className="font-black text-neon">{nombre}</span> <span className="text-muted">{trabajo}</span>
+                  </span>
                 </li>
               ))}
             </ul>

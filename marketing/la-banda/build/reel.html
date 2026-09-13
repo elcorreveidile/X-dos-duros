@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Reel Por 2 Duros — La Banda: así funciona la mesa</title>
+<style>
+  /* Marca Por 2 Duros: negro, neón #39FF14, sin esquinas, mayúsculas negras. */
+  :root{ --bg:#0A0A0A; --fg:#fff; --muted:#CCCCCC; --dim:#8A8A8A; --neon:#39FF14; --line:#222; --card:#111; --rojo:#FF3B3B; --ambar:#FFC93B; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:#000}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--fg);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  #grid{position:absolute;inset:0;background-image:linear-gradient(rgba(57,255,20,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,.07) 1px,transparent 1px);background-size:80px 80px;
+    mask-image:radial-gradient(900px 1100px at 50% 40%,#000 0%,transparent 80%);-webkit-mask-image:radial-gradient(900px 1100px at 50% 40%,#000 0%,transparent 80%)}
+  #brandbar{position:absolute;left:72px;right:72px;top:80px;display:flex;justify-content:space-between;align-items:center}
+  .logo{display:flex;align-items:center;gap:18px;font-weight:900;font-size:28px;letter-spacing:.14em;text-transform:uppercase}
+  .logo .p{width:56px;height:56px;background:var(--neon);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:36px;letter-spacing:0}
+  .mono{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace}
+  #foot{position:absolute;left:72px;right:72px;bottom:90px;display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:24px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  #foot b{color:var(--neon)}
+  .scene{position:absolute;inset:0;opacity:0;will-change:opacity}
+  .wrap{position:absolute;left:72px;right:72px}
+  .kicker{font-family:"JetBrains Mono",monospace;font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:28px;color:var(--neon)}
+  .h1{font-weight:900;line-height:.98;letter-spacing:-.02em;text-transform:uppercase}
+  .neon{color:var(--neon)} .rojo{color:var(--rojo)}
+  .lead{font-size:40px;line-height:1.35;font-weight:500;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--line)}
+
+  /* Escena 1: gancho */
+  #s1 .wrap{top:560px}
+  #s1 .h1{font-size:128px}
+  #s1 .sub{margin-top:54px;font-size:44px;font-weight:700;color:var(--muted);opacity:0}
+
+  /* Escena 2: el problema */
+  #s2 .wrap{top:300px}
+  #s2 .h1{font-size:104px;margin-top:26px}
+  #ia{position:absolute;left:340px;top:820px;width:400px;height:200px;background:var(--card);border:2px solid #333;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:96px;letter-spacing:-.02em}
+  .chips{position:absolute;left:72px;right:72px;top:1080px;display:flex;gap:18px;justify-content:center}
+  .chip{padding:22px 34px;border:1px solid var(--line);background:var(--card);font-family:"JetBrains Mono",monospace;font-size:32px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);opacity:0}
+  #stamp2{position:absolute;left:0;right:0;top:1230px;text-align:center;font-weight:900;font-size:60px;letter-spacing:.02em;color:var(--rojo);text-transform:uppercase;opacity:0;transform:rotate(-4deg)}
+  #s2 .por{position:absolute;left:72px;right:72px;top:1420px;font-weight:900;font-size:52px;line-height:1.1;text-transform:uppercase;opacity:0}
+
+  /* Escena 3: la cadena */
+  #s3 .wrap{top:240px}
+  #s3 .h1{font-size:84px;margin-top:20px}
+  #chain{position:absolute;left:72px;right:72px;top:520px;display:flex;flex-direction:column;gap:10px}
+  .ag{display:flex;align-items:center;gap:24px;height:106px;padding:0 30px;background:var(--card);border:1px solid var(--line);border-left:6px solid #333;opacity:.32}
+  .ag .n{font-family:"JetBrains Mono",monospace;font-size:24px;color:var(--dim);width:40px}
+  .ag .av{width:64px;height:64px;flex:none;color:#8A8A8A}
+  .ag.on .av,.ag.done .av{color:var(--neon)}
+  .ag .name{font-weight:900;font-size:36px;text-transform:uppercase;width:250px;letter-spacing:-.01em}
+  .ag .role{font-family:"JetBrains Mono",monospace;font-size:23px;line-height:1.2;color:var(--muted);flex:1;max-width:215px}
+  .ag.on{opacity:1;border-left-color:var(--neon)}
+  .ag.on .name{color:var(--neon)}
+  .ag.done{opacity:.85;border-left-color:var(--neon)}
+  #file{position:absolute;right:34px;top:0;height:64px;padding:0 20px;background:var(--neon);color:var(--bg);display:flex;align-items:center;gap:12px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:22px;letter-spacing:.08em;text-transform:uppercase;opacity:0;box-shadow:0 0 40px rgba(57,255,20,.45)}
+  #s3 .lead{position:absolute;left:72px;right:72px;top:1700px;font-size:32px;opacity:0}
+
+  /* Escena 4: el veto */
+  #s4 .wrap{top:260px}
+  #s4 .h1{font-size:92px;margin-top:22px}
+  #brief{position:absolute;left:72px;right:72px;top:640px;padding:44px 48px}
+  #brief .t{font-family:"JetBrains Mono",monospace;font-size:26px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  #brief .bt{font-weight:900;font-size:48px;text-transform:uppercase;margin-top:8px}
+  .chk{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:22px;padding:24px 0;border-top:1px solid var(--line);font-size:34px;font-weight:600;opacity:0}
+  .chk .m{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:34px}
+  #veto{position:absolute;left:0;right:0;top:1180px;text-align:center;font-weight:900;font-size:220px;letter-spacing:-.02em;color:var(--rojo);text-transform:uppercase;opacity:0;transform:rotate(-8deg) scale(.6)}
+  #s4 .lead{position:absolute;left:72px;right:72px;top:1500px;font-size:36px;opacity:0}
+
+  /* Escena 5: el registro */
+  #s5 .wrap{top:260px}
+  #s5 .h1{font-size:92px;margin-top:22px}
+  #log{position:absolute;left:72px;right:72px;top:580px;padding:40px 44px;font-family:"JetBrains Mono",monospace;font-size:25px;line-height:1.75;color:var(--muted)}
+  #log div{opacity:0;white-space:pre}
+  #log .ts{color:var(--dim)} #log .who{color:#fff;font-weight:700} #log .v{color:var(--rojo);font-weight:700} #log .ok{color:var(--neon)}
+  #s5 .lead{position:absolute;left:72px;right:72px;top:1480px;font-size:36px;opacity:0}
+
+  /* Escena 6: cierre */
+  #s6 .wrap{top:330px}
+  #s6 .h1{font-size:96px;margin-top:22px}
+  #rules{position:absolute;left:72px;right:72px;top:820px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .rule{padding:30px 34px;background:var(--card);border:1px solid var(--line);opacity:0}
+  .rule .l{font-family:"JetBrains Mono",monospace;font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .rule .v{font-weight:900;font-size:54px;letter-spacing:-.02em;margin-top:6px}
+  #cta{position:absolute;left:72px;top:1290px;padding:32px 52px;background:var(--neon);color:var(--bg);font-weight:900;font-size:44px;text-transform:uppercase;letter-spacing:.06em;opacity:0}
+  #s6 .lead{position:absolute;left:72px;right:72px;top:1470px;font-size:28px;color:var(--dim);opacity:0}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="grid"></div>
+
+  <!-- 1 · Gancho -->
+  <section class="scene" id="s1">
+    <div class="wrap">
+      <div class="kicker">Experimento · en público</div>
+      <div class="h1" style="margin-top:30px">Diez agentes<br>de IA.<br><span class="neon">Cien dólares.</span><br>En público.</div>
+      <div class="sub">Así funciona el sistema.</div>
+    </div>
+  </section>
+
+  <!-- 2 · El problema -->
+  <section class="scene" id="s2">
+    <div class="wrap">
+      <div class="kicker">El problema</div>
+      <div class="h1">Una IA sola<br>se lo cree<br><span class="rojo">todo.</span></div>
+    </div>
+    <div id="ia">IA</div>
+    <div class="chips"><span class="chip" id="c1">busca</span><span class="chip" id="c2">decide</span><span class="chip" id="c3">ejecuta</span></div>
+    <div id="stamp2">Nadie le dice que no</div>
+    <div class="por">Por eso usamos diez.<br><span class="neon">Y ninguna manda.</span></div>
+  </section>
+
+  <!-- 3 · La cadena -->
+  <section class="scene" id="s3">
+    <div class="wrap">
+      <div class="kicker">La cadena</div>
+      <div class="h1">Un trabajo<br>cada uno.</div>
+    </div>
+    <div id="chain">
+      <div class="ag"><span class="n">01</span><svg class="av" viewBox="0 0 120 120"><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M60 10 L102 33 V77 L60 110 L18 77 V33 Z"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M32 56 H50"/><circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="82" cy="56" r="11"/><circle cx="82" cy="56" r="3.5" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M82 40 v5 M82 67 v5 M66 56 h5 M93 56 h5"/></svg><span class="name">Tokio</span><span class="role">busca el setup</span></div>
+      <div class="ag"><span class="n">02</span><svg class="av" viewBox="0 0 120 120"><rect fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" x="18" y="14" width="84" height="92" rx="20"/><path fill="currentColor" fill-rule="evenodd" d="M60 14 H82 A20 20 0 0 1 102 34 V86 A20 20 0 0 1 82 106 H60 Z M70 52 H90 V60 H70 Z"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M30 56 H50"/></svg><span class="name">Denver</span><span class="role">contrasta el contexto</span></div>
+      <div class="ag"><span class="n">03</span><svg class="av" viewBox="0 0 120 120"><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M22 16 H98 V70 C98 98 74 108 60 110 C46 108 22 98 22 70 Z"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 52 H50 M70 52 H86"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 94 v-8 M43 92 v-5 M52 94 v-8 M61 92 v-5 M70 94 v-8 M79 92 v-5 M88 91 v-5"/></svg><span class="name">Estocolmo</span><span class="role">dimensiona la posición</span></div>
+      <div class="ag"><span class="n">04</span><svg class="av" viewBox="0 0 120 120"><ellipse fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="60" cy="60" rx="38" ry="46"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 60 H50 M70 60 H86"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M10 30 H110 M10 90 H110"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M104 24 l6 6 -6 6 M16 84 l-6 6 6 6"/></svg><span class="name">Río</span><span class="role">fija stop y objetivo</span></div>
+      <div class="ag"><span class="n">05</span><svg class="av" viewBox="0 0 120 120"><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M20 18 H100 V66 L60 110 L20 66 Z"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M32 50 l16 6 M88 50 l-16 6"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M38 72 H44 V90 H38 M82 72 H76 V90 H82"/></svg><span class="name">Berlín</span><span class="role">redacta las condiciones</span></div>
+      <div class="ag"><span class="n">06</span><svg class="av" viewBox="0 0 120 120"><circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="60" cy="60" r="46"/><circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="60" cy="38" r="12"/><path fill="none" stroke="#FFC93B" stroke-width="5" stroke-linecap="round" d="M60 38 V29 M60 38 H67"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 70 H50 M70 70 H86"/></svg><span class="name">Lisboa</span><span class="role">comprueba la frescura</span></div>
+      <div class="ag"><span class="n">07</span><svg class="av" viewBox="0 0 120 120"><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M28 12 H78 L94 28 V108 H28 Z"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M78 12 V28 H94"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M38 50 H52 M68 50 H82"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M40 74 H80 M40 86 H80 M40 98 H64"/></svg><span class="name">Nairobi</span><span class="role">resume en una página</span></div>
+      <div class="ag"><span class="n">08</span><svg class="av" viewBox="0 0 120 120"><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 14 H86 L106 34 V86 L86 106 H34 L14 86 V34 Z"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M32 50 H50 M70 50 H88"/><path fill="none" stroke="#FF3B3B" stroke-width="7" stroke-linecap="round" d="M42 72 L78 96 M78 72 L42 96"/></svg><span class="name">Palermo</span><span class="role">veta o aprueba</span></div>
+      <div class="ag"><span class="n">09</span><svg class="av" viewBox="0 0 120 120"><rect fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" x="20" y="12" width="80" height="96" rx="6"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M20 44 H100 M20 60 H100 M20 76 H100 M20 92 H100 M36 44 V108"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M34 28 H48 M72 28 H86"/></svg><span class="name">Helsinki</span><span class="role">registra la orden</span></div>
+      <div class="ag"><span class="n">10</span><svg class="av" viewBox="0 0 120 120"><rect fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" x="16" y="14" width="88" height="92" rx="30"/><circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="42" cy="56" r="13"/><circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="78" cy="56" r="13"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M55 56 H65 M29 54 H16 M91 54 H104"/><path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M50 88 H70"/></svg><span class="name">Profesor</span><span class="role">cierra e informa</span></div>
+      <div id="file">▮ fichero</div>
+    </div>
+    <div class="lead">No comparten memoria: solo se pasan un fichero con remitente, destinatario, carga y motivo.</div>
+  </section>
+
+  <!-- 4 · El veto -->
+  <section class="scene" id="s4">
+    <div class="wrap">
+      <div class="kicker">El veto</div>
+      <div class="h1">Palermo<br>puede decir <span class="rojo">no.</span></div>
+    </div>
+    <div id="brief" class="card">
+      <div class="t">de: Nairobi · a: Palermo</div>
+      <div class="bt">Brief · BTC/USD · largo</div>
+      <div class="chk" id="k1"><span>Liquidez</span><span class="m neon">✓</span></div>
+      <div class="chk" id="k2"><span>Invalidación (stop)</span><span class="m neon">✓</span></div>
+      <div class="chk" id="k3"><span>Brief de una página</span><span class="m neon">✓</span></div>
+      <div class="chk" id="k4"><span>Objetivo / riesgo <span class="mono" style="color:var(--dim)">(mín. 1,5)</span></span><span class="m rojo">1,2 ✗</span></div>
+    </div>
+    <div id="veto">Veto</div>
+    <div class="lead">La mayoría de las horas <span class="neon" style="font-weight:800">no se opera</span>. Y eso también es una decisión.</div>
+  </section>
+
+  <!-- 5 · El registro -->
+  <section class="scene" id="s5">
+    <div class="wrap">
+      <div class="kicker">El registro</div>
+      <div class="h1">Todo queda<br>escrito.</div>
+    </div>
+    <div id="log" class="card">
+      <div><span class="ts">10:05:02</span>  <span class="who">Tokio → Denver</span>       setup BTC/USD · vol. 1,6×</div>
+      <div><span class="ts">10:05:41</span>  <span class="who">Denver → Estocolmo</span>   contexto limpio</div>
+      <div><span class="ts">10:06:10</span>  <span class="who">Estocolmo → Río</span>      tamaño 25 USD</div>
+      <div><span class="ts">10:06:38</span>  <span class="who">Río → Berlín</span>         stop −0,8 % · obj. +1,0 %</div>
+      <div><span class="ts">10:07:02</span>  <span class="who">Berlín → Lisboa</span>      condiciones cerradas</div>
+      <div><span class="ts">10:07:15</span>  <span class="who">Lisboa → Nairobi</span>     datos frescos <span class="ok">✓</span></div>
+      <div><span class="ts">10:07:40</span>  <span class="who">Nairobi → Palermo</span>    brief · 1 página</div>
+      <div><span class="ts">10:08:05</span>  <span class="who">Palermo</span>              <span class="v">VETO</span> · ratio 1,2 &lt; 1,5</div>
+      <div><span class="ts">10:08:20</span>  <span class="who">Profesor</span>             informe · sin operación</div>
+    </div>
+    <div class="lead">Cada traspaso, cada veto y cada informe: firmados, con motivo y públicos.</div>
+  </section>
+
+  <!-- 6 · Cierre -->
+  <section class="scene" id="s6">
+    <div class="wrap">
+      <div class="kicker">Las reglas del juego</div>
+      <div class="h1">Lo publicamos todo,<br><span class="neon">gane o pierda.</span></div>
+    </div>
+    <div id="rules">
+      <div class="rule" id="r1"><div class="l">Cartera</div><div class="v">100 USD</div></div>
+      <div class="rule" id="r2"><div class="l">Mercados</div><div class="v">BTC · ETH</div></div>
+      <div class="rule" id="r3"><div class="l">Velas</div><div class="v">1 hora</div></div>
+      <div class="rule" id="r4"><div class="l">Ciclo</div><div class="v">cada hora</div></div>
+    </div>
+    <div id="cta">por2duros.com/mesa</div>
+    <div class="lead">Dinero ficticio. No es asesoramiento financiero ni una recomendación de inversión.</div>
+  </section>
+
+  <div id="brandbar"><span class="logo"><span class="p">P</span>Por 2 Duros</span><span class="mono" style="font-size:24px;letter-spacing:.18em;color:#8A8A8A">LA BANDA</span></div>
+  <div id="foot"><span>La mesa</span><b>por2duros.com/mesa</b></div>
+</div>
+
+<script>
+/* Motor determinista: todo es función pura de tMs. capture.mjs llama window.renderAt(t) por frame. */
+(function(){
+  const $ = id => document.getElementById(id);
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  const seg = (t,a,b)=> clamp((t-a)/(b-a),0,1);
+  const easeOut = p => 1-Math.pow(1-p,3);
+  const fade = (t,a,b,fin,fout)=> (t<a||t>b) ? 0 : clamp((t-a)/fin,0,1)*clamp((b-t)/fout,0,1);
+  const rise = (el,p,px=24)=>{ el.style.opacity = p.toFixed(3); el.style.transform = 'translateY(' + (px*(1-easeOut(p))).toFixed(1) + 'px)'; };
+
+  // Cronología (ms)
+  const SCN = { s1:[0,4200], s2:[4200,11800], s3:[11800,24400], s4:[24400,32400], s5:[32400,40400], s6:[40400,47000] };
+  const FD = 260;
+  window.DURATION_MS = 47000;
+
+  const ags = [...document.querySelectorAll('#chain .ag')];
+  const logs = [...document.querySelectorAll('#log > div')];
+
+  window.renderAt = function(t){
+    $('s1').style.opacity = fade(t, SCN.s1[0], SCN.s1[1]+FD, 200, FD);
+    $('s2').style.opacity = fade(t, SCN.s2[0]-FD, SCN.s2[1]+FD, FD, FD);
+    $('s3').style.opacity = fade(t, SCN.s3[0]-FD, SCN.s3[1]+FD, FD, FD);
+    $('s4').style.opacity = fade(t, SCN.s4[0]-FD, SCN.s4[1]+FD, FD, FD);
+    $('s5').style.opacity = fade(t, SCN.s5[0]-FD, SCN.s5[1]+FD, FD, FD);
+    $('s6').style.opacity = fade(t, SCN.s6[0]-FD, SCN.s6[1], FD, 500);
+    $('foot').style.opacity = t < SCN.s1[1] ? 0 : 1;
+
+    // 1 · gancho
+    const p1 = seg(t, 0, 700);
+    $('s1').querySelector('.wrap').style.transform = 'translateY(' + (20*(1-easeOut(p1))) + 'px)';
+    $('s1').querySelector('.sub').style.opacity = seg(t, 1600, 2100).toFixed(3);
+
+    // 2 · problema
+    const l2 = t - SCN.s2[0];
+    rise($('ia'), seg(l2, 900, 1400));
+    [['c1',1600],['c2',2150],['c3',2700]].forEach(([id,a])=> rise($(id), seg(l2, a, a+350), 16));
+    const st = seg(l2, 3700, 4000);
+    $('stamp2').style.opacity = st.toFixed(3);
+    $('stamp2').style.transform = 'rotate(-4deg) scale(' + (1.35-0.35*easeOut(st)).toFixed(3) + ')';
+    $('ia').style.borderColor = l2 >= 3700 ? 'var(--rojo)' : '#333';
+    rise($('s2').querySelector('.por'), seg(l2, 5300, 5800));
+
+    // 3 · la cadena: el fichero baja de agente en agente
+    const l3 = t - SCN.s3[0];
+    const T0 = 800, STEP = 1050;                 // llegada a Tokio y ritmo de traspaso
+    const step = Math.floor((l3 - T0) / STEP);  // índice del agente activo
+    ags.forEach((a,i)=>{ a.className = 'ag' + (i === step ? ' on' : i < step ? ' done' : ''); });
+    const f = $('file');
+    if (l3 >= T0 && step <= 9) {
+      const from = Math.max(0, Math.min(step, 9)), prog = easeOut(seg((l3 - T0) % STEP, 0, 420));
+      const y = (step === 0 ? 0 : (from-1)*116 + prog*116) + 21;  // 106 de alto + 10 de hueco
+      f.style.opacity = 1; f.style.transform = 'translateY(' + y.toFixed(1) + 'px)';
+      f.textContent = '▮ → ' + (ags[Math.min(step,9)].querySelector('.name').textContent);
+    } else { f.style.opacity = 0; }
+    rise($('s3').querySelector('.lead'), seg(l3, 1400, 1900));
+
+    // 4 · el veto: checklist y sello
+    const l4 = t - SCN.s4[0];
+    rise($('brief'), seg(l4, 600, 1100));
+    [['k1',1500],['k2',2200],['k3',2900],['k4',3700]].forEach(([id,a])=> rise($(id), seg(l4, a, a+300), 12));
+    const vp = seg(l4, 4500, 4850);
+    $('veto').style.opacity = vp.toFixed(3);
+    $('veto').style.transform = 'rotate(-8deg) scale(' + (1.6-0.6*easeOut(vp)).toFixed(3) + ')';
+    rise($('s4').querySelector('.lead'), seg(l4, 5500, 6000));
+
+    // 5 · el registro: líneas que aparecen
+    const l5 = t - SCN.s5[0];
+    logs.forEach((d,i)=> rise(d, seg(l5, 600 + i*440, 800 + i*440), 8));
+    rise($('s5').querySelector('.lead'), seg(l5, 5200, 5700));
+
+    // 6 · cierre
+    const l6 = t - SCN.s6[0];
+    ['r1','r2','r3','r4'].forEach((id,i)=> rise($(id), seg(l6, 700 + i*260, 1000 + i*260), 16));
+    rise($('cta'), seg(l6, 2100, 2600));
+    $('s6').querySelector('.lead').style.opacity = seg(l6, 2800, 3300).toFixed(3);
+  };
+  window.renderAt(0);
+})();
+</script>
+</body>
+</html>

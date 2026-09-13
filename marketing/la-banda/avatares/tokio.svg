@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" style="color:#39FF14" role="img" aria-label="Tokio">
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M60 10 L102 33 V77 L60 110 L18 77 V33 Z"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M32 56 H50"/>
+    <circle fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" cx="82" cy="56" r="11"/><circle cx="82" cy="56" r="3.5" fill="currentColor"/>
+    <path fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M82 40 v5 M82 67 v5 M66 56 h5 M93 56 h5"/>
+</svg>

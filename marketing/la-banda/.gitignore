@@ -1,0 +1,7 @@
+build/node_modules/
+preview/
+*.mp3
+*.m4a
+reel-con-musica.mp4
+**/_*.png
+**/_*.mp4
