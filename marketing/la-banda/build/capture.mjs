@@ -3,11 +3,12 @@
 // H.264/mp4 con h264-mp4-encoder (WASM). Sin red, sin ffmpeg completo.
 //
 // Uso:  node capture.mjs [--preview]   (--preview: solo un frame por escena, a ../preview/)
-// Salidas (en la carpeta padre):  reel.mp4, portada.png, reel.srt
+// Salidas (en la carpeta padre):  reel.mp4 (remezclado con faststart + pista muda, ver remux.mjs), portada.png, reel.srt
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
 import { createRequire } from "node:module";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -77,9 +78,12 @@ async function main() {
   }
   enc.finalize();
   const mp4 = enc.FS.readFile(enc.outputFilename);
-  writeFileSync(join(OUT, "reel.mp4"), Buffer.from(mp4));
+  const raw = join(__dir, "_reel-raw.mp4");   // salida del codificador (moov al final): no se versiona
+  writeFileSync(raw, Buffer.from(mp4));
   enc.delete();
   await browser.close();
-  process.stdout.write(`\nListo: reel.mp4 (${(mp4.length / 1e6).toFixed(2)} MB), portada.png, reel.srt\n`);
+  process.stdout.write(`\nCodificado (${(mp4.length / 1e6).toFixed(2)} MB). Remezclando (faststart + pista muda)…\n`);
+  execFileSync(process.execPath, [join(__dir, "remux.mjs"), raw, join(OUT, "reel.mp4")], { stdio: "inherit" });
+  process.stdout.write(`Listo: reel.mp4, portada.png, reel.srt\n`);
 }
 main().catch((e) => { console.error(e); process.exit(1); });
