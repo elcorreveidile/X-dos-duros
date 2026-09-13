@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- Reel del carrusel de La Banda: las diapositivas PNG pasan con deslizamiento
+     horizontal sobre fondo negro con rejilla neón (marca Por 2 Duros), barra de
+     progreso y fundido final. Determinista: window.renderAt(ms) pinta el estado
+     exacto. Configuración en window.SETS; se elige con ?set=la-banda. -->
+<html lang="es"><head><meta charset="utf-8">
+<style>
+  html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+  .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(57,255,20,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,.07) 1px,transparent 1px);background-size:80px 80px;
+        mask-image:radial-gradient(900px 900px at 50% 50%,#000 0%,transparent 80%);-webkit-mask-image:radial-gradient(900px 900px at 50% 50%,#000 0%,transparent 80%)}
+  .glow{position:absolute;left:140px;top:485px;width:800px;height:950px;background:rgba(57,255,20,.18);filter:blur(120px)}
+  .card{position:absolute;left:0;top:285px;width:1080px;height:1350px;overflow:hidden;border:1px solid #222;
+        box-shadow:0 40px 120px rgba(0,0,0,.7);will-change:transform;opacity:0;background:#0A0A0A}
+  .card img{display:block;width:1080px;height:1350px}
+  .bar{position:absolute;left:84px;right:84px;top:1700px;height:6px;background:#222}
+  .bar i{position:absolute;left:0;top:0;height:6px;background:#39FF14}
+  .cap{position:absolute;left:84px;right:84px;top:1740px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:26px;letter-spacing:.14em;text-transform:uppercase;color:#8A8A8A;display:flex;justify-content:space-between}
+  .cap b{color:#39FF14;font-weight:700}
+</style></head><body>
+<div id="stage"><div class="grid"></div><div class="glow"></div></div>
+<script>
+  window.SETS = {
+    "la-banda": { slides: Array.from({length:8},(_,i)=>`../carrusel/la-banda-0${i+1}.png`),
+                  times:  [0, 4.2, 9.0, 14.0, 19.6, 25.2, 30.2, 35.4], end: 41.0 },
+  };
+  const SWIPE = 0.55;
+  const set = window.SETS[new URLSearchParams(location.search).get("set") || "la-banda"];
+  window.DURATION_MS = set.end * 1000;
+  const stage = document.getElementById("stage");
+  const cards = [];
+  set.slides.forEach((src) => { const c = document.createElement("div"); c.className = "card"; c.innerHTML = `<img src="${src}">`; stage.appendChild(c); cards.push(c); });
+  const bar = document.createElement("div"); bar.className = "bar"; bar.innerHTML = "<i></i>"; stage.appendChild(bar);
+  const cap = document.createElement("div"); cap.className = "cap"; cap.innerHTML = "<span>La Banda · La mesa</span><b>por2duros.com/mesa</b>"; stage.appendChild(cap);
+  const ease = (x) => 1 - Math.pow(1 - x, 3);
+  window.renderAt = (ms) => {
+    const t = ms / 1000;
+    let cur = 0; for (let i = 0; i < set.times.length; i++) if (t >= set.times[i]) cur = i;
+    const since = t - set.times[cur];
+    const p = cur === 0 ? 1 : ease(Math.min(1, since / SWIPE));
+    cards.forEach((c, i) => {
+      let x = null;
+      if (i === cur) x = (1 - p) * 1080;
+      else if (i === cur - 1) x = -p * 1080;
+      c.style.opacity = x === null ? 0 : 1;
+      c.style.transform = x === null ? "" : `translateX(${x.toFixed(1)}px)`;
+    });
+    bar.firstChild.style.width = (100 * Math.min(1, t / set.end)).toFixed(2) + "%";
+    const fade = Math.max(0, (t - (set.end - 0.6)) / 0.6);
+    stage.style.opacity = 1 - Math.min(1, fade);
+  };
+  window.renderAt(0);
+</script></body></html>

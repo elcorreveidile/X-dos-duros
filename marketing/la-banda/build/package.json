@@ -1,0 +1,19 @@
+{
+  "name": "la-banda-redes",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Carrusel y reel de La Banda para las redes de Por 2 Duros (HTML → PNG/MP4 con Chromium).",
+  "scripts": {
+    "build": "node render.mjs",
+    "reel": "node reel.mjs la-banda"
+  },
+  "dependencies": {
+    "@ffmpeg/core": "^0.12.10",
+    "@fontsource/inter": "^5.1.0",
+    "@fontsource/jetbrains-mono": "^5.1.0",
+    "h264-mp4-encoder": "^1.0.12",
+    "playwright-core": "^1.48.0",
+    "pngjs": "^7.0.0"
+  }
+}
