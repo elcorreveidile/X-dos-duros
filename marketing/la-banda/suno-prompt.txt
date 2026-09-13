@@ -1,0 +1,26 @@
+PROMPT DE SUNO — audio para «La Banda: así funciona la mesa»
+==========================================================
+Instrumental (activa «Instrumental»), en inglés porque Suno responde mejor.
+Reglas: sin voces, sin intro, empieza con el ritmo, loopable, gancho de 15 s
+al principio. Genera 2 tomas y quédate con la que entra más limpia en 0:00.
+El reel dura 36 s: recorta desde 0:00 y deja que mux-audio.mjs haga el fundido.
+
+Tono: tensión contenida y precisión, «una sala de control por la noche».
+Nada épico ni cinematográfico; parece un atraco ordenado, no una película.
+
+Style of music:
+Dark minimal electronic, 96 BPM, instrumental, no vocals. Tight analog
+synth bass pulse, crisp hi-hats, sparse clicks and ticking percussion like
+a clock, muted arpeggio in a minor key, occasional low sub hits. Cold,
+focused and slightly tense, like a night-time control room or a heist
+planning scene. Starts immediately with the beat, no intro, loopable 15
+second hook, steady with no big drops or risers.
+
+Exclude styles: vocals, lyrics, choir, cinematic swell, orchestral, trap
+hi-hat rolls, EDM drop.
+
+Título: Por 2 Duros · La Banda
+
+Incrustar la pista:
+  cd build && node mux-audio.mjs ../reel.mp4 ../musica-la-banda.mp3 ../reel-con-musica.mp4 36
+(los mp3 no se versionan)

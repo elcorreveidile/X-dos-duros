@@ -1,15 +1,63 @@
-Diez agentes de IA. Cien dólares. En público.
+REEL Y CARRUSEL «La Banda: así funciona la mesa» — textos para el post
+=======================================================================
+Reel 1080×1920, 36 s, sin música incrustada (elige un audio en tendencia en la
+app o genera la pista con suno-prompt.txt y usa build/mux-audio.mjs).
+Carrusel 8 diapositivas 4:5 en carrusel/. Mismo texto para los dos.
 
-Hemos montado una mesa de trading simulada que no la lleva una IA, sino diez. Cada una tiene un trabajo y solo uno: Tokio busca, Denver contrasta, Estocolmo dimensiona, Río marca los niveles, Berlín redacta las condiciones, Lisboa comprueba que los datos son frescos, Nairobi lo resume en una página, Palermo veta, Helsinki apunta y el Profesor cierra e informa.
 
-La regla: el que busca no aprueba y el que aprueba no ejecuta. No comparten memoria; solo se pasan un fichero con remitente, destinatario, carga y motivo. Cada traspaso, cada veto y cada devolución quedan registrados.
+OPCIÓN A  (gancho de cifra)
+---------------------------
+Diez agentes de IA. Cien dólares. En público. 🎯
 
-Resultado: la mayoría de las horas no se opera. Y eso también es una decisión.
+Una IA sola se lo cree todo: busca, decide y ejecuta sin nadie que le diga que
+no. Por eso montamos una mesa con diez, y ninguna manda.
 
-Cartera de 100 USD ficticios, BTC y ETH, velas de una hora, deslizamiento 0,3 % y comisión 0,1 %. Lo publicamos todo, gane o pierda, en por2duros.com/mesa (enlace en la bio).
+✅ Cada agente tiene un trabajo y solo uno
+✅ El que busca no aprueba; el que aprueba no ejecuta
+✅ Palermo puede vetar; Lisboa puede devolver el trabajo
+✅ Cada traspaso, cada veto y cada informe quedan escritos
+
+Cartera simulada de 100 USD en BTC y ETH, velas de una hora, cada hora.
+Lo publicamos todo, gane o pierda 👉 por2duros.com/mesa (enlace en la bio)
 
 Dinero ficticio. No es asesoramiento financiero ni una recomendación de inversión.
 
-¿Un sistema así trabajando para tu negocio? Escríbenos.
 
-#ia #agentesdeia #automatizacion #inteligenciaartificial #trading #experimento #por2duros #granada #estepona
+OPCIÓN B  (gancho de curiosidad)
+--------------------------------
+¿Qué pasa si diez IAs tienen que ponerse de acuerdo para gastar 100 dólares? 🤔
+
+Casi nunca se ponen de acuerdo. Y eso es lo interesante.
+
+Tokio busca, Denver contrasta, Estocolmo dimensiona, Río marca niveles, Berlín
+redacta, Lisboa comprueba, Nairobi resume, Palermo veta, Helsinki apunta y el
+Profesor cierra. No comparten memoria: solo se pasan un fichero con remitente,
+destinatario, carga y motivo.
+
+La mayoría de las horas no se opera. Y eso también es una decisión, firmada y
+con motivo. Lo puedes leer entero 👉 por2duros.com/mesa
+
+Es el mismo sistema que usamos para revisar textos en una revista literaria.
+¿Un sistema así para tu negocio? Escríbenos.
+
+Dinero ficticio. No es asesoramiento financiero.
+
+
+HASHTAGS  (copia y pega)
+------------------------
+#ia #inteligenciaartificial #agentesdeia #automatizacion #trading #bitcoin
+#ethereum #experimento #transparencia #por2duros #granada #estepona
+#desarrolloweb #startups #emprendedores
+
+
+NOTAS
+-----
+- Todo lo que sale en el reel es lo que hace el sistema (roles, veto, registro).
+  Las horas y cifras del registro (10:05, ratio 1,2, 25 USD) son de ejemplo,
+  no de una sesión real.
+- No prometas rentabilidad ni «señales»: la cartera es ficticia y la gracia
+  del experimento es que se publica todo, también las horas sin operar.
+- Etiqueta de ubicación: Estepona o Granada. Story el día del post con la
+  portada y sticker de enlace a por2duros.com/mesa.
+- Publica primero el reel (con la pista de Suno como audio original «Por 2
+  Duros · La Banda») y al día siguiente el carrusel con ese mismo audio.

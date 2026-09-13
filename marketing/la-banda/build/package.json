@@ -6,7 +6,7 @@
   "description": "Carrusel y reel de La Banda para las redes de Por 2 Duros (HTML → PNG/MP4 con Chromium).",
   "scripts": {
     "build": "node render.mjs",
-    "reel": "node reel.mjs la-banda"
+    "reel": "node capture.mjs"
   },
   "dependencies": {
     "@ffmpeg/core": "^0.12.10",
