@@ -82,8 +82,8 @@ async function main() {
   writeFileSync(raw, Buffer.from(mp4));
   enc.delete();
   await browser.close();
-  process.stdout.write(`\nCodificado (${(mp4.length / 1e6).toFixed(2)} MB). Remezclando (faststart + pista muda)…\n`);
-  execFileSync(process.execPath, [join(__dir, "remux.mjs"), raw, join(OUT, "reel.mp4")], { stdio: "inherit" });
+  process.stdout.write(`\nCodificado (${(mp4.length / 1e6).toFixed(2)} MB). Recodificando con libx264 (faststart + pista muda)…\n`);
+  execFileSync(process.execPath, [join(__dir, "remux.mjs"), raw, join(OUT, "reel.mp4"), "--recode"], { stdio: "inherit" });
   process.stdout.write(`Listo: reel.mp4, portada.png, reel.srt\n`);
 }
 main().catch((e) => { console.error(e); process.exit(1); });

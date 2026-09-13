@@ -8,8 +8,8 @@ WASM. **No necesita red ni ffmpeg completo.**
 
 ## Entregables (en esta carpeta)
 
-- `reel.mp4` — 1080×1920, H.264 yuv420p, 30 fps, 36 s, índice al principio
-  (*faststart*) y pista de audio en silencio: se reproduce en cualquier sitio.
+- `reel.mp4` — 1080×1920, H.264 High yuv420p (libx264), 30 fps, 36 s, índice al
+  principio (*faststart*) y pista de audio en silencio: se reproduce en cualquier sitio.
 - `portada.png` — frame de tapa (el gancho, 1,6 s).
 - `reel.srt` — rótulos temporizados (accesibilidad).
 - `carrusel/la-banda-01..08.png` — carrusel 4:5 (2160×2700), mismo guion.
@@ -59,8 +59,10 @@ de ejemplo.
 - `build/reel.html` — 6 escenas; expone `window.renderAt(tMs)` y
   `window.DURATION_MS` (todo función pura de `tMs`, sin CSS animations).
 - `build/capture.mjs` — captura y encode; `--preview` para revisar escenas.
-- `build/remux.mjs` — el mp4 del codificador lleva el índice (`moov`) al final
-  y sin audio, y algunos reproductores no lo abren; este paso lo mueve al
-  principio y añade una pista AAC en silencio sin recodificar el vídeo.
+- `build/remux.mjs` — el mp4 del codificador WASM (minih264) es un H.264 Baseline
+  poco habitual, con el índice (`moov`) al final y sin audio, y algunos
+  reproductores no lo abren; este paso lo recodifica con libx264 (`--recode`,
+  perfil High, ~1,5 min), mueve el índice al principio y añade una pista AAC
+  en silencio. Sin `--recode` solo remezcla.
 - `build/slides.html` + `build/render.mjs` — carrusel.
 - `build/mux-audio.mjs` — incrusta una pista con ffmpeg.wasm.
