@@ -1,23 +1,23 @@
 1
-00:00:00,000 --> 00:00:03,400
+00:00:00,000 --> 00:00:04,200
 Diez agentes de IA. Cien dólares. En público. Así funciona el sistema.
 
 2
-00:00:03,400 --> 00:00:09,200
+00:00:04,200 --> 00:00:11,800
 Una IA sola se lo cree todo: busca, decide y ejecuta sin nadie que le diga que no. Por eso usamos diez, y ninguna manda.
 
 3
-00:00:09,200 --> 00:00:19,000
+00:00:11,800 --> 00:00:24,400
 Un trabajo cada uno: Tokio busca, Denver contrasta, Estocolmo dimensiona, Río fija niveles, Berlín redacta, Lisboa comprueba, Nairobi resume, Palermo veta, Helsinki registra, el Profesor informa.
 
 4
-00:00:19,000 --> 00:00:25,200
+00:00:24,400 --> 00:00:32,400
 Palermo puede decir no: si el objetivo no vale 1,5 veces el riesgo, veto. La mayoría de las horas no se opera.
 
 5
-00:00:25,200 --> 00:00:30,800
+00:00:32,400 --> 00:00:40,400
 Todo queda escrito: cada traspaso, cada veto y cada informe, firmados y con motivo.
 
 6
-00:00:30,800 --> 00:00:36,000
+00:00:40,400 --> 00:00:47,000
 100 USD ficticios, BTC y ETH, velas de una hora. Lo publicamos todo, gane o pierda → por2duros.com/mesa

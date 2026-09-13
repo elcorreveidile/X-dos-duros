@@ -31,12 +31,12 @@ function fontFaceCss() {
 
 // Rótulos (accesibilidad). Coinciden con el guion de reel.html.
 const CUES = [
-  [0.0, 3.4,   "Diez agentes de IA. Cien dólares. En público. Así funciona el sistema."],
-  [3.4, 9.2,   "Una IA sola se lo cree todo: busca, decide y ejecuta sin nadie que le diga que no. Por eso usamos diez, y ninguna manda."],
-  [9.2, 19.0,  "Un trabajo cada uno: Tokio busca, Denver contrasta, Estocolmo dimensiona, Río fija niveles, Berlín redacta, Lisboa comprueba, Nairobi resume, Palermo veta, Helsinki registra, el Profesor informa."],
-  [19.0, 25.2, "Palermo puede decir no: si el objetivo no vale 1,5 veces el riesgo, veto. La mayoría de las horas no se opera."],
-  [25.2, 30.8, "Todo queda escrito: cada traspaso, cada veto y cada informe, firmados y con motivo."],
-  [30.8, 36.0, "100 USD ficticios, BTC y ETH, velas de una hora. Lo publicamos todo, gane o pierda → por2duros.com/mesa"],
+  [0.0, 4.2,   "Diez agentes de IA. Cien dólares. En público. Así funciona el sistema."],
+  [4.2, 11.8,  "Una IA sola se lo cree todo: busca, decide y ejecuta sin nadie que le diga que no. Por eso usamos diez, y ninguna manda."],
+  [11.8, 24.4, "Un trabajo cada uno: Tokio busca, Denver contrasta, Estocolmo dimensiona, Río fija niveles, Berlín redacta, Lisboa comprueba, Nairobi resume, Palermo veta, Helsinki registra, el Profesor informa."],
+  [24.4, 32.4, "Palermo puede decir no: si el objetivo no vale 1,5 veces el riesgo, veto. La mayoría de las horas no se opera."],
+  [32.4, 40.4, "Todo queda escrito: cada traspaso, cada veto y cada informe, firmados y con motivo."],
+  [40.4, 47.0, "100 USD ficticios, BTC y ETH, velas de una hora. Lo publicamos todo, gane o pierda → por2duros.com/mesa"],
 ];
 const srtTime = (s) => { const ms = Math.round(s * 1000); const p = (n, l) => String(n).padStart(l, "0");
   return `${p(Math.floor(ms / 3600000), 2)}:${p(Math.floor(ms / 60000) % 60, 2)}:${p(Math.floor(ms / 1000) % 60, 2)},${p(ms % 1000, 3)}`; };
@@ -53,7 +53,7 @@ async function main() {
 
   if (PREVIEW) {
     const dir = join(OUT, "preview"); mkdirSync(dir, { recursive: true });
-    for (const ms of [1600, 8400, 16500, 24300, 29500, 34000]) {
+    for (const ms of [1600, 10500, 22000, 31500, 39000, 45000]) {
       await page.evaluate((m) => window.renderAt(m), ms);
       writeFileSync(join(dir, `_${String(ms).padStart(5, "0")}.png`), await page.screenshot({ clip, type: "png", animations: "disabled" }));
     }

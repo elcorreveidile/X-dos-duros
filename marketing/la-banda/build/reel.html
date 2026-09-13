@@ -200,9 +200,9 @@
   const rise = (el,p,px=24)=>{ el.style.opacity = p.toFixed(3); el.style.transform = 'translateY(' + (px*(1-easeOut(p))).toFixed(1) + 'px)'; };
 
   // Cronología (ms)
-  const SCN = { s1:[0,3400], s2:[3400,9200], s3:[9200,19000], s4:[19000,25200], s5:[25200,30800], s6:[30800,36000] };
+  const SCN = { s1:[0,4200], s2:[4200,11800], s3:[11800,24400], s4:[24400,32400], s5:[32400,40400], s6:[40400,47000] };
   const FD = 260;
-  window.DURATION_MS = 36000;
+  window.DURATION_MS = 47000;
 
   const ags = [...document.querySelectorAll('#chain .ag')];
   const logs = [...document.querySelectorAll('#log > div')];
@@ -219,51 +219,51 @@
     // 1 · gancho
     const p1 = seg(t, 0, 700);
     $('s1').querySelector('.wrap').style.transform = 'translateY(' + (20*(1-easeOut(p1))) + 'px)';
-    $('s1').querySelector('.sub').style.opacity = seg(t, 1300, 1800).toFixed(3);
+    $('s1').querySelector('.sub').style.opacity = seg(t, 1600, 2100).toFixed(3);
 
     // 2 · problema
     const l2 = t - SCN.s2[0];
-    rise($('ia'), seg(l2, 700, 1200));
-    [['c1',1300],['c2',1750],['c3',2200]].forEach(([id,a])=> rise($(id), seg(l2, a, a+350), 16));
-    const st = seg(l2, 3000, 3300);
+    rise($('ia'), seg(l2, 900, 1400));
+    [['c1',1600],['c2',2150],['c3',2700]].forEach(([id,a])=> rise($(id), seg(l2, a, a+350), 16));
+    const st = seg(l2, 3700, 4000);
     $('stamp2').style.opacity = st.toFixed(3);
     $('stamp2').style.transform = 'rotate(-4deg) scale(' + (1.35-0.35*easeOut(st)).toFixed(3) + ')';
-    $('ia').style.borderColor = l2 >= 3000 ? 'var(--rojo)' : '#333';
-    rise($('s2').querySelector('.por'), seg(l2, 4200, 4700));
+    $('ia').style.borderColor = l2 >= 3700 ? 'var(--rojo)' : '#333';
+    rise($('s2').querySelector('.por'), seg(l2, 5300, 5800));
 
     // 3 · la cadena: el fichero baja de agente en agente
     const l3 = t - SCN.s3[0];
-    const T0 = 700, STEP = 880;                 // llegada a Tokio y ritmo de traspaso
+    const T0 = 800, STEP = 1050;                 // llegada a Tokio y ritmo de traspaso
     const step = Math.floor((l3 - T0) / STEP);  // índice del agente activo
     ags.forEach((a,i)=>{ a.className = 'ag' + (i === step ? ' on' : i < step ? ' done' : ''); });
     const f = $('file');
     if (l3 >= T0 && step <= 9) {
-      const from = Math.max(0, Math.min(step, 9)), prog = easeOut(seg((l3 - T0) % STEP, 0, 380));
+      const from = Math.max(0, Math.min(step, 9)), prog = easeOut(seg((l3 - T0) % STEP, 0, 420));
       const y = (step === 0 ? 0 : (from-1)*116 + prog*116) + 21;  // 106 de alto + 10 de hueco
       f.style.opacity = 1; f.style.transform = 'translateY(' + y.toFixed(1) + 'px)';
       f.textContent = '▮ → ' + (ags[Math.min(step,9)].querySelector('.name').textContent);
     } else { f.style.opacity = 0; }
-    rise($('s3').querySelector('.lead'), seg(l3, 1200, 1700));
+    rise($('s3').querySelector('.lead'), seg(l3, 1400, 1900));
 
     // 4 · el veto: checklist y sello
     const l4 = t - SCN.s4[0];
-    rise($('brief'), seg(l4, 500, 1000));
-    [['k1',1300],['k2',1800],['k3',2300],['k4',2900]].forEach(([id,a])=> rise($(id), seg(l4, a, a+300), 12));
-    const vp = seg(l4, 3500, 3850);
+    rise($('brief'), seg(l4, 600, 1100));
+    [['k1',1500],['k2',2200],['k3',2900],['k4',3700]].forEach(([id,a])=> rise($(id), seg(l4, a, a+300), 12));
+    const vp = seg(l4, 4500, 4850);
     $('veto').style.opacity = vp.toFixed(3);
     $('veto').style.transform = 'rotate(-8deg) scale(' + (1.6-0.6*easeOut(vp)).toFixed(3) + ')';
-    rise($('s4').querySelector('.lead'), seg(l4, 4300, 4800));
+    rise($('s4').querySelector('.lead'), seg(l4, 5500, 6000));
 
     // 5 · el registro: líneas que aparecen
     const l5 = t - SCN.s5[0];
-    logs.forEach((d,i)=> rise(d, seg(l5, 600 + i*330, 800 + i*330), 8));
-    rise($('s5').querySelector('.lead'), seg(l5, 4000, 4500));
+    logs.forEach((d,i)=> rise(d, seg(l5, 600 + i*440, 800 + i*440), 8));
+    rise($('s5').querySelector('.lead'), seg(l5, 5200, 5700));
 
     // 6 · cierre
     const l6 = t - SCN.s6[0];
-    ['r1','r2','r3','r4'].forEach((id,i)=> rise($(id), seg(l6, 700 + i*200, 1000 + i*200), 16));
-    rise($('cta'), seg(l6, 1700, 2200));
-    $('s6').querySelector('.lead').style.opacity = seg(l6, 2300, 2800).toFixed(3);
+    ['r1','r2','r3','r4'].forEach((id,i)=> rise($(id), seg(l6, 700 + i*260, 1000 + i*260), 16));
+    rise($('cta'), seg(l6, 2100, 2600));
+    $('s6').querySelector('.lead').style.opacity = seg(l6, 2800, 3300).toFixed(3);
   };
   window.renderAt(0);
 })();

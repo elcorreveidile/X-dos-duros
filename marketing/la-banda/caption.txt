@@ -1,6 +1,6 @@
 REEL Y CARRUSEL «La Banda: así funciona la mesa» — textos para el post
 =======================================================================
-Reel 1080×1920, 36 s, sin música incrustada (elige un audio en tendencia en la
+Reel 1080×1920, 47 s, sin música incrustada (elige un audio en tendencia en la
 app o genera la pista con suno-prompt.txt y usa build/mux-audio.mjs).
 Carrusel 8 diapositivas 4:5 en carrusel/. Mismo texto para los dos.
 
