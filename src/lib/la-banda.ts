@@ -54,21 +54,39 @@ export function laBandaConfigurada(): boolean {
   return ok
 }
 
-/** Estado de la mesa; null si La Banda no está configurada o no responde. Caché de 5 minutos. */
+/** Tope de espera de La Banda. Menor que el maxDuration de la función: si La Banda está
+ * fría (arranque en frío + consultas a Neon), la mesa degrada en vez de colgar la función. */
+const LA_BANDA_TIMEOUT_MS = 7000
+
+/** Último estado bueno en memoria del proceso: si una regeneración falla o tarda, servimos
+ * este (mesa ligeramente antigua) en vez de la pantalla «en preparación». */
+let ultimoBueno: MesaEstado | null = null
+
+/**
+ * Estado de la mesa; el último dato bueno (o null) si La Banda no está configurada, tarda o
+ * no responde. Caché de 5 minutos (ISR de la página + caché del fetch). El timeout evita que
+ * un arranque en frío de La Banda cuelgue el render de /mesa.
+ */
 export async function getMesaEstado(): Promise<MesaEstado | null> {
   if (!laBandaConfigurada()) return null
+  const ctrl = new AbortController()
+  const t = setTimeout(() => ctrl.abort(), LA_BANDA_TIMEOUT_MS)
   try {
     const res = await fetch(`${process.env.LA_BANDA_URL!.replace(/\/$/, '')}/api/v1/trading`, {
       headers: { authorization: `Bearer ${process.env.LA_BANDA_API_KEY}` },
       next: { revalidate: 300 },
+      signal: ctrl.signal,
     })
     if (!res.ok) {
       console.error('[la-banda] /api/v1/trading respondió', res.status)
-      return null
+      return ultimoBueno
     }
-    return (await res.json()) as MesaEstado
+    ultimoBueno = (await res.json()) as MesaEstado
+    return ultimoBueno
   } catch (err) {
     console.error('[la-banda] no se pudo consultar La Banda', err instanceof Error ? err.message : err)
-    return null
+    return ultimoBueno
+  } finally {
+    clearTimeout(t)
   }
 }
